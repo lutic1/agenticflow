@@ -338,3 +338,25 @@ export {
   DependencyError,
   HealthCheckError,
 } from './p0-integration';
+
+// ===== P1 Integration Types =====
+
+export type {
+  P1FeatureId,
+  P1FeatureInfo,
+  P1FeatureStatus,
+  P1IntegrationHealth,
+  P1IntegrationConfig,
+  P1InitializationResult,
+  P1FeatureHealthCheck,
+  P1IntegrationHealthReport,
+  BatchResult,
+} from './p1-integration';
+
+export {
+  P1IntegrationError,
+  P1FeatureInitializationError,
+  P1DependencyError,
+  P1HealthCheckError,
+  P1FeatureDisabledError,
+} from './p1-integration';

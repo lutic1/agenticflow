@@ -1,0 +1,660 @@
+# P1 Features Monitoring Configuration
+# This configuration extends P0 monitoring with P1-specific metrics,
+# feature flag tracking, and batch deployment health monitoring
+
+version: "1.0"
+monitoring_scope: p1-features
+
+# P1-Specific Metrics Collection
+metrics:
+  # P1 Feature Response Time Metrics
+  p1_response_time:
+    enabled: true
+    collection_interval: 30s
+    retention_period: 30d
+
+    endpoints:
+      - name: batch1_features
+        path: /api/v1/p1/batch1/*
+        method: ALL
+        percentiles: [50, 90, 95, 99]
+
+      - name: batch2_features
+        path: /api/v1/p1/batch2/*
+        method: ALL
+        percentiles: [50, 90, 95, 99]
+
+      - name: batch3_features
+        path: /api/v1/p1/batch3/*
+        method: ALL
+        percentiles: [50, 90, 95, 99]
+
+      - name: batch4_features
+        path: /api/v1/p1/batch4/*
+        method: ALL
+        percentiles: [50, 90, 95, 99]
+
+      - name: batch5_features
+        path: /api/v1/p1/batch5/*
+        method: ALL
+        percentiles: [50, 90, 95, 99]
+
+    thresholds:
+      p50_warning: 150ms
+      p50_critical: 300ms
+      p90_warning: 600ms
+      p90_critical: 1200ms
+      p95_warning: 1200ms
+      p95_critical: 2500ms
+      p99_warning: 2500ms
+      p99_critical: 6000ms
+
+  # P1 Error Rate Metrics
+  p1_error_rate:
+    enabled: true
+    collection_interval: 30s
+    retention_period: 30d
+
+    categories:
+      - name: batch1_errors
+        description: Batch 1 feature errors
+        severity: warning
+
+      - name: batch2_errors
+        description: Batch 2 feature errors
+        severity: warning
+
+      - name: batch3_errors
+        description: Batch 3 feature errors
+        severity: warning
+
+      - name: batch4_errors
+        description: Batch 4 feature errors
+        severity: warning
+
+      - name: batch5_errors
+        description: Batch 5 feature errors
+        severity: warning
+
+      - name: p0_p1_integration_errors
+        description: P0+P1 integration failures
+        severity: critical
+
+      - name: feature_flag_errors
+        description: Feature flag evaluation errors
+        severity: critical
+
+    thresholds:
+      batch_errors_warning: 3%
+      batch_errors_critical: 8%
+      integration_errors_warning: 1%
+      integration_errors_critical: 3%
+      feature_flag_errors_warning: 0.5%
+      feature_flag_errors_critical: 2%
+
+  # Feature Flag Metrics
+  feature_flags:
+    enabled: true
+    collection_interval: 60s
+    retention_period: 90d
+
+    tracked_flags:
+      - name: p1_batch1_enabled
+        description: Batch 1 features enabled flag
+        type: boolean
+        default: false
+
+      - name: p1_batch2_enabled
+        description: Batch 2 features enabled flag
+        type: boolean
+        default: false
+
+      - name: p1_batch3_enabled
+        description: Batch 3 features enabled flag
+        type: boolean
+        default: false
+
+      - name: p1_batch4_enabled
+        description: Batch 4 features enabled flag
+        type: boolean
+        default: false
+
+      - name: p1_batch5_enabled
+        description: Batch 5 features enabled flag
+        type: boolean
+        default: false
+
+      - name: p1_all_features_enabled
+        description: All P1 features enabled flag
+        type: boolean
+        default: false
+
+    metrics:
+      - name: flag_evaluation_time
+        description: Time to evaluate feature flags
+        unit: ms
+        thresholds:
+          warning: 50
+          critical: 100
+
+      - name: flag_toggle_frequency
+        description: Frequency of flag changes
+        unit: toggles/hour
+        thresholds:
+          warning: 10
+          critical: 20
+
+      - name: flag_evaluation_errors
+        description: Errors during flag evaluation
+        unit: count
+        thresholds:
+          warning: 5
+          critical: 15
+
+  # P1 Throughput Metrics
+  p1_throughput:
+    enabled: true
+    collection_interval: 30s
+    retention_period: 30d
+
+    measurements:
+      - name: batch1_requests_per_second
+        description: Batch 1 requests per second
+        unit: req/s
+        aggregation: sum
+
+      - name: batch2_requests_per_second
+        description: Batch 2 requests per second
+        unit: req/s
+        aggregation: sum
+
+      - name: batch3_requests_per_second
+        description: Batch 3 requests per second
+        unit: req/s
+        aggregation: sum
+
+      - name: batch4_requests_per_second
+        description: Batch 4 requests per second
+        unit: req/s
+        aggregation: sum
+
+      - name: batch5_requests_per_second
+        description: Batch 5 requests per second
+        unit: req/s
+        aggregation: sum
+
+      - name: p1_total_operations
+        description: Total P1 operations per minute
+        unit: ops/min
+        aggregation: sum
+
+    thresholds:
+      batch_requests_min: 5
+      batch_requests_max: 500
+      total_operations_max: 2000
+
+  # Integration Health Metrics
+  integration_health:
+    enabled: true
+    collection_interval: 60s
+    retention_period: 30d
+
+    components:
+      - name: p0_p1_compatibility
+        description: P0+P1 compatibility score
+        unit: percentage
+        target: 99
+        thresholds:
+          warning: 95
+          critical: 90
+
+      - name: batch_isolation_score
+        description: Batch feature isolation score
+        unit: percentage
+        target: 100
+        thresholds:
+          warning: 98
+          critical: 95
+
+      - name: backward_compatibility_score
+        description: Backward compatibility with P0
+        unit: percentage
+        target: 100
+        thresholds:
+          warning: 98
+          critical: 95
+
+      - name: cross_batch_dependencies
+        description: Number of cross-batch dependencies detected
+        unit: count
+        target: 0
+        thresholds:
+          warning: 3
+          critical: 5
+
+  # Batch Deployment Metrics
+  batch_deployment:
+    enabled: true
+    collection_interval: 60s
+    retention_period: 90d
+
+    batches:
+      - name: batch1_deployment_status
+        description: Batch 1 deployment health
+        states: [deployed, deploying, failed, rolled_back]
+
+      - name: batch2_deployment_status
+        description: Batch 2 deployment health
+        states: [deployed, deploying, failed, rolled_back]
+
+      - name: batch3_deployment_status
+        description: Batch 3 deployment health
+        states: [deployed, deploying, failed, rolled_back]
+
+      - name: batch4_deployment_status
+        description: Batch 4 deployment health
+        states: [deployed, deploying, failed, rolled_back]
+
+      - name: batch5_deployment_status
+        description: Batch 5 deployment health
+        states: [deployed, deploying, failed, rolled_back]
+
+    metrics:
+      - name: deployment_time_per_batch
+        description: Time to deploy each batch
+        unit: minutes
+        target: 10
+        thresholds:
+          warning: 15
+          critical: 20
+
+      - name: rollback_frequency
+        description: Number of rollbacks per batch
+        unit: count/week
+        thresholds:
+          warning: 2
+          critical: 5
+
+      - name: deployment_success_rate
+        description: Percentage of successful batch deployments
+        unit: percentage
+        target: 98
+        thresholds:
+          warning: 95
+          critical: 90
+
+  # P1 Business Metrics
+  p1_business:
+    enabled: true
+    collection_interval: 60s
+    retention_period: 90d
+
+    kpis:
+      - name: p1_feature_adoption_rate
+        description: Percentage of users using P1 features
+        unit: percentage
+        target: 75
+        thresholds:
+          warning: 50
+          critical: 30
+
+      - name: p1_feature_success_rate
+        description: P1 feature execution success rate
+        unit: percentage
+        target: 96
+        thresholds:
+          warning: 92
+          critical: 88
+
+      - name: batch_utilization
+        description: Average utilization across all batches
+        unit: percentage
+        target: 70
+        thresholds:
+          warning: 85
+          critical: 95
+
+      - name: p0_regression_incidents
+        description: P0 regressions caused by P1
+        unit: count/week
+        target: 0
+        thresholds:
+          warning: 1
+          critical: 3
+
+# P1-Specific Alert Configuration
+alerts:
+  channels:
+    - type: github_issues
+      enabled: true
+      severity_levels: [critical, warning]
+
+    - type: github_actions
+      enabled: true
+      severity_levels: [critical]
+      workflow: .github/workflows/p1-integration.yml
+
+    - type: slack
+      enabled: false
+      webhook_url: ${SLACK_WEBHOOK_URL}
+      severity_levels: [critical, warning, info]
+      channel: "#p1-features"
+
+    - type: email
+      enabled: false
+      recipients: ${ALERT_EMAIL_RECIPIENTS}
+      severity_levels: [critical]
+
+  rules:
+    # P1 Response Time Alerts
+    - name: p1_high_response_time
+      metric: p1_response_time.p95
+      condition: greater_than
+      threshold: 2500
+      duration: 5m
+      severity: critical
+      message: "P1 features P95 response time exceeded 2500ms for 5 minutes"
+
+    # P1 Error Rate Alerts
+    - name: p1_high_error_rate
+      metric: p1_error_rate.batch_errors
+      condition: greater_than
+      threshold: 8
+      duration: 5m
+      severity: critical
+      message: "P1 batch error rate exceeded 8% for 5 minutes"
+
+    - name: p0_p1_integration_failures
+      metric: p1_error_rate.p0_p1_integration_errors
+      condition: greater_than
+      threshold: 3
+      duration: 3m
+      severity: critical
+      message: "P0+P1 integration error rate exceeded 3% for 3 minutes"
+
+    # Feature Flag Alerts
+    - name: feature_flag_evaluation_errors
+      metric: feature_flags.flag_evaluation_errors
+      condition: greater_than
+      threshold: 15
+      duration: 5m
+      severity: critical
+      message: "Feature flag evaluation errors exceeded threshold"
+
+    - name: feature_flag_slow_evaluation
+      metric: feature_flags.flag_evaluation_time
+      condition: greater_than
+      threshold: 100
+      duration: 10m
+      severity: warning
+      message: "Feature flag evaluation time exceeded 100ms"
+
+    # Integration Health Alerts
+    - name: low_p0_p1_compatibility
+      metric: integration_health.p0_p1_compatibility
+      condition: less_than
+      threshold: 95
+      duration: 10m
+      severity: critical
+      message: "P0+P1 compatibility score below 95%"
+
+    - name: backward_compatibility_degradation
+      metric: integration_health.backward_compatibility_score
+      condition: less_than
+      threshold: 98
+      duration: 5m
+      severity: critical
+      message: "Backward compatibility with P0 degraded below 98%"
+
+    - name: cross_batch_dependency_detected
+      metric: integration_health.cross_batch_dependencies
+      condition: greater_than
+      threshold: 5
+      duration: 1m
+      severity: warning
+      message: "Excessive cross-batch dependencies detected"
+
+    # Batch Deployment Alerts
+    - name: batch_deployment_failed
+      metric: batch_deployment.deployment_success_rate
+      condition: less_than
+      threshold: 95
+      duration: 5m
+      severity: critical
+      message: "Batch deployment success rate below 95%"
+
+    - name: frequent_rollbacks
+      metric: batch_deployment.rollback_frequency
+      condition: greater_than
+      threshold: 5
+      duration: 1w
+      severity: warning
+      message: "Rollback frequency exceeding threshold (5 per week)"
+
+    - name: slow_batch_deployment
+      metric: batch_deployment.deployment_time_per_batch
+      condition: greater_than
+      threshold: 20
+      duration: 1m
+      severity: warning
+      message: "Batch deployment taking longer than 20 minutes"
+
+    # Business Metrics Alerts
+    - name: low_p1_adoption
+      metric: p1_business.p1_feature_adoption_rate
+      condition: less_than
+      threshold: 50
+      duration: 24h
+      severity: warning
+      message: "P1 feature adoption rate below 50%"
+
+    - name: p0_regression_detected
+      metric: p1_business.p0_regression_incidents
+      condition: greater_than
+      threshold: 3
+      duration: 1w
+      severity: critical
+      message: "Multiple P0 regressions caused by P1 features"
+
+# P1 Dashboard Configuration
+dashboards:
+  - name: p1_overview
+    title: "P1 Features Overview"
+    refresh_interval: 30s
+    layout: grid
+
+    panels:
+      - title: "P1 Request Rate by Batch"
+        type: line_chart
+        metrics:
+          - p1_throughput.batch1_requests_per_second
+          - p1_throughput.batch2_requests_per_second
+          - p1_throughput.batch3_requests_per_second
+          - p1_throughput.batch4_requests_per_second
+          - p1_throughput.batch5_requests_per_second
+        time_range: 1h
+        position: { row: 0, col: 0, width: 12, height: 4 }
+
+      - title: "P1 Response Time (P95)"
+        type: line_chart
+        metrics:
+          - p1_response_time.p95
+        time_range: 1h
+        position: { row: 4, col: 0, width: 6, height: 4 }
+
+      - title: "P1 Error Rate by Batch"
+        type: area_chart
+        metrics:
+          - p1_error_rate.batch1_errors
+          - p1_error_rate.batch2_errors
+          - p1_error_rate.batch3_errors
+          - p1_error_rate.batch4_errors
+          - p1_error_rate.batch5_errors
+        time_range: 1h
+        position: { row: 4, col: 6, width: 6, height: 4 }
+
+      - title: "Feature Flag Status"
+        type: table
+        metrics:
+          - feature_flags.p1_batch1_enabled
+          - feature_flags.p1_batch2_enabled
+          - feature_flags.p1_batch3_enabled
+          - feature_flags.p1_batch4_enabled
+          - feature_flags.p1_batch5_enabled
+        position: { row: 8, col: 0, width: 6, height: 4 }
+
+      - title: "P0+P1 Compatibility"
+        type: gauge
+        metric: integration_health.p0_p1_compatibility
+        position: { row: 8, col: 6, width: 3, height: 3 }
+
+      - title: "P1 Feature Adoption"
+        type: gauge
+        metric: p1_business.p1_feature_adoption_rate
+        position: { row: 8, col: 9, width: 3, height: 3 }
+
+  - name: p1_batch_health
+    title: "P1 Batch Deployment Health"
+    refresh_interval: 30s
+    layout: grid
+
+    panels:
+      - title: "Batch Deployment Status"
+        type: status_grid
+        metrics:
+          - batch_deployment.batch1_deployment_status
+          - batch_deployment.batch2_deployment_status
+          - batch_deployment.batch3_deployment_status
+          - batch_deployment.batch4_deployment_status
+          - batch_deployment.batch5_deployment_status
+        position: { row: 0, col: 0, width: 12, height: 6 }
+
+      - title: "Deployment Time per Batch"
+        type: bar_chart
+        metric: batch_deployment.deployment_time_per_batch
+        time_range: 7d
+        position: { row: 6, col: 0, width: 6, height: 6 }
+
+      - title: "Rollback Frequency"
+        type: line_chart
+        metric: batch_deployment.rollback_frequency
+        time_range: 30d
+        position: { row: 6, col: 6, width: 6, height: 6 }
+
+  - name: p1_integration_health
+    title: "P0+P1 Integration Health"
+    refresh_interval: 30s
+    layout: grid
+
+    panels:
+      - title: "Integration Error Rate"
+        type: line_chart
+        metric: p1_error_rate.p0_p1_integration_errors
+        time_range: 6h
+        position: { row: 0, col: 0, width: 12, height: 6 }
+
+      - title: "Compatibility Score"
+        type: line_chart
+        metric: integration_health.p0_p1_compatibility
+        time_range: 24h
+        position: { row: 6, col: 0, width: 6, height: 6 }
+
+      - title: "Backward Compatibility"
+        type: line_chart
+        metric: integration_health.backward_compatibility_score
+        time_range: 24h
+        position: { row: 6, col: 6, width: 6, height: 6 }
+
+      - title: "P0 Regression Incidents"
+        type: counter
+        metric: p1_business.p0_regression_incidents
+        time_range: 7d
+        position: { row: 12, col: 0, width: 4, height: 4 }
+
+      - title: "Cross-Batch Dependencies"
+        type: gauge
+        metric: integration_health.cross_batch_dependencies
+        position: { row: 12, col: 4, width: 4, height: 4 }
+
+      - title: "Batch Isolation Score"
+        type: gauge
+        metric: integration_health.batch_isolation_score
+        position: { row: 12, col: 8, width: 4, height: 4 }
+
+# P1 Logging Configuration
+logging:
+  level: info
+  format: json
+
+  categories:
+    - name: p1_access_logs
+      retention: 7d
+      filter:
+        path_prefix: /api/v1/p1/
+
+    - name: p1_error_logs
+      retention: 30d
+      filter:
+        severity: [error, critical]
+
+    - name: feature_flag_logs
+      retention: 14d
+      filter:
+        component: feature_flags
+
+    - name: batch_deployment_logs
+      retention: 90d
+      filter:
+        component: batch_deployment
+
+# P1 Health Check Configuration
+health_checks:
+  interval: 30s
+  timeout: 10s
+
+  endpoints:
+    - name: p1_batch1_health
+      url: /health/p1/batch1
+      expected_status: 200
+
+    - name: p1_batch2_health
+      url: /health/p1/batch2
+      expected_status: 200
+
+    - name: p1_batch3_health
+      url: /health/p1/batch3
+      expected_status: 200
+
+    - name: p1_batch4_health
+      url: /health/p1/batch4
+      expected_status: 200
+
+    - name: p1_batch5_health
+      url: /health/p1/batch5
+      expected_status: 200
+
+    - name: p0_p1_integration_health
+      url: /health/integration/p0-p1
+      expected_status: 200
+
+    - name: feature_flags_health
+      url: /health/feature-flags
+      expected_status: 200
+
+# Export Configuration
+exports:
+  - type: prometheus
+    enabled: true
+    port: 9091
+    path: /metrics/p1
+
+  - type: json
+    enabled: true
+    destination: /var/log/p1-metrics/
+    rotation: daily
+    retention: 30d
+
+  - type: grafana
+    enabled: false
+    dashboard_url: ${GRAFANA_DASHBOARD_URL}
+    api_key: ${GRAFANA_API_KEY}

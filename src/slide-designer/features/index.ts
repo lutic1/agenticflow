@@ -246,3 +246,44 @@ export type {
   ImportOptions,
   SlideConversion
 } from './design-import';
+
+// P2.2: AR Presentation Mode (WebXR)
+export { ARPresentationManager, arPresentationManager } from './ar-presentation';
+export type {
+  ARSession,
+  ARParticipant,
+  Vector3D,
+  Quaternion,
+  ARDevice,
+  ARCapabilities,
+  ARAnchoredObject,
+  ARAnchor,
+  ARContent,
+  ARSettings,
+  ARGesture,
+  ARMarker,
+  ARHitTestResult,
+  ARSpatialAudio,
+  ARRecording
+} from './ar-presentation';
+
+// P2.8: Blockchain Presentation NFTs
+export { BlockchainNFTManager, blockchainNFTManager } from './blockchain-nft';
+export type {
+  PresentationNFT,
+  BlockchainNetwork,
+  NFTCreator,
+  NFTOwner,
+  NFTMetadata,
+  NFTAttribute,
+  NFTProperties,
+  RoyaltyConfig,
+  NFTPricing,
+  AuctionConfig,
+  NFTListing,
+  WalletConnection,
+  MintRequest,
+  NFTTransaction,
+  IPFSUpload,
+  SmartContractConfig
+} from './blockchain-nft';

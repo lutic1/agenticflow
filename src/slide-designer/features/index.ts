@@ -157,3 +157,43 @@ export type {
   OAuthClient,
   RateLimitStatus
 } from './api-access';
+
+// P2.4: Interactive Elements (Polls, Quizzes, Q&A)
+export { InteractiveElementsManager, interactiveElementsManager } from './interactive-elements';
+export type {
+  Poll,
+  PollOption,
+  Quiz,
+  QuizQuestion,
+  QuizOption,
+  QuizAttempt,
+  QuizAnswer,
+  QnASession,
+  Question,
+  FeedbackForm,
+  FeedbackField,
+  FeedbackResponse,
+  InteractionAnalytics
+} from './interactive-elements';
+
+// P2.5: Slide Themes Marketplace
+export { ThemesMarketplaceManager, themesMarketplaceManager } from './themes-marketplace';
+export type {
+  Theme,
+  ThemeCategory,
+  ThemeAuthor,
+  ThemePrice,
+  ThemePreview,
+  ThemeColors,
+  ThemeFonts,
+  ThemeFont,
+  ThemeLayout,
+  ThemeAssets,
+  ThemeMetadata,
+  ThemeChangelog,
+  ThemeReview,
+  InstalledTheme,
+  ThemeSearchOptions,
+  ThemePurchase,
+  MarketplaceStats
+} from './themes-marketplace';

@@ -29,6 +29,7 @@
   "license": "MIT",
   "dependencies": {
     "@anthropic-ai/claude-code": "^2.0.35",
+    "@google/generative-ai": "^0.21.0",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
     "@vitejs/plugin-react-swc": "^4.2.0",

@@ -1,0 +1,68 @@
+<div class="slide gradient-bg {{animationClass}}">
+  <div class="slide-content">
+    {{#if title}}
+    <h2 class="slide-heading">{{title}}</h2>
+    {{/if}}
+
+    {{#if subtitle}}
+    <p class="slide-subtitle">{{subtitle}}</p>
+    {{/if}}
+
+    {{#if content}}
+    <div class="closing-content">
+      {{{content}}}
+    </div>
+    {{/if}}
+
+    {{#if itemsHTML}}
+    <div class="contact-info">
+      {{{itemsHTML}}}
+    </div>
+    {{/if}}
+
+    {{#if footer}}
+    <div class="slide-footer">{{footer}}</div>
+    {{/if}}
+  </div>
+
+  <style>
+    .closing-content {
+      text-align: center;
+      font-size: 1.5rem;
+      margin: 3rem 0;
+      color: rgba(255, 255, 255, 0.95);
+    }
+
+    .contact-info {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      flex-wrap: wrap;
+      margin: 3rem 0;
+    }
+
+    .contact-info .content-item {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      padding: 1.5rem 2.5rem;
+      min-width: 250px;
+    }
+
+    .contact-info .item-icon {
+      color: white;
+      margin: 0 auto 1rem;
+    }
+
+    .contact-info .item-title {
+      color: white;
+      font-size: 1.125rem;
+    }
+
+    .contact-info .item-text {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1rem;
+    }
+  </style>
+</div>

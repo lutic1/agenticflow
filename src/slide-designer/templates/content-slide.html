@@ -1,0 +1,23 @@
+<div class="slide {{animationClass}}">
+  <div class="slide-content">
+    {{#if title}}
+    <h2 class="slide-heading">{{title}}</h2>
+    {{/if}}
+
+    {{#if content}}
+    <div class="slide-text">
+      {{{content}}}
+    </div>
+    {{/if}}
+
+    {{#if itemsHTML}}
+    <div class="content-items layout-{{layout}}">
+      {{{itemsHTML}}}
+    </div>
+    {{/if}}
+
+    {{#if footer}}
+    <div class="slide-footer">{{footer}}</div>
+    {{/if}}
+  </div>
+</div>

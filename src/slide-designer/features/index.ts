@@ -94,3 +94,39 @@ export type {
   HeatmapData,
   AnalyticsSummary
 } from './analytics';
+
+// P1.9: Collaboration Features
+export { CollaborationManager, collaborationManager } from './collaboration';
+export type {
+  Collaborator,
+  Comment,
+  CommentReply,
+  PresenceUpdate,
+  CollaborationSession
+} from './collaboration';
+
+// P1.15: Live Presentation Mode
+export { LivePresentationManager, livePresentationManager } from './live-presentation';
+export type {
+  LiveSession,
+  Presenter,
+  Attendee,
+  Question,
+  Poll,
+  PollOption,
+  Reaction,
+  LiveControlMessage
+} from './live-presentation';
+
+// P1.14: Mobile App (React Native)
+export { MobileAppManager, mobileAppManager } from './mobile-app';
+export type {
+  MobileAppConfig,
+  SplashScreenConfig,
+  AppIconConfig,
+  MobilePermissions,
+  MobileFeatures,
+  ResponsiveBreakpoints,
+  OfflineCache,
+  CachedPresentation
+} from './mobile-app';

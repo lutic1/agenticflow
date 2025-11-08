@@ -31,3 +31,18 @@ export {
   type ContrastCheck,
   type ColorValidation
 } from './color-engine';
+
+export {
+  ChartRenderer,
+  chartRenderer,
+  type ChartConfig,
+  type ChartTheme
+} from './chart-renderer';
+
+export {
+  MasterSlideManager,
+  masterSlideManager,
+  type MasterSlide,
+  type SlideOverrides,
+  type BrandKit
+} from './master-slide-manager';

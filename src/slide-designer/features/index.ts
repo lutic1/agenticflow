@@ -39,3 +39,27 @@ export type {
   DataImportResult,
   ImportOptions
 } from './data-import';
+
+// P1.3: Speaker Notes UI
+export { SpeakerNotesManager, speakerNotesManager } from './speaker-notes';
+export type {
+  SpeakerNote,
+  PresenterView,
+  TimerSettings
+} from './speaker-notes';
+
+// P1.8: Custom Font Upload
+export { CustomFontManager, customFontManager } from './custom-fonts';
+export type {
+  CustomFont,
+  FontUploadResult,
+  FontValidation
+} from './custom-fonts';
+
+// P1.11: AI Image Generation (DALL-E 3)
+export { AIImageGenerationManager, aiImageGenerator } from './ai-image-generation';
+export type {
+  ImageGenerationRequest,
+  GeneratedImage,
+  ImageGenerationResult
+} from './ai-image-generation';

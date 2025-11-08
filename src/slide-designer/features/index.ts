@@ -130,3 +130,160 @@ export type {
   OfflineCache,
   CachedPresentation
 } from './mobile-app';
+
+// P2.3: Voice Narration (TTS)
+export { VoiceNarrationManager, voiceNarrationManager } from './voice-narration';
+export type {
+  VoiceProfile,
+  NarrationSettings,
+  SlideNarration,
+  NarrationTrack,
+  SpeechSynthesisOptions
+} from './voice-narration';
+
+// P2.6: API Access for Developers
+export { APIAccessManager, apiAccessManager } from './api-access';
+export type {
+  APIKey,
+  APIScope,
+  RateLimit,
+  APIRequest,
+  Webhook,
+  WebhookEvent,
+  APIEndpoint,
+  APIParameter,
+  APISchema,
+  APIExample,
+  OAuthClient,
+  RateLimitStatus
+} from './api-access';
+
+// P2.4: Interactive Elements (Polls, Quizzes, Q&A)
+export { InteractiveElementsManager, interactiveElementsManager } from './interactive-elements';
+export type {
+  Poll,
+  PollOption,
+  Quiz,
+  QuizQuestion,
+  QuizOption,
+  QuizAttempt,
+  QuizAnswer,
+  QnASession,
+  Question,
+  FeedbackForm,
+  FeedbackField,
+  FeedbackResponse,
+  InteractionAnalytics
+} from './interactive-elements';
+
+// P2.5: Slide Themes Marketplace
+export { ThemesMarketplaceManager, themesMarketplaceManager } from './themes-marketplace';
+export type {
+  Theme,
+  ThemeCategory,
+  ThemeAuthor,
+  ThemePrice,
+  ThemePreview,
+  ThemeColors,
+  ThemeFonts,
+  ThemeFont,
+  ThemeLayout,
+  ThemeAssets,
+  ThemeMetadata,
+  ThemeChangelog,
+  ThemeReview,
+  InstalledTheme,
+  ThemeSearchOptions,
+  ThemePurchase,
+  MarketplaceStats
+} from './themes-marketplace';
+
+// P2.1: 3D Animations (Three.js)
+export { ThreeDAnimationsManager, threeDAnimationsManager } from './3d-animations';
+export type {
+  Scene3D,
+  Camera3D,
+  Vector3,
+  Object3D,
+  Material3D,
+  Geometry3D,
+  Light3D,
+  ParticleConfig,
+  Text3DConfig,
+  Animation3D,
+  AnimationKeyframe,
+  SceneSettings,
+  ModelLoader,
+  RenderConfig
+} from './3d-animations';
+
+// P2.7: Figma/Sketch Import
+export { DesignImportManager, designImportManager } from './design-import';
+export type {
+  DesignImport,
+  DesignPage,
+  DesignFrame,
+  DesignLayer,
+  LayerType,
+  Fill,
+  Gradient,
+  GradientStop,
+  Stroke,
+  Effect,
+  Constraints,
+  TextProperties,
+  ImageProperties,
+  VectorProperties,
+  ExportSettings,
+  ImportedAsset,
+  DesignStyles,
+  ColorStyle,
+  TextStyle,
+  EffectStyle,
+  ImportMetadata,
+  FigmaConfig,
+  SketchConfig,
+  ImportOptions,
+  SlideConversion
+} from './design-import';
+
+// P2.2: AR Presentation Mode (WebXR)
+export { ARPresentationManager, arPresentationManager } from './ar-presentation';
+export type {
+  ARSession,
+  ARParticipant,
+  Vector3D,
+  Quaternion,
+  ARDevice,
+  ARCapabilities,
+  ARAnchoredObject,
+  ARAnchor,
+  ARContent,
+  ARSettings,
+  ARGesture,
+  ARMarker,
+  ARHitTestResult,
+  ARSpatialAudio,
+  ARRecording
+} from './ar-presentation';
+
+// P2.8: Blockchain Presentation NFTs
+export { BlockchainNFTManager, blockchainNFTManager } from './blockchain-nft';
+export type {
+  PresentationNFT,
+  BlockchainNetwork,
+  NFTCreator,
+  NFTOwner,
+  NFTMetadata,
+  NFTAttribute,
+  NFTProperties,
+  RoyaltyConfig,
+  NFTPricing,
+  AuctionConfig,
+  NFTListing,
+  WalletConnection,
+  MintRequest,
+  NFTTransaction,
+  IPFSUpload,
+  SmartContractConfig
+} from './blockchain-nft';

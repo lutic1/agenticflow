@@ -197,3 +197,52 @@ export type {
   ThemePurchase,
   MarketplaceStats
 } from './themes-marketplace';
+
+// P2.1: 3D Animations (Three.js)
+export { ThreeDAnimationsManager, threeDAnimationsManager } from './3d-animations';
+export type {
+  Scene3D,
+  Camera3D,
+  Vector3,
+  Object3D,
+  Material3D,
+  Geometry3D,
+  Light3D,
+  ParticleConfig,
+  Text3DConfig,
+  Animation3D,
+  AnimationKeyframe,
+  SceneSettings,
+  ModelLoader,
+  RenderConfig
+} from './3d-animations';
+
+// P2.7: Figma/Sketch Import
+export { DesignImportManager, designImportManager } from './design-import';
+export type {
+  DesignImport,
+  DesignPage,
+  DesignFrame,
+  DesignLayer,
+  LayerType,
+  Fill,
+  Gradient,
+  GradientStop,
+  Stroke,
+  Effect,
+  Constraints,
+  TextProperties,
+  ImageProperties,
+  VectorProperties,
+  ExportSettings,
+  ImportedAsset,
+  DesignStyles,
+  ColorStyle,
+  TextStyle,
+  EffectStyle,
+  ImportMetadata,
+  FigmaConfig,
+  SketchConfig,
+  ImportOptions,
+  SlideConversion
+} from './design-import';

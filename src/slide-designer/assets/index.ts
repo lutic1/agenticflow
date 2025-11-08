@@ -19,3 +19,19 @@ export type {
   LayoutVariation,
   Theme
 } from './theme-manager';
+
+// P1.1: Expanded Icon Library (100+ icons)
+export { IconLibrary, iconLibrary } from './icon-library';
+export type {
+  IconDefinition as IconLibraryDefinition,
+  IconCategory,
+  IconSearchOptions as IconLibrarySearchOptions
+} from './icon-library';
+
+// P1.2: Background Patterns & Textures (20 patterns)
+export { BackgroundPatternLibrary, backgroundPatternLibrary } from './background-patterns';
+export type {
+  BackgroundPattern,
+  PatternCategory,
+  PatternOptions
+} from './background-patterns';

@@ -130,3 +130,30 @@ export type {
   OfflineCache,
   CachedPresentation
 } from './mobile-app';
+
+// P2.3: Voice Narration (TTS)
+export { VoiceNarrationManager, voiceNarrationManager } from './voice-narration';
+export type {
+  VoiceProfile,
+  NarrationSettings,
+  SlideNarration,
+  NarrationTrack,
+  SpeechSynthesisOptions
+} from './voice-narration';
+
+// P2.6: API Access for Developers
+export { APIAccessManager, apiAccessManager } from './api-access';
+export type {
+  APIKey,
+  APIScope,
+  RateLimit,
+  APIRequest,
+  Webhook,
+  WebhookEvent,
+  APIEndpoint,
+  APIParameter,
+  APISchema,
+  APIExample,
+  OAuthClient,
+  RateLimitStatus
+} from './api-access';

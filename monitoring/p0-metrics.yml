@@ -1,0 +1,462 @@
+# P0 Integration Monitoring Configuration
+# This configuration defines key metrics, alert thresholds, and dashboard layout
+# for monitoring the P0 integration system performance and health
+
+version: "1.0"
+monitoring_scope: p0-integration
+
+# Metrics Collection Configuration
+metrics:
+  # Response Time Metrics
+  response_time:
+    enabled: true
+    collection_interval: 30s
+    retention_period: 30d
+
+    endpoints:
+      - name: api_gateway
+        path: /api/v1/*
+        method: ALL
+        percentiles: [50, 90, 95, 99]
+
+      - name: swarm_coordination
+        path: /swarm/*
+        method: ALL
+        percentiles: [50, 90, 95, 99]
+
+      - name: task_orchestration
+        path: /tasks/*
+        method: ALL
+        percentiles: [50, 90, 95, 99]
+
+    thresholds:
+      p50_warning: 100ms
+      p50_critical: 200ms
+      p90_warning: 500ms
+      p90_critical: 1000ms
+      p95_warning: 1000ms
+      p95_critical: 2000ms
+      p99_warning: 2000ms
+      p99_critical: 5000ms
+
+  # Error Rate Metrics
+  error_rate:
+    enabled: true
+    collection_interval: 30s
+    retention_period: 30d
+
+    categories:
+      - name: http_4xx
+        description: Client errors (400-499)
+        severity: warning
+
+      - name: http_5xx
+        description: Server errors (500-599)
+        severity: critical
+
+      - name: timeout_errors
+        description: Request timeout errors
+        severity: critical
+
+      - name: validation_errors
+        description: Input validation failures
+        severity: warning
+
+      - name: swarm_coordination_errors
+        description: Agent coordination failures
+        severity: critical
+
+    thresholds:
+      http_4xx_warning: 5%
+      http_4xx_critical: 10%
+      http_5xx_warning: 1%
+      http_5xx_critical: 5%
+      timeout_warning: 2%
+      timeout_critical: 5%
+      validation_warning: 3%
+      validation_critical: 8%
+      swarm_coordination_warning: 2%
+      swarm_coordination_critical: 5%
+
+  # Throughput Metrics
+  throughput:
+    enabled: true
+    collection_interval: 30s
+    retention_period: 30d
+
+    measurements:
+      - name: requests_per_second
+        description: Total requests per second
+        unit: req/s
+        aggregation: sum
+
+      - name: tasks_per_minute
+        description: Tasks processed per minute
+        unit: tasks/min
+        aggregation: sum
+
+      - name: agents_spawned
+        description: Number of agents spawned
+        unit: agents/min
+        aggregation: sum
+
+      - name: swarm_operations
+        description: Swarm coordination operations
+        unit: ops/s
+        aggregation: sum
+
+    thresholds:
+      requests_per_second_min: 10
+      requests_per_second_max: 1000
+      tasks_per_minute_min: 5
+      tasks_per_minute_max: 500
+      agents_spawned_max: 100
+      swarm_operations_max: 200
+
+  # Resource Utilization Metrics
+  resources:
+    enabled: true
+    collection_interval: 60s
+    retention_period: 30d
+
+    components:
+      - name: cpu_usage
+        description: CPU utilization percentage
+        unit: percentage
+        thresholds:
+          warning: 70
+          critical: 85
+
+      - name: memory_usage
+        description: Memory utilization percentage
+        unit: percentage
+        thresholds:
+          warning: 75
+          critical: 90
+
+      - name: disk_usage
+        description: Disk utilization percentage
+        unit: percentage
+        thresholds:
+          warning: 80
+          critical: 90
+
+      - name: network_io
+        description: Network I/O bandwidth
+        unit: mbps
+        thresholds:
+          warning: 800
+          critical: 950
+
+      - name: active_connections
+        description: Number of active connections
+        unit: count
+        thresholds:
+          warning: 1000
+          critical: 2000
+
+  # Business Metrics
+  business:
+    enabled: true
+    collection_interval: 60s
+    retention_period: 90d
+
+    kpis:
+      - name: task_success_rate
+        description: Percentage of successfully completed tasks
+        unit: percentage
+        target: 95
+        thresholds:
+          warning: 90
+          critical: 85
+
+      - name: agent_utilization
+        description: Percentage of agent capacity utilized
+        unit: percentage
+        target: 70
+        thresholds:
+          warning: 90
+          critical: 95
+
+      - name: swarm_efficiency
+        description: Swarm coordination efficiency score
+        unit: score
+        target: 85
+        thresholds:
+          warning: 70
+          critical: 60
+
+      - name: deployment_frequency
+        description: Number of deployments per day
+        unit: count/day
+        target: 5
+
+# Alert Configuration
+alerts:
+  channels:
+    - type: github_issues
+      enabled: true
+      severity_levels: [critical, warning]
+
+    - type: github_actions
+      enabled: true
+      severity_levels: [critical]
+      workflow: .github/workflows/p0-integration.yml
+
+    - type: slack
+      enabled: false
+      webhook_url: ${SLACK_WEBHOOK_URL}
+      severity_levels: [critical, warning, info]
+
+    - type: email
+      enabled: false
+      recipients: ${ALERT_EMAIL_RECIPIENTS}
+      severity_levels: [critical]
+
+  rules:
+    # Response Time Alerts
+    - name: high_response_time
+      metric: response_time.p95
+      condition: greater_than
+      threshold: 2000
+      duration: 5m
+      severity: critical
+      message: "P95 response time exceeded 2000ms for 5 minutes"
+
+    - name: elevated_response_time
+      metric: response_time.p90
+      condition: greater_than
+      threshold: 1000
+      duration: 10m
+      severity: warning
+      message: "P90 response time exceeded 1000ms for 10 minutes"
+
+    # Error Rate Alerts
+    - name: high_error_rate
+      metric: error_rate.http_5xx
+      condition: greater_than
+      threshold: 5
+      duration: 5m
+      severity: critical
+      message: "Server error rate exceeded 5% for 5 minutes"
+
+    - name: elevated_error_rate
+      metric: error_rate.http_5xx
+      condition: greater_than
+      threshold: 1
+      duration: 10m
+      severity: warning
+      message: "Server error rate exceeded 1% for 10 minutes"
+
+    - name: swarm_coordination_failures
+      metric: error_rate.swarm_coordination_errors
+      condition: greater_than
+      threshold: 5
+      duration: 3m
+      severity: critical
+      message: "Swarm coordination error rate exceeded 5% for 3 minutes"
+
+    # Throughput Alerts
+    - name: low_throughput
+      metric: throughput.requests_per_second
+      condition: less_than
+      threshold: 10
+      duration: 10m
+      severity: warning
+      message: "Request throughput below 10 req/s for 10 minutes"
+
+    - name: high_throughput
+      metric: throughput.requests_per_second
+      condition: greater_than
+      threshold: 1000
+      duration: 5m
+      severity: warning
+      message: "Request throughput exceeded 1000 req/s - scaling may be needed"
+
+    # Resource Alerts
+    - name: high_cpu_usage
+      metric: resources.cpu_usage
+      condition: greater_than
+      threshold: 85
+      duration: 10m
+      severity: critical
+      message: "CPU usage exceeded 85% for 10 minutes"
+
+    - name: high_memory_usage
+      metric: resources.memory_usage
+      condition: greater_than
+      threshold: 90
+      duration: 10m
+      severity: critical
+      message: "Memory usage exceeded 90% for 10 minutes"
+
+    - name: disk_space_low
+      metric: resources.disk_usage
+      condition: greater_than
+      threshold: 90
+      duration: 5m
+      severity: critical
+      message: "Disk usage exceeded 90%"
+
+    # Business Metrics Alerts
+    - name: low_task_success_rate
+      metric: business.task_success_rate
+      condition: less_than
+      threshold: 90
+      duration: 15m
+      severity: warning
+      message: "Task success rate below 90% for 15 minutes"
+
+    - name: critical_task_success_rate
+      metric: business.task_success_rate
+      condition: less_than
+      threshold: 85
+      duration: 5m
+      severity: critical
+      message: "Task success rate below 85% for 5 minutes"
+
+# Dashboard Configuration
+dashboards:
+  - name: p0_overview
+    title: "P0 Integration Overview"
+    refresh_interval: 30s
+    layout: grid
+
+    panels:
+      - title: "Request Rate"
+        type: line_chart
+        metrics:
+          - throughput.requests_per_second
+        time_range: 1h
+        position: { row: 0, col: 0, width: 6, height: 4 }
+
+      - title: "Response Time (P95)"
+        type: line_chart
+        metrics:
+          - response_time.p95
+        time_range: 1h
+        position: { row: 0, col: 6, width: 6, height: 4 }
+
+      - title: "Error Rate"
+        type: area_chart
+        metrics:
+          - error_rate.http_4xx
+          - error_rate.http_5xx
+        time_range: 1h
+        position: { row: 4, col: 0, width: 6, height: 4 }
+
+      - title: "Active Agents"
+        type: line_chart
+        metrics:
+          - throughput.agents_spawned
+        time_range: 1h
+        position: { row: 4, col: 6, width: 6, height: 4 }
+
+      - title: "CPU Usage"
+        type: gauge
+        metric: resources.cpu_usage
+        position: { row: 8, col: 0, width: 3, height: 3 }
+
+      - title: "Memory Usage"
+        type: gauge
+        metric: resources.memory_usage
+        position: { row: 8, col: 3, width: 3, height: 3 }
+
+      - title: "Task Success Rate"
+        type: gauge
+        metric: business.task_success_rate
+        position: { row: 8, col: 6, width: 3, height: 3 }
+
+      - title: "Swarm Efficiency"
+        type: gauge
+        metric: business.swarm_efficiency
+        position: { row: 8, col: 9, width: 3, height: 3 }
+
+  - name: p0_detailed
+    title: "P0 Integration Detailed Metrics"
+    refresh_interval: 30s
+    layout: grid
+
+    panels:
+      - title: "Response Time Percentiles"
+        type: line_chart
+        metrics:
+          - response_time.p50
+          - response_time.p90
+          - response_time.p95
+          - response_time.p99
+        time_range: 6h
+        position: { row: 0, col: 0, width: 12, height: 6 }
+
+      - title: "Error Distribution"
+        type: stacked_bar_chart
+        metrics:
+          - error_rate.http_4xx
+          - error_rate.http_5xx
+          - error_rate.timeout_errors
+          - error_rate.validation_errors
+          - error_rate.swarm_coordination_errors
+        time_range: 6h
+        position: { row: 6, col: 0, width: 12, height: 6 }
+
+      - title: "Resource Utilization Trends"
+        type: area_chart
+        metrics:
+          - resources.cpu_usage
+          - resources.memory_usage
+          - resources.network_io
+        time_range: 24h
+        position: { row: 12, col: 0, width: 12, height: 6 }
+
+# Logging Configuration
+logging:
+  level: info
+  format: json
+
+  categories:
+    - name: access_logs
+      retention: 7d
+
+    - name: error_logs
+      retention: 30d
+
+    - name: performance_logs
+      retention: 14d
+
+    - name: audit_logs
+      retention: 90d
+
+# Health Check Configuration
+health_checks:
+  interval: 30s
+  timeout: 10s
+
+  endpoints:
+    - name: api_health
+      url: /health
+      expected_status: 200
+
+    - name: swarm_health
+      url: /swarm/health
+      expected_status: 200
+
+    - name: database_health
+      url: /health/database
+      expected_status: 200
+
+    - name: cache_health
+      url: /health/cache
+      expected_status: 200
+
+# Export Configuration
+exports:
+  - type: prometheus
+    enabled: true
+    port: 9090
+    path: /metrics
+
+  - type: json
+    enabled: true
+    destination: /var/log/p0-metrics/
+    rotation: daily
+    retention: 30d

@@ -1,0 +1,905 @@
+{
+  "dashboard": {
+    "title": "Agentic Flow - P0 Features Monitoring",
+    "tags": ["p0", "sre", "production"],
+    "timezone": "browser",
+    "schemaVersion": 16,
+    "version": 1,
+    "refresh": "10s",
+    "time": {
+      "from": "now-6h",
+      "to": "now"
+    },
+    "panels": [
+      {
+        "id": 1,
+        "title": "System Health Overview",
+        "type": "stat",
+        "gridPos": {
+          "x": 0,
+          "y": 0,
+          "w": 24,
+          "h": 4
+        },
+        "targets": [
+          {
+            "expr": "min(up{job=~\"agent-booster|reasoningbank|router|quic|agentdb|swarm-coordinator\"})",
+            "legendFormat": "Overall Health",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "red"},
+                {"value": 0.9995, "color": "yellow"},
+                {"value": 0.9999, "color": "green"}
+              ]
+            },
+            "mappings": [
+              {"type": "value", "value": "1", "text": "Healthy"},
+              {"type": "value", "value": "0", "text": "Down"}
+            ],
+            "unit": "percentunit"
+          }
+        }
+      },
+      {
+        "id": 2,
+        "title": "Agent Booster - Operation Latency",
+        "type": "graph",
+        "gridPos": {
+          "x": 0,
+          "y": 4,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.50, rate(agent_booster_operation_duration_seconds_bucket[5m]))",
+            "legendFormat": "p50",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.95, rate(agent_booster_operation_duration_seconds_bucket[5m]))",
+            "legendFormat": "p95 (SLO: 5ms)",
+            "refId": "B"
+          },
+          {
+            "expr": "histogram_quantile(0.99, rate(agent_booster_operation_duration_seconds_bucket[5m]))",
+            "legendFormat": "p99 (SLO: 10ms)",
+            "refId": "C"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "ms",
+            "label": "Latency"
+          }
+        ],
+        "alert": {
+          "name": "Agent Booster - High Latency",
+          "conditions": [
+            {
+              "evaluator": {
+                "params": [0.005],
+                "type": "gt"
+              },
+              "query": {
+                "params": ["B", "5m", "now"]
+              },
+              "reducer": {
+                "params": [],
+                "type": "avg"
+              },
+              "type": "query"
+            }
+          ],
+          "executionErrorState": "alerting",
+          "frequency": "1m",
+          "handler": 1,
+          "noDataState": "no_data",
+          "notifications": [
+            {"uid": "pagerduty-p0"}
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "title": "Agent Booster - Throughput",
+        "type": "graph",
+        "gridPos": {
+          "x": 12,
+          "y": 4,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "rate(agent_booster_operations_total[1m])",
+            "legendFormat": "Operations/sec (SLO: ≥1000)",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "ops",
+            "label": "Throughput"
+          }
+        ],
+        "alert": {
+          "name": "Agent Booster - Low Throughput",
+          "conditions": [
+            {
+              "evaluator": {
+                "params": [1000],
+                "type": "lt"
+              },
+              "query": {
+                "params": ["A", "5m", "now"]
+              },
+              "reducer": {
+                "params": [],
+                "type": "avg"
+              },
+              "type": "query"
+            }
+          ],
+          "frequency": "1m",
+          "handler": 1,
+          "notifications": [
+            {"uid": "slack-alerts"}
+          ]
+        }
+      },
+      {
+        "id": 4,
+        "title": "Agent Booster - Success Rate",
+        "type": "stat",
+        "gridPos": {
+          "x": 0,
+          "y": 12,
+          "w": 6,
+          "h": 4
+        },
+        "targets": [
+          {
+            "expr": "sum(rate(agent_booster_operations_total{status=\"success\"}[5m])) / sum(rate(agent_booster_operations_total[5m]))",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "red"},
+                {"value": 0.995, "color": "yellow"},
+                {"value": 0.999, "color": "green"}
+              ]
+            },
+            "unit": "percentunit",
+            "decimals": 3
+          }
+        }
+      },
+      {
+        "id": 5,
+        "title": "ReasoningBank - Query Latency",
+        "type": "graph",
+        "gridPos": {
+          "x": 6,
+          "y": 12,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.50, rate(reasoningbank_query_duration_seconds_bucket[5m]))",
+            "legendFormat": "p50",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.95, rate(reasoningbank_query_duration_seconds_bucket[5m]))",
+            "legendFormat": "p95 (SLO: 50ms)",
+            "refId": "B"
+          },
+          {
+            "expr": "histogram_quantile(0.99, rate(reasoningbank_query_duration_seconds_bucket[5m]))",
+            "legendFormat": "p99 (SLO: 100ms)",
+            "refId": "C"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "ms",
+            "label": "Latency"
+          }
+        ],
+        "alert": {
+          "name": "ReasoningBank - High Query Latency",
+          "conditions": [
+            {
+              "evaluator": {
+                "params": [0.05],
+                "type": "gt"
+              },
+              "query": {
+                "params": ["B", "5m", "now"]
+              },
+              "reducer": {
+                "params": [],
+                "type": "avg"
+              },
+              "type": "query"
+            }
+          ],
+          "frequency": "1m",
+          "handler": 1,
+          "notifications": [
+            {"uid": "pagerduty-p1"}
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "title": "ReasoningBank - Search Accuracy",
+        "type": "stat",
+        "gridPos": {
+          "x": 18,
+          "y": 12,
+          "w": 6,
+          "h": 4
+        },
+        "targets": [
+          {
+            "expr": "avg(reasoningbank_search_accuracy_score)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "red"},
+                {"value": 0.90, "color": "yellow"},
+                {"value": 0.95, "color": "green"}
+              ]
+            },
+            "unit": "percentunit",
+            "max": 1,
+            "min": 0
+          }
+        }
+      },
+      {
+        "id": 7,
+        "title": "Multi-Model Router - Request Success Rate",
+        "type": "graph",
+        "gridPos": {
+          "x": 0,
+          "y": 20,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "sum(rate(router_requests_total{status=\"success\"}[5m])) / sum(rate(router_requests_total[5m]))",
+            "legendFormat": "Success Rate (SLO: ≥99.5%)",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "percentunit",
+            "label": "Success Rate",
+            "max": 1,
+            "min": 0.99
+          }
+        ],
+        "alert": {
+          "name": "Router - Low Success Rate",
+          "conditions": [
+            {
+              "evaluator": {
+                "params": [0.995],
+                "type": "lt"
+              },
+              "query": {
+                "params": ["A", "5m", "now"]
+              },
+              "reducer": {
+                "params": [],
+                "type": "avg"
+              },
+              "type": "query"
+            }
+          ],
+          "frequency": "1m",
+          "handler": 1,
+          "notifications": [
+            {"uid": "pagerduty-p1"}
+          ]
+        }
+      },
+      {
+        "id": 8,
+        "title": "Multi-Model Router - Cost Savings",
+        "type": "stat",
+        "gridPos": {
+          "x": 12,
+          "y": 20,
+          "w": 6,
+          "h": 4
+        },
+        "targets": [
+          {
+            "expr": "(router_baseline_cost - router_actual_cost) / router_baseline_cost",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "red"},
+                {"value": 0.70, "color": "yellow"},
+                {"value": 0.85, "color": "green"}
+              ]
+            },
+            "unit": "percentunit",
+            "decimals": 1
+          }
+        }
+      },
+      {
+        "id": 9,
+        "title": "Multi-Model Router - Daily Spend",
+        "type": "graph",
+        "gridPos": {
+          "x": 18,
+          "y": 20,
+          "w": 6,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "sum(increase(router_cost_usd[1d]))",
+            "legendFormat": "Daily Cost",
+            "refId": "A"
+          },
+          {
+            "expr": "5",
+            "legendFormat": "Budget Alert ($150/month = $5/day)",
+            "refId": "B"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "currencyUSD",
+            "label": "Cost"
+          }
+        ],
+        "alert": {
+          "name": "Router - Cost Budget Exceeded",
+          "conditions": [
+            {
+              "evaluator": {
+                "params": [6.67],
+                "type": "gt"
+              },
+              "query": {
+                "params": ["A", "1d", "now"]
+              },
+              "reducer": {
+                "params": [],
+                "type": "avg"
+              },
+              "type": "query"
+            }
+          ],
+          "frequency": "6h",
+          "handler": 1,
+          "notifications": [
+            {"uid": "slack-alerts"}
+          ]
+        }
+      },
+      {
+        "id": 10,
+        "title": "QUIC Transport - Message Latency (RTT)",
+        "type": "graph",
+        "gridPos": {
+          "x": 0,
+          "y": 28,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.50, rate(quic_message_rtt_seconds_bucket[5m]))",
+            "legendFormat": "p50",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.95, rate(quic_message_rtt_seconds_bucket[5m]))",
+            "legendFormat": "p95 (SLO: 15ms)",
+            "refId": "B"
+          },
+          {
+            "expr": "histogram_quantile(0.99, rate(quic_message_rtt_seconds_bucket[5m]))",
+            "legendFormat": "p99 (SLO: 30ms)",
+            "refId": "C"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "ms",
+            "label": "RTT"
+          }
+        ],
+        "alert": {
+          "name": "QUIC - High Latency",
+          "conditions": [
+            {
+              "evaluator": {
+                "params": [0.015],
+                "type": "gt"
+              },
+              "query": {
+                "params": ["B", "5m", "now"]
+              },
+              "reducer": {
+                "params": [],
+                "type": "avg"
+              },
+              "type": "query"
+            }
+          ],
+          "frequency": "1m",
+          "handler": 1,
+          "notifications": [
+            {"uid": "pagerduty-p0"}
+          ]
+        }
+      },
+      {
+        "id": 11,
+        "title": "QUIC Transport - Throughput",
+        "type": "graph",
+        "gridPos": {
+          "x": 12,
+          "y": 28,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "rate(quic_messages_total[1m])",
+            "legendFormat": "Messages/sec (SLO: ≥10,000)",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "msgs",
+            "label": "Throughput"
+          }
+        ]
+      },
+      {
+        "id": 12,
+        "title": "QUIC Transport - Connection Success",
+        "type": "stat",
+        "gridPos": {
+          "x": 0,
+          "y": 36,
+          "w": 6,
+          "h": 4
+        },
+        "targets": [
+          {
+            "expr": "sum(rate(quic_connections_total{status=\"success\"}[5m])) / sum(rate(quic_connections_total[5m]))",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "red"},
+                {"value": 0.995, "color": "yellow"},
+                {"value": 0.999, "color": "green"}
+              ]
+            },
+            "unit": "percentunit",
+            "decimals": 3
+          }
+        }
+      },
+      {
+        "id": 13,
+        "title": "QUIC Transport - 0-RTT Success Rate",
+        "type": "stat",
+        "gridPos": {
+          "x": 6,
+          "y": 36,
+          "w": 6,
+          "h": 4
+        },
+        "targets": [
+          {
+            "expr": "sum(rate(quic_connections_total{type=\"0-rtt\"}[5m])) / sum(rate(quic_connections_total[5m]))",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "red"},
+                {"value": 0.90, "color": "yellow"},
+                {"value": 0.95, "color": "green"}
+              ]
+            },
+            "unit": "percentunit",
+            "decimals": 2
+          }
+        }
+      },
+      {
+        "id": 14,
+        "title": "AgentDB - Read Latency",
+        "type": "graph",
+        "gridPos": {
+          "x": 12,
+          "y": 36,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.50, rate(agentdb_read_duration_seconds_bucket[5m]))",
+            "legendFormat": "p50",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.95, rate(agentdb_read_duration_seconds_bucket[5m]))",
+            "legendFormat": "p95 (SLO: 50ms)",
+            "refId": "B"
+          },
+          {
+            "expr": "histogram_quantile(0.99, rate(agentdb_read_duration_seconds_bucket[5m]))",
+            "legendFormat": "p99 (SLO: 100ms)",
+            "refId": "C"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "ms",
+            "label": "Latency"
+          }
+        ],
+        "alert": {
+          "name": "AgentDB - High Read Latency",
+          "conditions": [
+            {
+              "evaluator": {
+                "params": [0.05],
+                "type": "gt"
+              },
+              "query": {
+                "params": ["B", "5m", "now"]
+              },
+              "reducer": {
+                "params": [],
+                "type": "avg"
+              },
+              "type": "query"
+            }
+          ],
+          "frequency": "1m",
+          "handler": 1,
+          "notifications": [
+            {"uid": "pagerduty-p0"}
+          ]
+        }
+      },
+      {
+        "id": 15,
+        "title": "AgentDB - Cache Hit Rate",
+        "type": "gauge",
+        "gridPos": {
+          "x": 0,
+          "y": 40,
+          "w": 6,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "sum(rate(agentdb_cache_hits_total[5m])) / sum(rate(agentdb_reads_total[5m]))",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "red"},
+                {"value": 0.70, "color": "yellow"},
+                {"value": 0.80, "color": "green"}
+              ]
+            },
+            "unit": "percentunit",
+            "max": 1,
+            "min": 0
+          }
+        }
+      },
+      {
+        "id": 16,
+        "title": "AgentDB - Write Latency",
+        "type": "graph",
+        "gridPos": {
+          "x": 6,
+          "y": 40,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(agentdb_write_duration_seconds_bucket[5m]))",
+            "legendFormat": "p95 (SLO: 30ms)",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.99, rate(agentdb_write_duration_seconds_bucket[5m]))",
+            "legendFormat": "p99 (SLO: 60ms)",
+            "refId": "B"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "ms",
+            "label": "Latency"
+          }
+        ]
+      },
+      {
+        "id": 17,
+        "title": "AgentDB - Memory Usage",
+        "type": "graph",
+        "gridPos": {
+          "x": 18,
+          "y": 40,
+          "w": 6,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "avg(agentdb_memory_bytes) / 1024 / 1024",
+            "legendFormat": "Memory MB (SLO: ≤50MB/agent)",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "mbytes",
+            "label": "Memory"
+          }
+        ]
+      },
+      {
+        "id": 18,
+        "title": "Swarm Coordination - Agent Spawn Time",
+        "type": "graph",
+        "gridPos": {
+          "x": 0,
+          "y": 48,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(swarm_agent_spawn_duration_seconds_bucket[5m]))",
+            "legendFormat": "p95 (SLO: 200ms)",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.99, rate(swarm_agent_spawn_duration_seconds_bucket[5m]))",
+            "legendFormat": "p99 (SLO: 500ms)",
+            "refId": "B"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "ms",
+            "label": "Spawn Time"
+          }
+        ],
+        "alert": {
+          "name": "Swarm - Slow Agent Spawn",
+          "conditions": [
+            {
+              "evaluator": {
+                "params": [0.2],
+                "type": "gt"
+              },
+              "query": {
+                "params": ["A", "5m", "now"]
+              },
+              "reducer": {
+                "params": [],
+                "type": "avg"
+              },
+              "type": "query"
+            }
+          ],
+          "frequency": "1m",
+          "handler": 1,
+          "notifications": [
+            {"uid": "slack-alerts"}
+          ]
+        }
+      },
+      {
+        "id": 19,
+        "title": "Swarm Coordination - Speedup Achievement",
+        "type": "stat",
+        "gridPos": {
+          "x": 12,
+          "y": 48,
+          "w": 6,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "swarm_parallel_speedup_ratio",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "red"},
+                {"value": 2, "color": "yellow"},
+                {"value": 3, "color": "green"}
+              ]
+            },
+            "unit": "none",
+            "decimals": 1,
+            "suffix": "x"
+          }
+        }
+      },
+      {
+        "id": 20,
+        "title": "Swarm Coordination - Topology Accuracy",
+        "type": "stat",
+        "gridPos": {
+          "x": 18,
+          "y": 48,
+          "w": 6,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "sum(rate(swarm_topology_selection_total{result=\"optimal\"}[5m])) / sum(rate(swarm_topology_selection_total[5m]))",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "red"},
+                {"value": 0.80, "color": "yellow"},
+                {"value": 0.90, "color": "green"}
+              ]
+            },
+            "unit": "percentunit",
+            "decimals": 2
+          }
+        }
+      },
+      {
+        "id": 21,
+        "title": "Error Budget - Overall",
+        "type": "graph",
+        "gridPos": {
+          "x": 0,
+          "y": 56,
+          "w": 24,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "(1 - ((1 - avg(up{job=\"agent-booster\"})) * 100)) * 100",
+            "legendFormat": "Agent Booster (Budget: 99.95%)",
+            "refId": "A"
+          },
+          {
+            "expr": "(1 - ((1 - avg(up{job=\"reasoningbank\"})) * 100)) * 100",
+            "legendFormat": "ReasoningBank (Budget: 99.9%)",
+            "refId": "B"
+          },
+          {
+            "expr": "(1 - ((1 - avg(up{job=\"router\"})) * 100)) * 100",
+            "legendFormat": "Router (Budget: 99.95%)",
+            "refId": "C"
+          },
+          {
+            "expr": "(1 - ((1 - avg(up{job=\"quic\"})) * 100)) * 100",
+            "legendFormat": "QUIC (Budget: 99.99%)",
+            "refId": "D"
+          },
+          {
+            "expr": "(1 - ((1 - avg(up{job=\"agentdb\"})) * 100)) * 100",
+            "legendFormat": "AgentDB (Budget: 99.99%)",
+            "refId": "E"
+          },
+          {
+            "expr": "(1 - ((1 - avg(up{job=\"swarm-coordinator\"})) * 100)) * 100",
+            "legendFormat": "Swarm (Budget: 99.95%)",
+            "refId": "F"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "percent",
+            "label": "Availability %",
+            "max": 100,
+            "min": 99.8
+          }
+        ]
+      }
+    ],
+    "annotations": {
+      "list": [
+        {
+          "name": "Deployments",
+          "datasource": "Prometheus",
+          "enable": true,
+          "expr": "changes(deployment_timestamp[1m]) > 0",
+          "iconColor": "blue",
+          "tagKeys": "service,version"
+        },
+        {
+          "name": "Incidents",
+          "datasource": "Prometheus",
+          "enable": true,
+          "expr": "incident_active == 1",
+          "iconColor": "red",
+          "tagKeys": "severity,component"
+        }
+      ]
+    },
+    "templating": {
+      "list": [
+        {
+          "name": "environment",
+          "type": "custom",
+          "options": [
+            {"text": "Production", "value": "prod"},
+            {"text": "Staging", "value": "staging"},
+            {"text": "Development", "value": "dev"}
+          ],
+          "current": {
+            "text": "Production",
+            "value": "prod"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -318,3 +318,23 @@ export class AgentError extends SlideDesignerError {
     this.name = 'AgentError';
   }
 }
+
+// ===== P0 Integration Types =====
+
+export type {
+  P0FeatureId,
+  FeatureStatus,
+  IntegrationHealth,
+  FeatureInfo,
+  P0IntegrationConfig,
+  InitializationResult,
+  FeatureHealthCheck,
+  IntegrationHealthReport,
+} from './p0-integration';
+
+export {
+  P0IntegrationError,
+  FeatureInitializationError,
+  DependencyError,
+  HealthCheckError,
+} from './p0-integration';

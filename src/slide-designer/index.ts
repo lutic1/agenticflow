@@ -77,6 +77,29 @@ export {
   AgentError,
 } from './types/index.js';
 
+// P0 Integration exports
+export { P0Integration, p0Integration } from './p0-integration.js';
+export type {
+  P0FeatureId,
+  FeatureStatus,
+  IntegrationHealth,
+  FeatureInfo,
+  P0IntegrationConfig,
+  InitializationResult,
+  FeatureHealthCheck,
+  IntegrationHealthReport,
+} from './types/p0-integration.js';
+export {
+  P0IntegrationError,
+  FeatureInitializationError,
+  DependencyError,
+  HealthCheckError,
+} from './types/p0-integration.js';
+
+// Core V2 exports (P0 features)
+export * from './core-v2/index.js';
+export * from './quality-control/index.js';
+
 // Utility exports
 export { Logger, LogLevel, getLogger } from './utils/logger.js';
 

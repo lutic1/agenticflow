@@ -63,3 +63,34 @@ export type {
   GeneratedImage,
   ImageGenerationResult
 } from './ai-image-generation';
+
+// P1.6: Multi-Language Support (i18n)
+export { I18nManager, i18n, t } from './i18n';
+export type {
+  SupportedLanguage,
+  LanguageConfig,
+  TranslationDictionary,
+  TranslationOptions
+} from './i18n';
+
+// P1.10: Version History
+export { VersionHistoryManager, versionHistory } from './version-history';
+export type {
+  Version,
+  PresentationSnapshot,
+  VersionDiff,
+  RestoreOptions
+} from './version-history';
+
+// P1.13: Presentation Analytics
+export { PresentationAnalyticsManager, presentationAnalytics } from './analytics';
+export type {
+  AnalyticsEvent,
+  AnalyticsEventType,
+  SessionMetrics,
+  SlideMetrics,
+  ViewerInfo,
+  DeviceInfo,
+  HeatmapData,
+  AnalyticsSummary
+} from './analytics';

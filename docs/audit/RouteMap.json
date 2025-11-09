@@ -1,0 +1,601 @@
+{
+  "metadata": {
+    "generated": "2025-11-09",
+    "auditor": "Frontend Auditor Agent",
+    "frontend_directory": "/home/user/agenticflow/Frontend",
+    "total_routes_found": 13,
+    "total_routes_documented": 27,
+    "coverage": "48%"
+  },
+  "implemented_routes": [
+    {
+      "path": "/",
+      "component": "page.tsx",
+      "layout": "root",
+      "protected": false,
+      "status": "duplicate",
+      "features": ["P0.1-P0.12 showcase", "Mock slide generator"],
+      "issues": [
+        "Contains two conflicting implementations",
+        "Lines 1-172: Backend-initialized version",
+        "Lines 173-643: Mock generator version"
+      ],
+      "dependencies": [
+        "@backend/frontend-integration/hooks/use-backend",
+        "components/template-selector",
+        "components/slides-generator"
+      ],
+      "authentication_required": false,
+      "data_fetching": "useBackendInitialization()",
+      "implementation_status": "needs_cleanup"
+    },
+    {
+      "path": "/presentations/new",
+      "component": "presentations/new/page.tsx",
+      "layout": "root",
+      "protected": true,
+      "status": "placeholder",
+      "features": [],
+      "issues": ["Empty component - only returns <div>New Presentation</div>"],
+      "dependencies": [],
+      "authentication_required": true,
+      "data_fetching": null,
+      "implementation_status": "not_implemented",
+      "expected_features": [
+        "AI generation form",
+        "Template selection",
+        "Topic input",
+        "Slide count configuration"
+      ]
+    },
+    {
+      "path": "/presentations/[id]/edit",
+      "component": "presentations/[id]/edit/page.tsx",
+      "layout": "root",
+      "protected": true,
+      "status": "active",
+      "features": [
+        "P0.1 - Grid Layout",
+        "P0.2 - Typography",
+        "P0.3 - Color Palettes",
+        "P0.4 - Charts",
+        "P0.5 - Text Overflow",
+        "P0.6 - Master Slides",
+        "P0.7 - Transitions",
+        "P0.8 - Accessibility",
+        "P0.9 - Export",
+        "P0.10 - Image Optimization",
+        "P0.11 - Content Validation",
+        "P0.12 - LLM Quality Judge",
+        "P1.3 - Speaker Notes",
+        "P1.4 - Slide Manager",
+        "P1.6 - Language Selector",
+        "P1.7 - Video Embed",
+        "P1.8 - Font Upload",
+        "P1.9 - Collaboration",
+        "P1.10 - Version History",
+        "P1.11 - AI Image Generation",
+        "P1.12 - Data Import"
+      ],
+      "issues": [],
+      "dependencies": [
+        "All P0 components",
+        "Most P1 components"
+      ],
+      "authentication_required": true,
+      "data_fetching": "Dynamic route params",
+      "implementation_status": "complete",
+      "ui_structure": {
+        "header": "Toolbar with back button, language selector, collaboration indicator, present button, slide navigation",
+        "left_sidebar": "P0 and P1 feature tools",
+        "main_canvas": "Slide editor canvas",
+        "right_sidebar": "Active tool panel (conditional)",
+        "footer": "Status bar with backend status and active tool"
+      }
+    },
+    {
+      "path": "/presentations/[id]/present",
+      "component": "presentations/[id]/present/page.tsx",
+      "layout": "root",
+      "protected": true,
+      "status": "partial",
+      "features": ["P1.15 - Live Presentation Mode"],
+      "issues": ["Implementation details unknown - file not fully analyzed"],
+      "dependencies": ["hooks/use-p1-features"],
+      "authentication_required": true,
+      "data_fetching": "useLivePresentation()",
+      "implementation_status": "partial"
+    },
+    {
+      "path": "/presentations/[id]/present/ar",
+      "component": "presentations/[id]/present/ar/page.tsx",
+      "layout": "root",
+      "protected": true,
+      "status": "partial",
+      "features": ["P2.2 - AR Presentation (WebXR)"],
+      "issues": ["Implementation details unknown - file not fully analyzed"],
+      "dependencies": ["hooks/use-p2-features"],
+      "authentication_required": true,
+      "data_fetching": "useARPresentation()",
+      "implementation_status": "partial",
+      "browser_requirements": ["WebXR support", "Camera permissions"]
+    },
+    {
+      "path": "/library",
+      "component": "library/page.tsx",
+      "layout": "root",
+      "protected": false,
+      "status": "placeholder",
+      "features": [],
+      "issues": ["Empty component - no implementation"],
+      "dependencies": [],
+      "authentication_required": false,
+      "data_fetching": null,
+      "implementation_status": "not_implemented",
+      "expected_features": [
+        "Template browsing",
+        "Template preview",
+        "Search and filters",
+        "Category navigation"
+      ]
+    },
+    {
+      "path": "/analytics",
+      "component": "analytics/page.tsx",
+      "layout": "root",
+      "protected": true,
+      "status": "placeholder",
+      "features": [],
+      "issues": ["Empty component - no implementation"],
+      "dependencies": [],
+      "authentication_required": true,
+      "data_fetching": null,
+      "implementation_status": "not_implemented",
+      "expected_features": [
+        "P1.13 - Analytics Dashboard",
+        "View statistics",
+        "Engagement metrics",
+        "Geographic breakdown",
+        "Device breakdown"
+      ]
+    },
+    {
+      "path": "/settings",
+      "component": "settings/page.tsx",
+      "layout": "root",
+      "protected": true,
+      "status": "placeholder",
+      "features": [],
+      "issues": ["Empty component - no implementation"],
+      "dependencies": [],
+      "authentication_required": true,
+      "data_fetching": null,
+      "implementation_status": "not_implemented",
+      "expected_features": [
+        "General settings",
+        "Custom fonts (P1.8)",
+        "Language preferences (P1.6)",
+        "Integrations (P2.6)"
+      ]
+    },
+    {
+      "path": "/marketplace",
+      "component": "marketplace/page.tsx",
+      "layout": "root",
+      "protected": false,
+      "status": "placeholder",
+      "features": [],
+      "issues": ["Empty component - no implementation"],
+      "dependencies": [],
+      "authentication_required": false,
+      "data_fetching": null,
+      "implementation_status": "not_implemented",
+      "expected_features": [
+        "P2.5 - Themes Marketplace",
+        "Browse themes",
+        "Purchase themes",
+        "Theme ratings and reviews"
+      ]
+    },
+    {
+      "path": "/api-docs",
+      "component": "api-docs/page.tsx",
+      "layout": "root",
+      "protected": false,
+      "status": "placeholder",
+      "features": [],
+      "issues": ["Empty component - no implementation"],
+      "dependencies": [],
+      "authentication_required": false,
+      "data_fetching": null,
+      "implementation_status": "not_implemented",
+      "expected_features": [
+        "P2.6 - API Documentation",
+        "OpenAPI specification",
+        "Try-it functionality",
+        "Code examples"
+      ]
+    }
+  ],
+  "missing_routes": [
+    {
+      "path": "/presentations",
+      "expected_component": "presentations/page.tsx",
+      "layout": "root",
+      "protected": true,
+      "priority": "high",
+      "purpose": "List all presentations for logged-in user",
+      "expected_features": [
+        "Presentation list (grid/list view)",
+        "Search and filter",
+        "Sort by date/name",
+        "Create new button",
+        "Delete/duplicate actions"
+      ],
+      "dependencies": [
+        "React Query for data fetching",
+        "Presentation list component",
+        "Empty state component"
+      ]
+    },
+    {
+      "path": "/presentations/[id]",
+      "expected_component": "presentations/[id]/page.tsx",
+      "layout": "root",
+      "protected": false,
+      "priority": "high",
+      "purpose": "View presentation (public, read-only)",
+      "expected_features": [
+        "Slide viewer",
+        "Navigation controls",
+        "Share button",
+        "Full-screen mode"
+      ],
+      "dependencies": [
+        "SlideCanvas component",
+        "PresentationViewer component"
+      ]
+    },
+    {
+      "path": "/presentations/[id]/analytics",
+      "expected_component": "presentations/[id]/analytics/page.tsx",
+      "layout": "root",
+      "protected": true,
+      "priority": "medium",
+      "purpose": "Analytics for specific presentation",
+      "expected_features": [
+        "P1.13 - Analytics Dashboard",
+        "View count",
+        "Engagement metrics",
+        "Time per slide",
+        "Geographic data",
+        "Device breakdown"
+      ],
+      "dependencies": [
+        "AnalyticsDashboard component",
+        "usePresentationAnalytics hook"
+      ]
+    },
+    {
+      "path": "/presentations/[id]/versions",
+      "expected_component": "presentations/[id]/versions/page.tsx",
+      "layout": "root",
+      "protected": true,
+      "priority": "medium",
+      "purpose": "Version history viewer",
+      "expected_features": [
+        "P1.10 - Version History",
+        "List all versions",
+        "Version comparison",
+        "Restore version",
+        "Version diff viewer"
+      ],
+      "dependencies": [
+        "VersionHistoryPanel component",
+        "useVersionHistory hook"
+      ]
+    },
+    {
+      "path": "/library/[templateId]",
+      "expected_component": "library/[templateId]/page.tsx",
+      "layout": "root",
+      "protected": false,
+      "priority": "medium",
+      "purpose": "Template preview and details",
+      "expected_features": [
+        "Template preview",
+        "Slide thumbnails",
+        "Use template button",
+        "Template metadata"
+      ],
+      "dependencies": [
+        "Template preview component",
+        "useTemplateLibrary hook"
+      ]
+    },
+    {
+      "path": "/marketplace/[themeId]",
+      "expected_component": "marketplace/[themeId]/page.tsx",
+      "layout": "root",
+      "protected": false,
+      "priority": "low",
+      "purpose": "Theme details and purchase",
+      "expected_features": [
+        "Theme preview",
+        "Price and ratings",
+        "Purchase button",
+        "Reviews"
+      ],
+      "dependencies": [
+        "ThemesMarketplace component",
+        "useThemesMarketplace hook"
+      ]
+    },
+    {
+      "path": "/marketplace/publish",
+      "expected_component": "marketplace/publish/page.tsx",
+      "layout": "root",
+      "protected": true,
+      "priority": "low",
+      "purpose": "Publish custom theme",
+      "expected_features": [
+        "Theme upload form",
+        "Theme configuration",
+        "Preview",
+        "Pricing settings"
+      ],
+      "dependencies": [
+        "Theme upload form",
+        "useThemesMarketplace hook"
+      ]
+    },
+    {
+      "path": "/login",
+      "expected_component": "(auth)/login/page.tsx",
+      "layout": "auth",
+      "protected": false,
+      "priority": "critical",
+      "purpose": "User login",
+      "expected_features": [
+        "Email/password login",
+        "OAuth providers",
+        "Remember me",
+        "Forgot password link"
+      ],
+      "dependencies": [
+        "userStore (missing)",
+        "Auth API client (missing)"
+      ]
+    },
+    {
+      "path": "/register",
+      "expected_component": "(auth)/register/page.tsx",
+      "layout": "auth",
+      "protected": false,
+      "priority": "critical",
+      "purpose": "User registration",
+      "expected_features": [
+        "Email/password registration",
+        "OAuth providers",
+        "Terms acceptance",
+        "Email verification"
+      ],
+      "dependencies": [
+        "userStore (missing)",
+        "Auth API client (missing)"
+      ]
+    },
+    {
+      "path": "/settings/fonts",
+      "expected_component": "settings/fonts/page.tsx",
+      "layout": "root",
+      "protected": true,
+      "priority": "medium",
+      "purpose": "Manage custom fonts",
+      "expected_features": [
+        "P1.8 - Custom Font Upload",
+        "Font list",
+        "Upload new font",
+        "Delete font",
+        "Font preview"
+      ],
+      "dependencies": [
+        "FontUploader component",
+        "useCustomFonts hook"
+      ]
+    },
+    {
+      "path": "/settings/language",
+      "expected_component": "settings/language/page.tsx",
+      "layout": "root",
+      "protected": true,
+      "priority": "medium",
+      "purpose": "Language preferences",
+      "expected_features": [
+        "P1.6 - Language Selection",
+        "UI language",
+        "Default presentation language",
+        "Translation settings"
+      ],
+      "dependencies": [
+        "LanguageSelector component",
+        "useMultiLanguage hook"
+      ]
+    },
+    {
+      "path": "/settings/integrations",
+      "expected_component": "settings/integrations/page.tsx",
+      "layout": "root",
+      "protected": true,
+      "priority": "low",
+      "purpose": "Third-party integrations",
+      "expected_features": [
+        "P2.6 - API Keys",
+        "P2.7 - Figma integration",
+        "Connected accounts",
+        "OAuth connections"
+      ],
+      "dependencies": [
+        "APIAccessPanel component",
+        "DesignImporter component"
+      ]
+    }
+  ],
+  "route_groups": {
+    "auth": {
+      "status": "missing",
+      "expected_layout": "app/(auth)/layout.tsx",
+      "routes": [
+        "/login",
+        "/register",
+        "/forgot-password",
+        "/reset-password"
+      ],
+      "features": [
+        "Redirect to home if authenticated",
+        "Minimal layout (no header/footer)",
+        "Centered form layout"
+      ]
+    },
+    "editor": {
+      "status": "partial",
+      "expected_layout": "app/(editor)/presentations/[id]/edit/layout.tsx",
+      "routes": [
+        "/presentations/[id]/edit"
+      ],
+      "features": [
+        "Editor toolbar",
+        "Left sidebar (tools)",
+        "Right sidebar (properties)",
+        "No standard header/footer"
+      ],
+      "issues": [
+        "Layout not separated - editor layout is inline in page.tsx"
+      ]
+    },
+    "public": {
+      "status": "partial",
+      "routes": [
+        "/",
+        "/library",
+        "/library/[templateId]",
+        "/marketplace",
+        "/marketplace/[themeId]",
+        "/api-docs",
+        "/presentations/[id]"
+      ],
+      "features": [
+        "Standard header/footer",
+        "No authentication required",
+        "SEO optimized"
+      ]
+    },
+    "protected": {
+      "status": "partial",
+      "routes": [
+        "/presentations",
+        "/presentations/new",
+        "/presentations/[id]/edit",
+        "/presentations/[id]/present",
+        "/presentations/[id]/analytics",
+        "/presentations/[id]/versions",
+        "/analytics",
+        "/settings",
+        "/settings/fonts",
+        "/settings/language",
+        "/settings/integrations"
+      ],
+      "features": [
+        "Authentication required",
+        "Redirect to /login if not authenticated",
+        "User-specific data"
+      ],
+      "issues": [
+        "No auth middleware/layout to enforce protection"
+      ]
+    }
+  },
+  "layout_hierarchy": {
+    "root_layout": {
+      "file": "app/layout.tsx",
+      "status": "duplicate",
+      "issues": [
+        "Contains two different implementations",
+        "Lines 1-22: Simple version with Providers",
+        "Lines 23-68: Version with Analytics"
+      ],
+      "features": [
+        "HTML wrapper",
+        "Body wrapper",
+        "Providers (React Query)",
+        "Vercel Analytics (in second implementation)"
+      ]
+    },
+    "auth_layout": {
+      "file": "(auth)/layout.tsx",
+      "status": "missing",
+      "expected_features": [
+        "Redirect to home if authenticated",
+        "Minimal UI (no header/footer)",
+        "Centered layout"
+      ]
+    },
+    "editor_layout": {
+      "file": "(editor)/presentations/[id]/edit/layout.tsx",
+      "status": "missing",
+      "current_implementation": "Inline in page.tsx",
+      "expected_features": [
+        "Editor toolbar",
+        "Three-column layout",
+        "No standard header/footer"
+      ]
+    }
+  },
+  "api_routes": [
+    {
+      "path": "/api/generate-slides",
+      "file": "app/api/generate-slides/route.ts",
+      "method": "POST",
+      "purpose": "Generate slides via API",
+      "status": "exists",
+      "implementation_details": "Unknown - file not analyzed"
+    }
+  ],
+  "route_protection_analysis": {
+    "protected_routes_count": 12,
+    "public_routes_count": 7,
+    "auth_implementation": "missing",
+    "middleware_status": "not_found",
+    "redirect_logic": "not_implemented",
+    "session_management": "not_implemented",
+    "issues": [
+      "No authentication middleware",
+      "No route protection guards",
+      "Protected routes are documented but not enforced",
+      "No login/register pages to authenticate"
+    ]
+  },
+  "summary": {
+    "total_routes_documented": 27,
+    "total_routes_implemented": 13,
+    "implementation_coverage": "48%",
+    "placeholder_routes": 7,
+    "missing_routes": 12,
+    "duplicate_routes": 2,
+    "critical_missing_routes": [
+      "/login",
+      "/register",
+      "/presentations",
+      "/presentations/[id]"
+    ],
+    "route_quality_score": "45%",
+    "recommendations": [
+      "Fix duplicate code in app/page.tsx and app/layout.tsx",
+      "Implement authentication routes (/login, /register)",
+      "Implement placeholder routes with actual UI",
+      "Create auth middleware for route protection",
+      "Separate editor layout from page component",
+      "Implement missing presentation list and view routes"
+    ]
+  }
+}

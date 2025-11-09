@@ -1,0 +1,642 @@
+{
+  "metadata": {
+    "generated": "2025-11-09",
+    "auditor": "Frontend Auditor Agent",
+    "frontend_directory": "/home/user/agenticflow/Frontend",
+    "total_components": 115,
+    "total_routes": 13,
+    "total_hooks": 5
+  },
+  "routes": [
+    {
+      "path": "/",
+      "file": "app/page.tsx",
+      "purpose": "Home page / Landing / AI slide generator",
+      "status": "duplicate",
+      "issue": "Contains two conflicting implementations",
+      "features": ["P0 showcase", "Mock generator"],
+      "protected": false
+    },
+    {
+      "path": "/presentations/new",
+      "file": "app/presentations/new/page.tsx",
+      "purpose": "Create new presentation",
+      "status": "placeholder",
+      "issue": "Empty component - no implementation",
+      "features": [],
+      "protected": true
+    },
+    {
+      "path": "/presentations/[id]/edit",
+      "file": "app/presentations/[id]/edit/page.tsx",
+      "purpose": "Edit presentation - main editor interface",
+      "status": "active",
+      "features": ["P0.1-P0.12", "P1.3", "P1.4", "P1.6", "P1.7", "P1.8", "P1.9", "P1.10", "P1.11", "P1.12"],
+      "protected": true
+    },
+    {
+      "path": "/presentations/[id]/present",
+      "file": "app/presentations/[id]/present/page.tsx",
+      "purpose": "Live presentation mode",
+      "status": "partial",
+      "features": ["P1.15"],
+      "protected": true
+    },
+    {
+      "path": "/presentations/[id]/present/ar",
+      "file": "app/presentations/[id]/present/ar/page.tsx",
+      "purpose": "AR presentation mode (WebXR)",
+      "status": "partial",
+      "features": ["P2.2"],
+      "protected": true
+    },
+    {
+      "path": "/library",
+      "file": "app/library/page.tsx",
+      "purpose": "Template library browser",
+      "status": "placeholder",
+      "issue": "Empty component - no implementation",
+      "features": [],
+      "protected": false
+    },
+    {
+      "path": "/analytics",
+      "file": "app/analytics/page.tsx",
+      "purpose": "Analytics dashboard",
+      "status": "placeholder",
+      "issue": "Empty component - no implementation",
+      "features": [],
+      "protected": true
+    },
+    {
+      "path": "/settings",
+      "file": "app/settings/page.tsx",
+      "purpose": "User settings",
+      "status": "placeholder",
+      "issue": "Empty component - no implementation",
+      "features": [],
+      "protected": true
+    },
+    {
+      "path": "/marketplace",
+      "file": "app/marketplace/page.tsx",
+      "purpose": "Themes marketplace",
+      "status": "placeholder",
+      "issue": "Empty component - no implementation",
+      "features": [],
+      "protected": false
+    },
+    {
+      "path": "/api-docs",
+      "file": "app/api-docs/page.tsx",
+      "purpose": "API documentation",
+      "status": "placeholder",
+      "issue": "Empty component - no implementation",
+      "features": [],
+      "protected": false
+    }
+  ],
+  "components": {
+    "p0_features": [
+      {
+        "name": "GridLayoutEditor",
+        "path": "components/features/p0/GridLayoutEditor.tsx",
+        "feature": "P0.1",
+        "purpose": "Grid layout system with 1-4 column layouts",
+        "status": "active",
+        "backend_integration": "useGridLayout()",
+        "props": ["slideId", "onLayoutChange"]
+      },
+      {
+        "name": "TypographyControls",
+        "path": "components/features/p0/TypographyControls.tsx",
+        "feature": "P0.2",
+        "purpose": "Typography controls for text scaling",
+        "status": "active",
+        "backend_integration": "useTypography()",
+        "props": ["slideId", "onTypographyChange"]
+      },
+      {
+        "name": "ColorPaletteSelector",
+        "path": "components/features/p0/ColorPaletteSelector.tsx",
+        "feature": "P0.3",
+        "purpose": "Color palette selection with WCAG compliance",
+        "status": "active",
+        "backend_integration": "useColorPalettes()",
+        "props": ["slideId", "onPaletteChange"]
+      },
+      {
+        "name": "ChartInserter",
+        "path": "components/features/p0/ChartInserter.tsx",
+        "feature": "P0.4",
+        "purpose": "Chart insertion and configuration",
+        "status": "active",
+        "backend_integration": "useChartComponents()",
+        "props": ["slideId", "onChartInsert"]
+      },
+      {
+        "name": "TextOverflowManager",
+        "path": "components/features/p0/TextOverflowManager.tsx",
+        "feature": "P0.5",
+        "purpose": "Text overflow detection and resolution",
+        "status": "active",
+        "backend_integration": "useTextOverflow()",
+        "props": ["content", "onStrategyChange"]
+      },
+      {
+        "name": "MasterSlideEditor",
+        "path": "components/features/p0/MasterSlideEditor.tsx",
+        "feature": "P0.6",
+        "purpose": "Master slide templates and branding",
+        "status": "active",
+        "backend_integration": "useMasterSlides()",
+        "props": ["presentationId", "onMasterChange"]
+      },
+      {
+        "name": "TransitionSelector",
+        "path": "components/features/p0/TransitionSelector.tsx",
+        "feature": "P0.7",
+        "purpose": "Slide transition selection",
+        "status": "active",
+        "backend_integration": "useBasicTransitions()",
+        "props": ["slideId", "onTransitionChange"]
+      },
+      {
+        "name": "AccessibilityChecker",
+        "path": "components/features/p0/AccessibilityChecker.tsx",
+        "feature": "P0.8",
+        "purpose": "Accessibility audit and fixes",
+        "status": "active",
+        "backend_integration": "useAccessibility()",
+        "props": ["slideId", "onIssuesFix"]
+      },
+      {
+        "name": "ExportDialog",
+        "path": "components/features/p0/ExportDialog.tsx",
+        "feature": "P0.9",
+        "purpose": "Export to PDF, PPTX, HTML",
+        "status": "active",
+        "backend_integration": "useExportFormats()",
+        "props": ["presentationId", "onExport"]
+      },
+      {
+        "name": "ImageOptimizer",
+        "path": "components/features/p0/ImageOptimizer.tsx",
+        "feature": "P0.10",
+        "purpose": "Image upload and optimization",
+        "status": "active",
+        "backend_integration": "useImageOptimization()",
+        "props": ["slideId", "onImageOptimized"]
+      },
+      {
+        "name": "ContentValidator",
+        "path": "components/features/p0/ContentValidator.tsx",
+        "feature": "P0.11",
+        "purpose": "Content validation (spelling, grammar)",
+        "status": "active",
+        "backend_integration": "useContentValidation()",
+        "props": ["content", "onValidationComplete"]
+      },
+      {
+        "name": "ContentQualityPanel",
+        "path": "components/features/p0/ContentQualityPanel.tsx",
+        "feature": "P0.12",
+        "purpose": "LLM-as-Judge quality scoring",
+        "status": "active",
+        "backend_integration": "useLLMJudge()",
+        "props": ["content", "onSuggestionApply"]
+      }
+    ],
+    "p1_features": [
+      {
+        "name": "SpeakerNotesPanel",
+        "path": "components/features/p1/SpeakerNotesPanel.tsx",
+        "feature": "P1.3",
+        "purpose": "Speaker notes editor",
+        "status": "active",
+        "backend_integration": "useSpeakerNotes()",
+        "props": ["slideId"]
+      },
+      {
+        "name": "SlideDuplicator",
+        "path": "components/features/p1/SlideDuplicator.tsx",
+        "feature": "P1.4",
+        "purpose": "Slide duplication and reordering",
+        "status": "active",
+        "backend_integration": "useSlideDuplication()",
+        "props": ["presentationId"]
+      },
+      {
+        "name": "SlideManager",
+        "path": "components/features/p1/SlideManager.tsx",
+        "feature": "P1.4",
+        "purpose": "Complete slide management panel",
+        "status": "active",
+        "backend_integration": "useSlideDuplication()",
+        "props": ["presentationId"]
+      },
+      {
+        "name": "TemplateLibrary",
+        "path": "components/features/p1/TemplateLibrary.tsx",
+        "feature": "P1.5",
+        "purpose": "Template browsing and selection",
+        "status": "active",
+        "backend_integration": "useTemplateLibrary()",
+        "props": []
+      },
+      {
+        "name": "LanguageSelector",
+        "path": "components/features/p1/LanguageSelector.tsx",
+        "feature": "P1.6",
+        "purpose": "Multi-language support (i18n)",
+        "status": "active",
+        "backend_integration": "useMultiLanguage()",
+        "props": ["presentationId"]
+      },
+      {
+        "name": "VideoEmbedder",
+        "path": "components/features/p1/VideoEmbedder.tsx",
+        "feature": "P1.7",
+        "purpose": "Video embed from YouTube/Vimeo/Loom",
+        "status": "active",
+        "backend_integration": "useVideoEmbed()",
+        "props": ["slideId"]
+      },
+      {
+        "name": "FontUploader",
+        "path": "components/features/p1/FontUploader.tsx",
+        "feature": "P1.8",
+        "purpose": "Custom font upload",
+        "status": "active",
+        "backend_integration": "useCustomFonts()",
+        "props": ["presentationId"]
+      },
+      {
+        "name": "CollaborationPanel",
+        "path": "components/features/p1/CollaborationPanel.tsx",
+        "feature": "P1.9",
+        "purpose": "Real-time collaboration",
+        "status": "active",
+        "backend_integration": "useCollaboration()",
+        "props": ["presentationId"]
+      },
+      {
+        "name": "VersionHistoryPanel",
+        "path": "components/features/p1/VersionHistoryPanel.tsx",
+        "feature": "P1.10",
+        "purpose": "Version history and restore",
+        "status": "active",
+        "backend_integration": "useVersionHistory()",
+        "props": ["presentationId"]
+      },
+      {
+        "name": "AIImageGenerator",
+        "path": "components/features/p1/AIImageGenerator.tsx",
+        "feature": "P1.11",
+        "purpose": "AI image generation (DALL-E)",
+        "status": "active",
+        "backend_integration": "useAIImageGeneration()",
+        "props": ["slideId"]
+      },
+      {
+        "name": "DataImporter",
+        "path": "components/features/p1/DataImporter.tsx",
+        "feature": "P1.12",
+        "purpose": "Data import (CSV, Excel, JSON)",
+        "status": "active",
+        "backend_integration": "useDataImport()",
+        "props": ["slideId"]
+      },
+      {
+        "name": "AnalyticsDashboard",
+        "path": "components/features/p1/AnalyticsDashboard.tsx",
+        "feature": "P1.13",
+        "purpose": "Presentation analytics",
+        "status": "active",
+        "backend_integration": "usePresentationAnalytics()",
+        "props": ["presentationId"]
+      },
+      {
+        "name": "LivePresentationMode",
+        "path": "components/features/p1/LivePresentationMode.tsx",
+        "feature": "P1.15",
+        "purpose": "Live presentation mode",
+        "status": "active",
+        "backend_integration": "useLivePresentation()",
+        "props": ["presentationId"]
+      }
+    ],
+    "p2_features": [
+      {
+        "name": "ThreeDAnimationEditor",
+        "path": "components/features/p2/ThreeDAnimationEditor.tsx",
+        "feature": "P2.1",
+        "purpose": "3D animations (Three.js)",
+        "status": "active",
+        "backend_integration": "useThreeDAnimation()",
+        "props": ["slideId"]
+      },
+      {
+        "name": "ARPresentationMode",
+        "path": "components/features/p2/ARPresentationMode.tsx",
+        "feature": "P2.2",
+        "purpose": "AR presentation (WebXR)",
+        "status": "active",
+        "backend_integration": "useARPresentation()",
+        "props": ["presentationId"]
+      },
+      {
+        "name": "VoiceNarrator",
+        "path": "components/features/p2/VoiceNarrator.tsx",
+        "feature": "P2.3",
+        "purpose": "Voice narration (Text-to-Speech)",
+        "status": "active",
+        "backend_integration": "useVoiceNarration()",
+        "props": ["slideId"]
+      },
+      {
+        "name": "InteractiveElementsInserter",
+        "path": "components/features/p2/InteractiveElementsInserter.tsx",
+        "feature": "P2.4",
+        "purpose": "Interactive elements (polls, quizzes, Q&A)",
+        "status": "active",
+        "backend_integration": "useInteractiveElements()",
+        "props": ["slideId"]
+      },
+      {
+        "name": "ThemesMarketplace",
+        "path": "components/features/p2/ThemesMarketplace.tsx",
+        "feature": "P2.5",
+        "purpose": "Themes marketplace",
+        "status": "active",
+        "backend_integration": "useThemesMarketplace()",
+        "props": []
+      },
+      {
+        "name": "APIAccessPanel",
+        "path": "components/features/p2/APIAccessPanel.tsx",
+        "feature": "P2.6",
+        "purpose": "API access for developers",
+        "status": "active",
+        "backend_integration": "useAPIAccess()",
+        "props": []
+      },
+      {
+        "name": "DesignImporter",
+        "path": "components/features/p2/DesignImporter.tsx",
+        "feature": "P2.7",
+        "purpose": "Design import (Figma/Sketch)",
+        "status": "active",
+        "backend_integration": "useDesignImport()",
+        "props": []
+      },
+      {
+        "name": "NFTMinter",
+        "path": "components/features/p2/NFTMinter.tsx",
+        "feature": "P2.8",
+        "purpose": "Blockchain NFT minting",
+        "status": "active",
+        "backend_integration": "useBlockchainNFT()",
+        "props": ["presentationId"]
+      }
+    ],
+    "ui_components": [
+      "avatar", "aspect-ratio", "alert", "alert-dialog", "accordion", "button",
+      "button-group", "breadcrumb", "badge", "chart", "carousel", "card",
+      "calendar", "command", "context-menu", "dialog", "collapsible", "checkbox",
+      "field", "empty", "dropdown-menu", "drawer", "input-otp", "hover-card",
+      "form", "input-group", "item", "kbd", "input", "pagination",
+      "navigation-menu", "menubar", "label", "resizable", "progress",
+      "radio-group", "popover", "separator", "select", "sheet", "sidebar",
+      "scroll-area", "switch", "sonner", "spinner", "slider", "skeleton",
+      "toast", "textarea", "tabs", "table", "toggle", "tooltip", "toggle-group",
+      "use-mobile", "toaster"
+    ],
+    "shared_components": [
+      {
+        "name": "ErrorBoundary",
+        "path": "components/ErrorBoundary.tsx",
+        "purpose": "Global error boundary for crash recovery",
+        "status": "active"
+      },
+      {
+        "name": "FeatureFlagGuard",
+        "path": "components/FeatureFlagGuard.tsx",
+        "purpose": "Feature flag gating component",
+        "status": "active"
+      },
+      {
+        "name": "TelemetryDashboard",
+        "path": "components/TelemetryDashboard.tsx",
+        "purpose": "Performance and telemetry monitoring",
+        "status": "active"
+      }
+    ],
+    "orphaned_components": [
+      {
+        "name": "template-selector",
+        "path": "components/template-selector.tsx",
+        "purpose": "Template selection UI (used in mock home page)",
+        "status": "possibly_orphaned",
+        "used_by": ["app/page.tsx (lines 173-643)"]
+      },
+      {
+        "name": "slides-generator",
+        "path": "components/slides-generator.tsx",
+        "purpose": "Slide generation UI (used in mock home page)",
+        "status": "possibly_orphaned",
+        "used_by": ["app/page.tsx (lines 173-643)"]
+      },
+      {
+        "name": "template-modal",
+        "path": "components/template-modal.tsx",
+        "purpose": "Template modal dialog",
+        "status": "possibly_orphaned",
+        "used_by": []
+      },
+      {
+        "name": "slide-plan-preview",
+        "path": "components/slide-plan-preview.tsx",
+        "purpose": "Slide plan preview component",
+        "status": "possibly_orphaned",
+        "used_by": []
+      },
+      {
+        "name": "reasoning-display",
+        "path": "components/reasoning-display.tsx",
+        "purpose": "AI reasoning display",
+        "status": "possibly_orphaned",
+        "used_by": []
+      },
+      {
+        "name": "interactive-slides-viewer",
+        "path": "components/interactive-slides-viewer.tsx",
+        "purpose": "Interactive slides viewer",
+        "status": "possibly_orphaned",
+        "used_by": []
+      },
+      {
+        "name": "html-slides-renderer",
+        "path": "components/html-slides-renderer.tsx",
+        "purpose": "HTML slides renderer",
+        "status": "possibly_orphaned",
+        "used_by": []
+      },
+      {
+        "name": "theme-provider",
+        "path": "components/theme-provider.tsx",
+        "purpose": "Theme provider (light/dark mode)",
+        "status": "unknown",
+        "used_by": []
+      }
+    ]
+  },
+  "hooks": [
+    {
+      "name": "use-p0-features",
+      "path": "hooks/use-p0-features.ts",
+      "purpose": "12 P0 feature hooks",
+      "hooks_exported": [
+        "useGridLayout", "useTypography", "useColorPalettes", "useChartComponents",
+        "useTextOverflow", "useMasterSlides", "useBasicTransitions", "useAccessibility",
+        "useExportFormats", "useImageOptimization", "useContentValidation", "useLLMJudge"
+      ],
+      "backend_integration": "@backend/frontend-integration/hooks/use-backend"
+    },
+    {
+      "name": "use-p1-features",
+      "path": "hooks/use-p1-features.ts",
+      "purpose": "13 P1 feature hooks",
+      "hooks_exported": [
+        "useSlideDuplication", "useTemplateLibrary", "useSpeakerNotes", "useMultiLanguage",
+        "useVideoEmbed", "useCustomFonts", "useCollaboration", "useVersionHistory",
+        "useAIImageGeneration", "useDataImport", "usePresentationAnalytics", "useLivePresentation"
+      ],
+      "backend_integration": "@tanstack/react-query with mock data"
+    },
+    {
+      "name": "use-p2-features",
+      "path": "hooks/use-p2-features.ts",
+      "purpose": "9 P2 feature hooks",
+      "hooks_exported": [
+        "useVoiceNarration", "useAPIAccess", "useInteractiveElements", "useThemesMarketplace",
+        "useThreeDAnimation", "useDesignImport", "useARPresentation", "useBlockchainNFT",
+        "useToggleP2Feature"
+      ],
+      "backend_integration": "@backend/frontend-integration/hooks/use-backend"
+    },
+    {
+      "name": "use-toast",
+      "path": "hooks/use-toast.ts",
+      "purpose": "Toast notification hook",
+      "hooks_exported": ["useToast"]
+    },
+    {
+      "name": "use-mobile",
+      "path": "hooks/use-mobile.ts",
+      "purpose": "Mobile device detection",
+      "hooks_exported": ["useMobile"]
+    }
+  ],
+  "lib": [
+    {
+      "name": "utils",
+      "path": "lib/utils.ts",
+      "purpose": "Utility functions (cn, formatters, etc.)"
+    },
+    {
+      "name": "telemetry",
+      "path": "lib/telemetry/telemetry.ts",
+      "purpose": "Telemetry tracking"
+    },
+    {
+      "name": "performance",
+      "path": "lib/telemetry/performance.ts",
+      "purpose": "Performance monitoring"
+    },
+    {
+      "name": "breadcrumbs",
+      "path": "lib/telemetry/breadcrumbs.ts",
+      "purpose": "User action breadcrumb tracking"
+    }
+  ],
+  "missing_components": [
+    {
+      "name": "MobilePreview",
+      "feature": "P1.14",
+      "expected_path": "components/features/p1/MobilePreview.tsx",
+      "reason": "Documented in INTEGRATION_MAP.md but not implemented"
+    },
+    {
+      "name": "RealTimeSyncIndicator",
+      "feature": "P1.2",
+      "expected_path": "components/features/p1/RealTimeSyncIndicator.tsx",
+      "reason": "Documented in INTEGRATION_MAP.md but not implemented"
+    }
+  ],
+  "missing_directories": [
+    {
+      "path": "store/",
+      "reason": "Zustand state management stores missing",
+      "expected_files": ["editorStore.ts", "userStore.ts", "featureFlagsStore.ts", "index.ts"]
+    },
+    {
+      "path": "types/",
+      "reason": "Centralized TypeScript types missing",
+      "expected_files": ["presentation.ts", "slide.ts", "template.ts", "collaboration.ts", "user.ts", "index.ts"]
+    },
+    {
+      "path": "lib/api/",
+      "reason": "Frontend API client missing",
+      "expected_files": ["client.ts", "types.ts", "endpoints.ts"]
+    },
+    {
+      "path": "components/layout/",
+      "reason": "Layout components not organized",
+      "expected_files": ["AppHeader.tsx", "AppSidebar.tsx", "AppFooter.tsx", "PageContainer.tsx"]
+    },
+    {
+      "path": "components/editor/",
+      "reason": "Editor components not organized",
+      "expected_files": ["EditorCanvas.tsx", "EditorToolbar.tsx", "EditorSidebar.tsx", "EditorPropertiesPanel.tsx"]
+    },
+    {
+      "path": "components/slides/",
+      "reason": "Slide components not organized",
+      "expected_files": ["SlideCanvas.tsx", "SlidePreview.tsx", "SlideThumbnail.tsx", "SlideGridView.tsx"]
+    },
+    {
+      "path": "components/presentation/",
+      "reason": "Presentation components not organized",
+      "expected_files": ["PresentationViewer.tsx", "PresentationControls.tsx", "PresentationProgress.tsx", "PresenterNotes.tsx"]
+    },
+    {
+      "path": "app/(auth)/",
+      "reason": "Authentication routes missing",
+      "expected_files": ["login/page.tsx", "register/page.tsx", "layout.tsx"]
+    }
+  ],
+  "summary": {
+    "total_files_analyzed": 115,
+    "active_components": 36,
+    "placeholder_components": 7,
+    "duplicate_files": 2,
+    "orphaned_components": 8,
+    "missing_components": 2,
+    "feature_coverage": {
+      "p0": "12/12 (100%)",
+      "p1": "13/15 (87%)",
+      "p2": "8/8 (100%)",
+      "overall": "33/35 (94%)"
+    },
+    "critical_issues": [
+      "Duplicate implementation in app/page.tsx",
+      "Duplicate implementation in app/layout.tsx",
+      "No authentication system",
+      "No state management (Zustand)",
+      "No TypeScript types directory",
+      "No API client layer",
+      "7 placeholder routes with no implementation"
+    ]
+  }
+}

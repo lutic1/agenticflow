@@ -1,0 +1,485 @@
+[
+  {
+    "id": "P0.GENERATE",
+    "name": "Presentation Generator",
+    "tier": "P0",
+    "class": "AGENTIC_WORKFLOW",
+    "backend_routes": [
+      "POST /api/presentations/generate",
+      "POST /api/presentations/generate/stream"
+    ],
+    "requires_auth": true,
+    "telemetry_id": "presentation.generate",
+    "rationale": "Multi-agent workflow with 5 sequential phases: Research (research-agent) → Content Generation (content-agent) → Design Decisions (design-agent) → Asset Collection (asset-agent) → HTML Generation (generator-agent). Each phase uses multiple LLM calls with planning, execution, and reflection."
+  },
+  {
+    "id": "P0.1",
+    "name": "Grid Layout System",
+    "tier": "P0",
+    "class": "UI_TOOL",
+    "backend_routes": [
+      "POST /api/p0/grid-layout/create",
+      "POST /api/p0/grid-layout/constraints"
+    ],
+    "requires_auth": true,
+    "telemetry_id": "grid.create",
+    "rationale": "Pure algorithmic grid calculations (12-column system). No LLM needed - uses mathematical layout algorithms."
+  },
+  {
+    "id": "P0.2",
+    "name": "Typography System",
+    "tier": "P0",
+    "class": "UI_TOOL",
+    "backend_routes": [
+      "POST /api/p0/typography/calculate",
+      "POST /api/p0/typography/validate"
+    ],
+    "requires_auth": true,
+    "telemetry_id": "typography.calculate",
+    "rationale": "Algorithmic font sizing and readability calculations. Uses type scale formulas, no LLM required."
+  },
+  {
+    "id": "P0.3",
+    "name": "Color Palettes & WCAG Compliance",
+    "tier": "P0",
+    "class": "UI_TOOL",
+    "backend_routes": [
+      "POST /api/p0/colors/generate",
+      "POST /api/p0/colors/contrast"
+    ],
+    "requires_auth": true,
+    "telemetry_id": "colors.generate",
+    "rationale": "Algorithmic color palette generation using color theory (60-30-10 rule, complementary/triadic schemes). WCAG contrast ratio calculations are pure math. No LLM needed."
+  },
+  {
+    "id": "P0.4",
+    "name": "Chart Integration",
+    "tier": "P0",
+    "class": "UI_TOOL",
+    "backend_routes": [
+      "POST /api/p0/charts/create",
+      "PUT /api/p0/charts/:id"
+    ],
+    "requires_auth": true,
+    "telemetry_id": "chart.create",
+    "rationale": "Chart.js integration for data visualization. Pure UI rendering, no LLM needed."
+  },
+  {
+    "id": "P0.5",
+    "name": "Text Overflow Handling",
+    "tier": "P0",
+    "class": "UI_TOOL",
+    "backend_routes": [
+      "POST /api/p0/text-overflow/detect",
+      "POST /api/p0/text-overflow/resolve"
+    ],
+    "requires_auth": true,
+    "telemetry_id": "text.overflow.resolve",
+    "rationale": "Primarily uses compression/splitting algorithms. While it has a 'summarize' option that could use LLM, the core functionality is algorithmic text manipulation."
+  },
+  {
+    "id": "P0.6",
+    "name": "Master Slides & Branding",
+    "tier": "P0",
+    "class": "UI_TOOL",
+    "backend_routes": [
+      "POST /api/p0/master-slides/create",
+      "POST /api/p0/master-slides/apply"
+    ],
+    "requires_auth": true,
+    "telemetry_id": "master.create",
+    "rationale": "Template creation and application. Pure UI state management and CSS, no LLM needed."
+  },
+  {
+    "id": "P0.7",
+    "name": "Transitions & Animations",
+    "tier": "P0",
+    "class": "UI_TOOL",
+    "backend_routes": [
+      "POST /api/p0/transitions/create",
+      "GET /api/p0/transitions/available"
+    ],
+    "requires_auth": true,
+    "telemetry_id": "transition.apply",
+    "rationale": "CSS animation generation (fade, slide, zoom, flip). Pure frontend, no LLM needed."
+  },
+  {
+    "id": "P0.8",
+    "name": "Accessibility Engine",
+    "tier": "P0",
+    "class": "UI_TOOL",
+    "backend_routes": [
+      "POST /api/p0/accessibility/audit",
+      "POST /api/p0/accessibility/alt-text"
+    ],
+    "requires_auth": true,
+    "telemetry_id": "accessibility.audit",
+    "rationale": "WCAG AAA compliance checking using rule-based validation. Contrast ratio calculations, ARIA validation. Alt-text generation could use LLM but core is rule-based."
+  },
+  {
+    "id": "P0.9",
+    "name": "Export Engine",
+    "tier": "P0",
+    "class": "UI_TOOL",
+    "backend_routes": [
+      "POST /api/p0/export/pdf",
+      "POST /api/p0/export/pptx",
+      "POST /api/p0/export/html"
+    ],
+    "requires_auth": true,
+    "telemetry_id": "export.pdf",
+    "rationale": "PDF/PPTX/HTML generation from slide data. Pure file format conversion, no LLM needed."
+  },
+  {
+    "id": "P0.10",
+    "name": "Image Optimization",
+    "tier": "P0",
+    "class": "UI_TOOL",
+    "backend_routes": [
+      "POST /api/p0/images/optimize",
+      "POST /api/p0/images/batch-optimize"
+    ],
+    "requires_auth": true,
+    "telemetry_id": "image.optimize",
+    "rationale": "Image compression, resizing, format conversion. Pure image processing algorithms (Sharp, etc.), no LLM needed."
+  },
+  {
+    "id": "P0.11",
+    "name": "Content Validation",
+    "tier": "P0",
+    "class": "UI_TOOL",
+    "backend_routes": [
+      "POST /api/p0/validation/validate",
+      "POST /api/p0/validation/spelling"
+    ],
+    "requires_auth": true,
+    "telemetry_id": "validation.check",
+    "rationale": "Rule-based content validation, spell check, grammar check. Uses libraries like Hunspell, no LLM needed."
+  },
+  {
+    "id": "P0.12",
+    "name": "LLM-as-Judge Quality Control",
+    "tier": "P0",
+    "class": "LLM_CALL",
+    "backend_routes": [
+      "POST /api/p0/llm-judge/score",
+      "POST /api/p0/llm-judge/feedback"
+    ],
+    "requires_auth": true,
+    "telemetry_id": "judge.evaluate",
+    "rationale": "Direct Gemini 2.5 Flash API call to evaluate slide quality. Single request-response pattern scoring 5 criteria (visual hierarchy, whitespace, readability, relevance, professionalism)."
+  },
+  {
+    "id": "P1.1",
+    "name": "Interactive Widgets",
+    "tier": "P1",
+    "class": "UI_TOOL",
+    "backend_routes": [
+      "POST /api/p1/widgets/create",
+      "GET /api/p1/widgets/available"
+    ],
+    "requires_auth": true,
+    "telemetry_id": "widget.embed",
+    "rationale": "Widget embedding and configuration. Pure UI component management, no LLM needed."
+  },
+  {
+    "id": "P1.2",
+    "name": "Real-time Synchronization",
+    "tier": "P1",
+    "class": "UI_TOOL",
+    "backend_routes": [
+      "WS /api/p1/sync/connect",
+      "POST /api/p1/sync/update"
+    ],
+    "requires_auth": true,
+    "telemetry_id": "sync.update",
+    "rationale": "WebSocket-based real-time updates. Pure state synchronization, no LLM needed."
+  },
+  {
+    "id": "P1.3",
+    "name": "Speaker Notes UI",
+    "tier": "P1",
+    "class": "UI_TOOL",
+    "backend_routes": [
+      "POST /api/p1/notes",
+      "GET /api/p1/notes/:slideId",
+      "PUT /api/p1/notes/:slideId"
+    ],
+    "requires_auth": true,
+    "telemetry_id": "notes.save",
+    "rationale": "Text editor for presenter notes. Pure CRUD operations, no LLM needed."
+  },
+  {
+    "id": "P1.4",
+    "name": "Slide Duplication & Reordering",
+    "tier": "P1",
+    "class": "UI_TOOL",
+    "backend_routes": [
+      "POST /api/p1/slides/duplicate",
+      "POST /api/p1/slides/reorder",
+      "DELETE /api/p1/slides/:id"
+    ],
+    "requires_auth": true,
+    "telemetry_id": "slide.duplicate",
+    "rationale": "Copy/paste slides, drag-and-drop reordering. Pure state management, no LLM needed."
+  },
+  {
+    "id": "P1.5",
+    "name": "Template Library",
+    "tier": "P1",
+    "class": "UI_TOOL",
+    "backend_routes": [
+      "GET /api/p1/templates",
+      "GET /api/p1/templates/:id",
+      "POST /api/p1/templates/apply"
+    ],
+    "requires_auth": true,
+    "telemetry_id": "template.apply",
+    "rationale": "Template browsing and application. Pure UI state management, no LLM needed."
+  },
+  {
+    "id": "P1.6",
+    "name": "Multi-Language Support (i18n)",
+    "tier": "P1",
+    "class": "UI_TOOL",
+    "backend_routes": [
+      "POST /api/p1/i18n/translate",
+      "GET /api/p1/i18n/languages"
+    ],
+    "requires_auth": true,
+    "telemetry_id": "i18n.switch",
+    "rationale": "Internationalization with 10 languages, RTL support. Uses translation dictionaries and i18n libraries. Translation could optionally use LLM but core is dictionary-based."
+  },
+  {
+    "id": "P1.7",
+    "name": "Video Embed Support",
+    "tier": "P1",
+    "class": "UI_TOOL",
+    "backend_routes": [
+      "POST /api/p1/video/embed",
+      "GET /api/p1/video/providers"
+    ],
+    "requires_auth": true,
+    "telemetry_id": "video.embed",
+    "rationale": "YouTube/Vimeo embedding via iframe codes. Pure URL parsing and embed code generation, no LLM needed."
+  },
+  {
+    "id": "P1.8",
+    "name": "Custom Font Upload",
+    "tier": "P1",
+    "class": "UI_TOOL",
+    "backend_routes": [
+      "POST /api/p1/fonts/upload",
+      "GET /api/p1/fonts",
+      "DELETE /api/p1/fonts/:id"
+    ],
+    "requires_auth": true,
+    "telemetry_id": "font.upload",
+    "rationale": "TTF/OTF/WOFF font file upload and management. Pure file handling, no LLM needed."
+  },
+  {
+    "id": "P1.9",
+    "name": "Collaboration Features",
+    "tier": "P1",
+    "class": "UI_TOOL",
+    "backend_routes": [
+      "POST /api/p1/collaboration/share",
+      "GET /api/p1/collaboration/:presentationId",
+      "POST /api/p1/collaboration/comment"
+    ],
+    "requires_auth": true,
+    "telemetry_id": "collab.share",
+    "rationale": "Real-time collaboration, comments, permissions. Pure state management and WebSocket, no LLM needed."
+  },
+  {
+    "id": "P1.10",
+    "name": "Version History",
+    "tier": "P1",
+    "class": "UI_TOOL",
+    "backend_routes": [
+      "POST /api/p1/versions/save",
+      "GET /api/p1/versions/:presentationId",
+      "POST /api/p1/versions/restore"
+    ],
+    "requires_auth": true,
+    "telemetry_id": "version.save",
+    "rationale": "Snapshot-based version control with restore. Pure state management, no LLM needed."
+  },
+  {
+    "id": "P1.11",
+    "name": "AI Image Generation (DALL-E 3)",
+    "tier": "P1",
+    "class": "LLM_CALL",
+    "backend_routes": [
+      "POST /api/p1/ai/generate-image",
+      "GET /api/p1/ai/history"
+    ],
+    "requires_auth": true,
+    "telemetry_id": "ai.image.generate",
+    "rationale": "Direct DALL-E 3 API call for image generation. Single request-response pattern with prompt → image URL."
+  },
+  {
+    "id": "P1.12",
+    "name": "Data Import (CSV, Excel, JSON)",
+    "tier": "P1",
+    "class": "UI_TOOL",
+    "backend_routes": [
+      "POST /api/p1/data/import",
+      "POST /api/p1/data/convert-to-chart"
+    ],
+    "requires_auth": true,
+    "telemetry_id": "data.import",
+    "rationale": "CSV/Excel/JSON parsing and chart generation. Pure file parsing (PapaParse, xlsx libraries), no LLM needed."
+  },
+  {
+    "id": "P1.13",
+    "name": "Presentation Analytics",
+    "tier": "P1",
+    "class": "UI_TOOL",
+    "backend_routes": [
+      "POST /api/p1/analytics/track",
+      "GET /api/p1/analytics/:presentationId",
+      "POST /api/p1/analytics/export"
+    ],
+    "requires_auth": true,
+    "telemetry_id": "analytics.track",
+    "rationale": "View tracking, engagement metrics, analytics dashboard. Pure data aggregation and visualization, no LLM needed."
+  },
+  {
+    "id": "P1.14",
+    "name": "Mobile App (React Native)",
+    "tier": "P1",
+    "class": "UI_TOOL",
+    "backend_routes": [
+      "POST /api/p1/mobile/sync",
+      "GET /api/p1/mobile/settings"
+    ],
+    "requires_auth": true,
+    "telemetry_id": "mobile.sync",
+    "rationale": "Mobile app sync and offline mode. Pure state synchronization, no LLM needed."
+  },
+  {
+    "id": "P1.15",
+    "name": "Live Presentation Mode",
+    "tier": "P1",
+    "class": "UI_TOOL",
+    "backend_routes": [
+      "POST /api/p1/live/start",
+      "POST /api/p1/live/join/:sessionId",
+      "POST /api/p1/live/navigate"
+    ],
+    "requires_auth": true,
+    "telemetry_id": "live.start",
+    "rationale": "WebSocket-based live presentation with slide navigation sync. Pure real-time state management, no LLM needed."
+  },
+  {
+    "id": "P2.1",
+    "name": "Voice Narration (Text-to-Speech)",
+    "tier": "P2",
+    "class": "LLM_CALL",
+    "backend_routes": [
+      "POST /api/p2/narration/generate",
+      "GET /api/p2/narration/voices"
+    ],
+    "requires_auth": true,
+    "telemetry_id": "narration.generate",
+    "rationale": "Web Speech API or cloud TTS service (Google TTS, Amazon Polly). Direct API call text → audio, single request-response."
+  },
+  {
+    "id": "P2.2",
+    "name": "API Access for Developers",
+    "tier": "P2",
+    "class": "UI_TOOL",
+    "backend_routes": [
+      "POST /api/p2/api-keys/generate",
+      "GET /api/p2/api-keys",
+      "DELETE /api/p2/api-keys/:id"
+    ],
+    "requires_auth": true,
+    "telemetry_id": "apikey.generate",
+    "rationale": "API key management, rate limiting configuration. Pure CRUD operations, no LLM needed."
+  },
+  {
+    "id": "P2.3",
+    "name": "Interactive Elements (Polls, Quizzes, Q&A)",
+    "tier": "P2",
+    "class": "UI_TOOL",
+    "backend_routes": [
+      "POST /api/p2/interactive/create-poll",
+      "POST /api/p2/interactive/create-quiz",
+      "GET /api/p2/interactive/results/:id"
+    ],
+    "requires_auth": true,
+    "telemetry_id": "interactive.create",
+    "rationale": "Poll/quiz creation and result aggregation. Pure UI form handling and data collection, no LLM needed."
+  },
+  {
+    "id": "P2.4",
+    "name": "Themes Marketplace",
+    "tier": "P2",
+    "class": "UI_TOOL",
+    "backend_routes": [
+      "GET /api/p2/themes/browse",
+      "POST /api/p2/themes/purchase",
+      "POST /api/p2/themes/install"
+    ],
+    "requires_auth": true,
+    "telemetry_id": "theme.purchase",
+    "rationale": "Theme browsing, purchasing, installation. E-commerce and theme management, no LLM needed."
+  },
+  {
+    "id": "P2.5",
+    "name": "3D Animations (Three.js)",
+    "tier": "P2",
+    "class": "UI_TOOL",
+    "backend_routes": [
+      "POST /api/p2/3d/create-scene",
+      "POST /api/p2/3d/add-object",
+      "POST /api/p2/3d/render"
+    ],
+    "requires_auth": true,
+    "telemetry_id": "3d.create",
+    "rationale": "Three.js 3D scene creation and rendering. Pure WebGL rendering, no LLM needed."
+  },
+  {
+    "id": "P2.6",
+    "name": "Design Import (Figma/Sketch)",
+    "tier": "P2",
+    "class": "UI_TOOL",
+    "backend_routes": [
+      "POST /api/p2/design/import",
+      "GET /api/p2/design/history"
+    ],
+    "requires_auth": true,
+    "telemetry_id": "design.import",
+    "rationale": "Figma/Sketch file parsing and conversion to slides. Pure file format parsing and conversion, no LLM needed."
+  },
+  {
+    "id": "P2.7",
+    "name": "AR Presentation (WebXR)",
+    "tier": "P2",
+    "class": "UI_TOOL",
+    "backend_routes": [
+      "POST /api/p2/ar/initialize",
+      "POST /api/p2/ar/place-slide",
+      "POST /api/p2/ar/end"
+    ],
+    "requires_auth": true,
+    "telemetry_id": "ar.start",
+    "rationale": "WebXR AR session management. Pure browser AR API, no LLM needed."
+  },
+  {
+    "id": "P2.8",
+    "name": "Blockchain NFTs",
+    "tier": "P2",
+    "class": "UI_TOOL",
+    "backend_routes": [
+      "POST /api/p2/nft/mint",
+      "POST /api/p2/nft/transfer",
+      "GET /api/p2/nft/owned"
+    ],
+    "requires_auth": true,
+    "telemetry_id": "nft.mint",
+    "rationale": "Web3/Ethers.js blockchain integration for NFT minting. Pure smart contract interaction, no LLM needed."
+  }
+]

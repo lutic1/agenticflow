@@ -1,0 +1,56 @@
+{
+  "name": "@agenticflow/slide-designer-frontend",
+  "version": "1.0.0",
+  "description": "Production-ready API client for slide-designer backend integration",
+  "type": "module",
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": "./index.js",
+    "./types": "./types/backend.js",
+    "./hooks": "./hooks/use-backend.js",
+    "./api": "./api/backend-client.js",
+    "./schemas": "./schemas/backend.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ext .ts,.tsx"
+  },
+  "dependencies": {
+    "zod": "^3.22.4"
+  },
+  "peerDependencies": {
+    "@tanstack/react-query": "^5.0.0",
+    "react": "^18.0.0 || ^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@types/react": "^18.2.0",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "eslint": "^8.56.0",
+    "typescript": "^5.3.3"
+  },
+  "keywords": [
+    "slide-designer",
+    "api-client",
+    "typescript",
+    "react-query",
+    "zod",
+    "validation",
+    "type-safety"
+  ],
+  "author": "Agentic Flow Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/agenticflow/agenticflow.git",
+    "directory": "src/slide-designer/frontend-integration"
+  },
+  "bugs": {
+    "url": "https://github.com/agenticflow/agenticflow/issues"
+  },
+  "homepage": "https://github.com/agenticflow/agenticflow#readme"
+}

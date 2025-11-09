@@ -1,86 +1,84 @@
 /**
  * AI Badge Component
- * Displays a visual indicator for AI-powered features
- * Used to differentiate LLM-based features from standard UI tools
+ *
+ * Purpose: Clearly differentiate AI-powered features from manual tools
+ * Usage: Add to all LLM-based features (AI Image Gen, Voice Narration, LLM Judge)
+ *
+ * Features:
+ * - Gradient background (purple to blue)
+ * - Sparkle icon
+ * - Custom text support
+ * - Multiple variants (default, compact, large)
+ * - Glow effect on hover
  */
 
 'use client';
 
 import { Sparkles } from 'lucide-react';
-import { cn } from '@/lib/utils';
+
+type AIBadgeVariant = 'default' | 'compact' | 'large';
 
 interface AIBadgeProps {
-  /** Size variant */
-  size?: 'sm' | 'md' | 'lg';
-  /** Custom className */
+  children?: React.ReactNode;
+  variant?: AIBadgeVariant;
   className?: string;
-  /** Show icon */
   showIcon?: boolean;
-  /** Show text label */
-  showText?: boolean;
-  /** Animate on hover */
-  animate?: boolean;
+  glow?: boolean;
 }
 
 export function AIBadge({
-  size = 'sm',
-  className,
+  children = 'AI POWERED',
+  variant = 'default',
+  className = '',
   showIcon = true,
-  showText = true,
-  animate = true,
+  glow = false,
 }: AIBadgeProps) {
-  const sizeStyles = {
-    sm: 'text-xs px-1.5 py-0.5 gap-1',
-    md: 'text-sm px-2 py-1 gap-1.5',
-    lg: 'text-base px-3 py-1.5 gap-2',
+  const variants = {
+    compact: 'px-2 py-0.5 text-[10px] gap-1',
+    default: 'px-2.5 py-1 text-xs gap-1.5',
+    large: 'px-3 py-1.5 text-sm gap-2',
   };
 
   const iconSizes = {
-    sm: 'w-3 h-3',
-    md: 'w-4 h-4',
-    lg: 'w-5 h-5',
+    compact: 'w-2.5 h-2.5',
+    default: 'w-3 h-3',
+    large: 'w-4 h-4',
   };
 
   return (
-    <span
-      className={cn(
-        'inline-flex items-center font-medium bg-gradient-to-r from-purple-500 to-blue-600 text-white rounded-md',
-        sizeStyles[size],
-        animate && 'transition-all hover:shadow-lg hover:scale-105',
-        className
-      )}
+    <div
+      className={`
+        inline-flex items-center justify-center
+        ${variants[variant]}
+        bg-gradient-to-r from-purple-600 via-purple-500 to-blue-600
+        text-white rounded-full font-bold tracking-wide
+        shadow-md
+        ${glow ? 'shadow-purple-500/40 hover:shadow-purple-500/60' : ''}
+        transition-shadow duration-300
+        ${className}
+      `}
     >
-      {showIcon && (
-        <Sparkles
-          className={cn(
-            iconSizes[size],
-            animate && 'animate-pulse'
-          )}
-        />
-      )}
-      {showText && <span>AI</span>}
-    </span>
+      {showIcon && <Sparkles className={`${iconSizes[variant]} animate-pulse`} />}
+      <span>{children}</span>
+    </div>
   );
 }
 
 /**
- * AI Feature Badge - Larger badge with tooltip support
+ * AI Feature Badge - Larger badge with tooltip support (backward compatibility)
  */
-interface AIFeatureBadgeProps extends AIBadgeProps {
-  /** Feature name */
+interface AIFeatureBadgeProps {
   feature?: string;
+  variant?: AIBadgeVariant;
+  showIcon?: boolean;
+  glow?: boolean;
 }
 
 export function AIFeatureBadge({
   feature = 'AI-Powered',
-  ...props
+  variant = 'default',
+  showIcon = true,
+  glow = false,
 }: AIFeatureBadgeProps) {
-  return (
-    <div className="inline-flex items-center gap-2">
-      <AIBadge {...props} />
-      {feature && (
-        <span className="text-xs text-gray-500 font-medium">{feature}</span>
-      )}
-    </div>
-  );
+  return <AIBadge variant={variant} showIcon={showIcon} glow={glow}>{feature}</AIBadge>;
 }

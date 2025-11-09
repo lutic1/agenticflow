@@ -1,313 +1,285 @@
 /**
- * Editor Toolbar Component
- * Top-level toolbar with File/Edit/View/Tools dropdown menus
- * Includes keyboard shortcuts and AI feature indicators
+ * Icon-Based Editor Toolbar
+ *
+ * Purpose: Replace vertical sidebar with horizontal icon-based toolbar
+ *
+ * Features:
+ * - Icon-only buttons with tooltips
+ * - Grouped tools in dropdowns (max 15-18 visible items)
+ * - Visual hierarchy (large Export, grouped AI tools)
+ * - Keyboard shortcuts
+ * - Responsive (hamburger menu on mobile)
+ *
+ * Improvements over old sidebar:
+ * - Uses horizontal space efficiently
+ * - Clearer visual hierarchy
+ * - Less overwhelming (dropdowns hide complexity)
+ * - AI tools visually distinct
  */
 
 'use client';
 
 import { useState } from 'react';
 import {
-  FileText,
-  FolderOpen,
-  Save,
-  Download,
-  Upload,
-  Copy,
-  RotateCcw,
-  RotateCw,
-  Layout as LayoutIcon,
-  Eye,
-  StickyNote,
-  Wrench,
+  Layout,
+  Type,
+  Palette,
+  BarChart3,
+  AlignLeft,
+  Image as ImageIcon,
+  FileImage,
   Sparkles,
-  Volume2,
+  Eye,
+  Download,
   CheckCircle,
+  Undo,
+  Redo,
+  ChevronDown,
   Menu,
 } from 'lucide-react';
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import * as Tooltip from '@radix-ui/react-tooltip';
 import { AIBadge } from '@/components/ui/AIBadge';
-import { cn } from '@/lib/utils';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-  DropdownMenuShortcut,
-} from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
 
-interface EditorToolbarProps {
-  /** Presentation ID */
-  presentationId: string;
-  /** Undo handler */
-  onUndo?: () => void;
-  /** Redo handler */
-  onRedo?: () => void;
-  /** Can undo */
-  canUndo?: boolean;
-  /** Can redo */
-  canRedo?: boolean;
-  /** Current view mode */
-  viewMode?: 'slide' | 'grid' | 'outline';
-  /** View mode change handler */
-  onViewModeChange?: (mode: 'slide' | 'grid' | 'outline') => void;
+interface Tool {
+  id: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  shortcut?: string;
+  onClick: () => void;
 }
 
-export function EditorToolbar({
-  presentationId,
-  onUndo,
-  onRedo,
-  canUndo = true,
-  canRedo = true,
-  viewMode = 'slide',
-  onViewModeChange,
-}: EditorToolbarProps) {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  return (
-    <div className="flex items-center gap-2 px-4 py-2 bg-white border-b border-gray-200">
-      {/* Mobile Menu Toggle */}
-      <Button
-        variant="ghost"
-        size="sm"
-        className="lg:hidden"
-        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-      >
-        <Menu className="w-4 h-4" />
-      </Button>
-
-      {/* Desktop Menu */}
-      <div className="hidden lg:flex items-center gap-1">
-        {/* File Menu */}
-        <FileDropdown presentationId={presentationId} />
-
-        {/* Edit Menu */}
-        <EditDropdown
-          onUndo={onUndo}
-          onRedo={onRedo}
-          canUndo={canUndo}
-          canRedo={canRedo}
-        />
-
-        {/* View Menu */}
-        <ViewDropdown
-          currentMode={viewMode}
-          onModeChange={onViewModeChange}
-        />
-
-        {/* Tools Menu */}
-        <ToolsDropdown />
-      </div>
-
-      {/* Spacer */}
-      <div className="flex-1" />
-
-      {/* Quick Actions */}
-      <div className="flex items-center gap-2">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onUndo}
-          disabled={!canUndo}
-          title="Undo (⌘Z)"
-        >
-          <RotateCcw className="w-4 h-4" />
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onRedo}
-          disabled={!canRedo}
-          title="Redo (⌘⇧Z)"
-        >
-          <RotateCw className="w-4 h-4" />
-        </Button>
-      </div>
-    </div>
-  );
+interface ToolGroup {
+  id: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  shortcut?: string;
+  items: Tool[];
 }
 
-/**
- * File Dropdown Menu
- */
-function FileDropdown({ presentationId }: { presentationId: string }) {
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="font-normal">
-          File
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="w-56">
-        <DropdownMenuItem>
-          <FileText className="w-4 h-4 mr-2" />
-          New Presentation
-          <DropdownMenuShortcut>⌘N</DropdownMenuShortcut>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <FolderOpen className="w-4 h-4 mr-2" />
-          Open
-          <DropdownMenuShortcut>⌘O</DropdownMenuShortcut>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <Save className="w-4 h-4 mr-2" />
-          Save
-          <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Save className="w-4 h-4 mr-2" />
-          Save As...
-          <DropdownMenuShortcut>⌘⇧S</DropdownMenuShortcut>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <Download className="w-4 h-4 mr-2" />
-          Export
-          <DropdownMenuShortcut>⌘E</DropdownMenuShortcut>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Upload className="w-4 h-4 mr-2" />
-          Import Data
-          <DropdownMenuShortcut>⌘I</DropdownMenuShortcut>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-}
+export function EditorToolbar() {
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
-/**
- * Edit Dropdown Menu
- */
-function EditDropdown({
-  onUndo,
-  onRedo,
-  canUndo,
-  canRedo,
-}: {
-  onUndo?: () => void;
-  onRedo?: () => void;
-  canUndo: boolean;
-  canRedo: boolean;
-}) {
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="font-normal">
-          Edit
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="w-56">
-        <DropdownMenuItem onClick={onUndo} disabled={!canUndo}>
-          <RotateCcw className="w-4 h-4 mr-2" />
-          Undo
-          <DropdownMenuShortcut>⌘Z</DropdownMenuShortcut>
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={onRedo} disabled={!canRedo}>
-          <RotateCw className="w-4 h-4 mr-2" />
-          Redo
-          <DropdownMenuShortcut>⌘⇧Z</DropdownMenuShortcut>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <Copy className="w-4 h-4 mr-2" />
-          Duplicate Slide
-          <DropdownMenuShortcut>⌘D</DropdownMenuShortcut>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-}
+  // Define tool groups
+  const toolGroups: ToolGroup[] = [
+    {
+      id: 'layout',
+      label: 'Layout',
+      icon: Layout,
+      shortcut: 'L',
+      items: [
+        { id: 'grid', label: 'Grid Layout', icon: Layout, shortcut: 'G', onClick: () => {} },
+        { id: 'typography', label: 'Typography', icon: Type, shortcut: 'T', onClick: () => {} },
+        { id: 'colors', label: 'Colors', icon: Palette, shortcut: 'C', onClick: () => {} },
+      ],
+    },
+    {
+      id: 'content',
+      label: 'Content',
+      icon: BarChart3,
+      shortcut: 'I',
+      items: [
+        { id: 'charts', label: 'Insert Chart', icon: BarChart3, onClick: () => {} },
+        { id: 'text-overflow', label: 'Text Overflow', icon: AlignLeft, onClick: () => {} },
+        { id: 'images', label: 'Optimize Images', icon: ImageIcon, onClick: () => {} },
+      ],
+    },
+    {
+      id: 'quality',
+      label: 'Quality',
+      icon: CheckCircle,
+      shortcut: 'Q',
+      items: [
+        { id: 'validate', label: 'Validate Content', icon: CheckCircle, onClick: () => {} },
+        { id: 'accessibility', label: 'Accessibility', icon: Eye, onClick: () => {} },
+      ],
+    },
+  ];
 
-/**
- * View Dropdown Menu
- */
-function ViewDropdown({
-  currentMode,
-  onModeChange,
-}: {
-  currentMode: 'slide' | 'grid' | 'outline';
-  onModeChange?: (mode: 'slide' | 'grid' | 'outline') => void;
-}) {
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="font-normal">
-          View
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="w-56">
-        <DropdownMenuItem
-          onClick={() => onModeChange?.('grid')}
-          className={cn(currentMode === 'grid' && 'bg-gray-100')}
-        >
-          <LayoutIcon className="w-4 h-4 mr-2" />
-          Grid View
-          <DropdownMenuShortcut>⌘1</DropdownMenuShortcut>
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => onModeChange?.('outline')}
-          className={cn(currentMode === 'outline' && 'bg-gray-100')}
-        >
-          <FileText className="w-4 h-4 mr-2" />
-          Outline View
-          <DropdownMenuShortcut>⌘2</DropdownMenuShortcut>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <StickyNote className="w-4 h-4 mr-2" />
-          Speaker Notes
-          <DropdownMenuShortcut>⌘3</DropdownMenuShortcut>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Eye className="w-4 h-4 mr-2" />
-          Preview Mode
-          <DropdownMenuShortcut>⌘P</DropdownMenuShortcut>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-}
+  const aiTools: Tool[] = [
+    { id: 'ai-images', label: 'AI Images', icon: Sparkles, shortcut: 'Ctrl+I', onClick: () => {} },
+    { id: 'ai-quality', label: 'AI Quality', icon: Sparkles, shortcut: 'Ctrl+Q', onClick: () => {} },
+  ];
 
-/**
- * Tools Dropdown Menu
- */
-function ToolsDropdown() {
+  const standaloneTool = [
+    { id: 'master', label: 'Master Slides', icon: FileImage, onClick: () => {} },
+  ];
+
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="font-normal">
-          Tools
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="w-64">
-        <DropdownMenuItem>
-          <Sparkles className="w-4 h-4 mr-2" />
-          Transitions
-          <DropdownMenuShortcut>⌘T</DropdownMenuShortcut>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <CheckCircle className="w-4 h-4 mr-2" />
-          Accessibility Check
-          <DropdownMenuShortcut>⌘A</DropdownMenuShortcut>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem className="flex items-center justify-between">
-          <div className="flex items-center">
-            <Volume2 className="w-4 h-4 mr-2" />
-            Voice Narration
+    <Tooltip.Provider delayDuration={300}>
+      <div className="flex items-center gap-1 px-4 py-2 border-b border-gray-200 bg-white">
+        {/* Mobile Menu Button */}
+        <button className="md:hidden p-2 hover:bg-gray-100 rounded-lg">
+          <Menu className="w-5 h-5" />
+        </button>
+
+        {/* Tool Groups (Desktop) */}
+        <div className="hidden md:flex items-center gap-1">
+          {toolGroups.map((group) => (
+            <ToolDropdown key={group.id} group={group} />
+          ))}
+
+          <div className="w-px h-6 bg-gray-300 mx-1" />
+
+          {/* Standalone Tools */}
+          {standaloneTool.map((tool) => (
+            <ToolButton key={tool.id} tool={tool} />
+          ))}
+
+          <div className="w-px h-6 bg-gray-300 mx-1" />
+
+          {/* AI Tools Group - Visually Distinct */}
+          <div className="flex items-center gap-1 px-2 py-1 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border border-purple-200">
+            <AIBadge variant="compact" className="mr-1">
+              AI
+            </AIBadge>
+            {aiTools.map((tool) => (
+              <ToolButton key={tool.id} tool={tool} variant="ai" />
+            ))}
           </div>
-          <AIBadge size="sm" showText={false} />
-        </DropdownMenuItem>
-        <DropdownMenuItem className="flex items-center justify-between">
-          <div className="flex items-center">
-            <Sparkles className="w-4 h-4 mr-2" />
-            AI Image Generator
+        </div>
+
+        {/* Right Side Actions */}
+        <div className="ml-auto flex items-center gap-2">
+          {/* Undo/Redo */}
+          <div className="hidden sm:flex items-center gap-1">
+            <Tooltip.Root>
+              <Tooltip.Trigger asChild>
+                <button className="p-2 hover:bg-gray-100 rounded-lg disabled:opacity-50 transition-colors">
+                  <Undo className="w-4 h-4 text-gray-600" />
+                </button>
+              </Tooltip.Trigger>
+              <Tooltip.Portal>
+                <Tooltip.Content
+                  className="bg-gray-900 text-white text-xs px-3 py-2 rounded shadow-lg z-50"
+                  sideOffset={5}
+                >
+                  Undo (Ctrl+Z)
+                  <Tooltip.Arrow className="fill-gray-900" />
+                </Tooltip.Content>
+              </Tooltip.Portal>
+            </Tooltip.Root>
+
+            <Tooltip.Root>
+              <Tooltip.Trigger asChild>
+                <button className="p-2 hover:bg-gray-100 rounded-lg disabled:opacity-50 transition-colors">
+                  <Redo className="w-4 h-4 text-gray-600" />
+                </button>
+              </Tooltip.Trigger>
+              <Tooltip.Portal>
+                <Tooltip.Content
+                  className="bg-gray-900 text-white text-xs px-3 py-2 rounded shadow-lg z-50"
+                  sideOffset={5}
+                >
+                  Redo (Ctrl+Y)
+                  <Tooltip.Arrow className="fill-gray-900" />
+                </Tooltip.Content>
+              </Tooltip.Portal>
+            </Tooltip.Root>
+
+            <div className="w-px h-6 bg-gray-300 mx-1" />
           </div>
-          <AIBadge size="sm" showText={false} />
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+
+          {/* Export Button - Primary Action */}
+          <button className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors">
+            <Download className="w-4 h-4" />
+            <span>Export</span>
+          </button>
+        </div>
+      </div>
+    </Tooltip.Provider>
+  );
+}
+
+/**
+ * Tool Dropdown Component
+ * Groups multiple related tools
+ */
+function ToolDropdown({ group }: { group: ToolGroup }) {
+  return (
+    <DropdownMenu.Root>
+      <Tooltip.Root>
+        <Tooltip.Trigger asChild>
+          <DropdownMenu.Trigger asChild>
+            <button className="flex items-center gap-1 px-2 py-2 hover:bg-gray-100 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <group.icon className="w-5 h-5 text-gray-600" />
+              <ChevronDown className="w-3 h-3 text-gray-400" />
+            </button>
+          </DropdownMenu.Trigger>
+        </Tooltip.Trigger>
+        <Tooltip.Portal>
+          <Tooltip.Content
+            className="bg-gray-900 text-white text-xs px-3 py-2 rounded shadow-lg z-50"
+            sideOffset={5}
+          >
+            {group.label}
+            {group.shortcut && (
+              <kbd className="ml-2 px-1 bg-white/20 rounded text-[10px]">{group.shortcut}</kbd>
+            )}
+            <Tooltip.Arrow className="fill-gray-900" />
+          </Tooltip.Content>
+        </Tooltip.Portal>
+      </Tooltip.Root>
+
+      <DropdownMenu.Portal>
+        <DropdownMenu.Content
+          className="min-w-[200px] bg-white rounded-lg shadow-xl border border-gray-200 p-1 z-50"
+          sideOffset={5}
+        >
+          {group.items.map((item) => (
+            <DropdownMenu.Item
+              key={item.id}
+              className="flex items-center gap-3 px-3 py-2 hover:bg-gray-100 rounded-md cursor-pointer outline-none"
+              onClick={item.onClick}
+            >
+              <item.icon className="w-4 h-4 text-gray-600" />
+              <span className="flex-1 text-sm text-gray-900">{item.label}</span>
+              {item.shortcut && (
+                <kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-[10px] text-gray-600 font-mono">
+                  {item.shortcut}
+                </kbd>
+              )}
+            </DropdownMenu.Item>
+          ))}
+        </DropdownMenu.Content>
+      </DropdownMenu.Portal>
+    </DropdownMenu.Root>
+  );
+}
+
+/**
+ * Individual Tool Button
+ * Icon-only with tooltip
+ */
+function ToolButton({ tool, variant = 'default' }: { tool: Tool; variant?: 'default' | 'ai' }) {
+  return (
+    <Tooltip.Root>
+      <Tooltip.Trigger asChild>
+        <button
+          onClick={tool.onClick}
+          className={`
+            p-2 rounded-lg transition-all
+            ${variant === 'ai' ? 'hover:bg-purple-100' : 'hover:bg-gray-100'}
+            focus:outline-none focus:ring-2 focus:ring-blue-500
+          `}
+        >
+          <tool.icon
+            className={`w-5 h-5 ${variant === 'ai' ? 'text-purple-600' : 'text-gray-600'}`}
+          />
+        </button>
+      </Tooltip.Trigger>
+      <Tooltip.Portal>
+        <Tooltip.Content
+          className="bg-gray-900 text-white text-xs px-3 py-2 rounded shadow-lg z-50"
+          sideOffset={5}
+        >
+          {tool.label}
+          {tool.shortcut && (
+            <kbd className="ml-2 px-1 bg-white/20 rounded text-[10px]">{tool.shortcut}</kbd>
+          )}
+          <Tooltip.Arrow className="fill-gray-900" />
+        </Tooltip.Content>
+      </Tooltip.Portal>
+    </Tooltip.Root>
   );
 }

@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Plus, Search, BookOpen } from "lucide-react"
 import TemplateSelector from "@/components/template-selector"
 import SlidesGenerator from "@/components/slides-generator"
+import { ProfileDropdown } from "@/components/auth/ProfileDropdown"
 
 const SAMPLE_PROMPTS = [
   "Design a pitch deck for a startup seeking funding",
@@ -332,9 +333,7 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-4">
-            <button className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-xs font-semibold hover:opacity-80 transition">
-              U
-            </button>
+            <ProfileDropdown />
           </div>
         </div>
 

@@ -48,7 +48,12 @@
     "docker:bench": "cd tests/docker && docker-compose -f docker-compose.parallel.yml up --build benchmark",
     "profile": "0x -- node benchmarks/quic-transport.bench.js",
     "lint": "eslint . --ext .ts,.js",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:contract": "jest tests/contract/backend-contracts.test.ts --verbose",
+    "test:contract:watch": "jest tests/contract/backend-contracts.test.ts --watch",
+    "test:schema-drift": "jest tests/contract/schema-drift.test.ts --verbose",
+    "test:contract:all": "jest tests/contract --verbose",
+    "test:contract:coverage": "jest tests/contract --coverage"
   },
   "keywords": [
     "quic",
@@ -85,6 +90,7 @@
     "0x": "^5.6.0",
     "eslint": "^8.53.0",
     "jest": "^29.7.0",
+    "ts-jest": "^29.4.5",
     "typescript": "^5.9.3"
   }
 }

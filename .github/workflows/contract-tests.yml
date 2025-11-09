@@ -1,0 +1,204 @@
+name: Contract Tests - Breaking Change Gate
+
+on:
+  pull_request:
+    paths:
+      - 'src/slide-designer/**'
+      - 'tests/contract/**'
+      - 'package.json'
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+jobs:
+  contract-tests:
+    name: Backend Contract Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    strategy:
+      matrix:
+        node-version: ['18.x', '20.x']
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run contract tests
+        run: npm run test:contract
+        env:
+          NODE_ENV: test
+          # GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }} # Optional for full tests
+
+      - name: Run schema drift detection
+        run: npm run test:schema-drift
+        env:
+          NODE_ENV: test
+
+      - name: Generate contract test report
+        if: always()
+        run: |
+          echo "## Contract Test Results 📋" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Node version: ${{ matrix.node-version }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: contract-test-results-${{ matrix.node-version }}
+          path: |
+            coverage/
+            test-results/
+          retention-days: 30
+
+      - name: Comment on PR (on failure)
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## ❌ Contract Tests Failed
+
+              This PR introduces breaking changes to the backend API contracts.
+
+              **What this means:**
+              - The frontend may break when using these changes
+              - Existing API consumers will need updates
+              - This requires a major version bump
+
+              **Next steps:**
+              1. Review the test failures in the workflow logs
+              2. Update the contract tests if the changes are intentional
+              3. Update BACKEND_CONTRACTS.md documentation
+              4. Coordinate with frontend team for migration
+              5. Consider deprecation strategy instead of breaking changes
+
+              **View full results:** [Workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+              `
+            })
+
+  breaking-change-detection:
+    name: Detect Breaking Changes
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout PR
+        uses: actions/checkout@v4
+
+      - name: Checkout main branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: main-branch
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Install dependencies (PR)
+        run: npm ci
+
+      - name: Install dependencies (main)
+        run: npm ci
+        working-directory: main-branch
+
+      - name: Compare API exports
+        run: |
+          echo "Comparing API exports between main and PR..."
+
+          # Extract exports from index.ts
+          grep -E "^export " src/slide-designer/index.ts | sort > /tmp/pr-exports.txt || true
+          grep -E "^export " main-branch/src/slide-designer/index.ts | sort > /tmp/main-exports.txt || true
+
+          # Check for removed exports
+          REMOVED=$(comm -23 /tmp/main-exports.txt /tmp/pr-exports.txt)
+
+          if [ ! -z "$REMOVED" ]; then
+            echo "::error::Breaking changes detected: Removed exports"
+            echo "Removed exports:"
+            echo "$REMOVED"
+            echo ""
+            echo "BREAKING_CHANGES=true" >> $GITHUB_ENV
+          else
+            echo "✅ No exports removed"
+          fi
+
+          # Check for added exports (informational)
+          ADDED=$(comm -13 /tmp/main-exports.txt /tmp/pr-exports.txt)
+          if [ ! -z "$ADDED" ]; then
+            echo "ℹ️ New exports added:"
+            echo "$ADDED"
+          fi
+
+      - name: Fail on breaking changes
+        if: env.BREAKING_CHANGES == 'true'
+        run: |
+          echo "❌ Breaking changes detected!"
+          echo "This PR removes or modifies existing exports."
+          echo "Please review the changes and update contract tests."
+          exit 1
+
+  contract-coverage:
+    name: Contract Coverage Report
+    runs-on: ubuntu-latest
+    needs: contract-tests
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate coverage report
+        run: npm run test:contract -- --coverage --coverageReporters=json-summary
+
+      - name: Extract coverage
+        id: coverage
+        run: |
+          COVERAGE=$(node -p "
+            const c = require('./coverage/coverage-summary.json').total;
+            Math.round((c.lines.pct + c.statements.pct + c.functions.pct + c.branches.pct) / 4);
+          ")
+          echo "percentage=$COVERAGE" >> $GITHUB_OUTPUT
+
+      - name: Comment coverage on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const coverage = ${{ steps.coverage.outputs.percentage }};
+            const emoji = coverage >= 90 ? '🎉' : coverage >= 80 ? '✅' : '⚠️';
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## ${emoji} Contract Test Coverage: ${coverage}%
+
+              Contract tests ensure the backend API remains stable and backward compatible.
+              `
+            })

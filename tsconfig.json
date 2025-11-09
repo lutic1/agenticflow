@@ -28,10 +28,8 @@
     "allowUnusedLabels": true
   },
   "include": [
-    "src/slide-designer/types/**/*.ts",
-    "src/slide-designer/config/**/*.ts",
-    "src/slide-designer/utils/**/*.ts",
-    "src/slide-designer/templates/**/*.ts"
+    "src/**/*.ts",
+    "tests/**/*.ts"
   ],
   "exclude": [
     "node_modules",

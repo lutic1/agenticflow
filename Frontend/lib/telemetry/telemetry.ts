@@ -10,7 +10,7 @@
  */
 
 export type TelemetryEvent = {
-  type: 'api_call' | 'user_action' | 'error' | 'performance' | 'navigation';
+  type: 'api_call' | 'user_action' | 'error' | 'performance' | 'navigation' | 'auth';
   category: string;
   action: string;
   label?: string;
@@ -103,6 +103,16 @@ export class TelemetryService {
     });
   }
 
+  // Auth events
+  trackAuth(action: string, metadata?: Record<string, unknown>) {
+    this.track({
+      type: 'auth',
+      category: 'authentication',
+      action,
+      metadata,
+    });
+  }
+
   // Core tracking
   private track(event: Omit<TelemetryEvent, 'timestamp' | 'sessionId' | 'userId'>) {
     const fullEvent: TelemetryEvent = {
@@ -186,6 +196,7 @@ export class TelemetryService {
     const apiCalls = this.events.filter(e => e.type === 'api_call');
     const errors = this.events.filter(e => e.type === 'error');
     const userActions = this.events.filter(e => e.type === 'user_action');
+    const authEvents = this.events.filter(e => e.type === 'auth');
 
     const apiSuccesses = apiCalls.filter(e => e.label === 'success');
     const apiFailures = apiCalls.filter(e => e.label === 'error');
@@ -210,6 +221,10 @@ export class TelemetryService {
       userActions: {
         total: userActions.length,
         byAction: this.groupBy(userActions, 'action'),
+      },
+      auth: {
+        total: authEvents.length,
+        byAction: this.groupBy(authEvents, 'action'),
       },
       sessionId: this.sessionId,
       userId: this.userId,

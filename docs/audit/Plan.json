@@ -1,0 +1,1244 @@
+{
+  "version": "2.0.0",
+  "project": "Slide Designer - Frontend Integration & Feature Rollout",
+  "description": "Complete integration plan for 35 features (P0-P2) with authentication, placement design, and production deployment",
+  "created": "2025-11-09",
+  "tiers": ["P0", "P1", "P2"],
+  "totalFeatures": 35,
+  "completedFeatures": 12,
+  "remainingFeatures": 23,
+
+  "milestones": [
+    {
+      "phase": "0",
+      "name": "Discovery & Gap Analysis",
+      "tier": "P0",
+      "status": "completed",
+      "duration": "3 days",
+      "stories": [
+        {
+          "id": "DISC-001",
+          "title": "Frontend audit and gap analysis",
+          "description": "Audit existing frontend to identify missing integrations and components",
+          "owner": "Frontend Auditor",
+          "deliverables": [
+            "FrontendGapReport.md",
+            "ComponentMap.json",
+            "RouteMap.json"
+          ],
+          "tests": [],
+          "status": "completed",
+          "estimatedHours": 8
+        },
+        {
+          "id": "DISC-002",
+          "title": "Feature classification and prioritization",
+          "description": "Classify all 40 features into P0/P1/P2 tiers with implementation specs",
+          "owner": "Feature Classifier",
+          "deliverables": [
+            "FeatureClassification.json",
+            "FEATURE_EXTRACTION.md"
+          ],
+          "tests": [],
+          "status": "completed",
+          "estimatedHours": 12
+        },
+        {
+          "id": "DISC-003",
+          "title": "Backend integration API documentation",
+          "description": "Document all backend APIs and create integration guide",
+          "owner": "Backend Architect",
+          "deliverables": [
+            "API_CLIENT_GUIDE.md",
+            "backend-client.ts",
+            "backend types"
+          ],
+          "tests": [],
+          "status": "completed",
+          "estimatedHours": 6
+        }
+      ]
+    },
+
+    {
+      "phase": "1",
+      "name": "Authentication Foundation",
+      "tier": "P0",
+      "status": "pending",
+      "duration": "1 week",
+      "blockedBy": [],
+      "blocks": ["ALL_SUBSEQUENT_PHASES"],
+      "stories": [
+        {
+          "id": "AUTH-001",
+          "title": "Google OAuth integration",
+          "description": "Implement Google OAuth 2.0 sign-in with backend session management",
+          "pages": ["/login", "/signup", "/auth/callback"],
+          "components": [
+            "AuthProvider",
+            "LoginPage",
+            "SignupPage",
+            "GoogleOAuthButton"
+          ],
+          "tests": ["unit", "integration", "e2e"],
+          "deliverables": [
+            "AuthProvider.tsx",
+            "auth-service.ts",
+            "OAuth integration",
+            "Environment setup guide"
+          ],
+          "dependencies": [],
+          "status": "pending",
+          "estimatedHours": 24,
+          "priority": "critical"
+        },
+        {
+          "id": "AUTH-002",
+          "title": "Session management and profile avatar",
+          "description": "Implement secure session storage with user profile and avatar display",
+          "pages": ["/profile", "/settings"],
+          "components": [
+            "UserProfileDropdown",
+            "AvatarComponent",
+            "SessionManager"
+          ],
+          "tests": ["unit", "integration"],
+          "deliverables": [
+            "session-manager.ts",
+            "UserProfile components",
+            "Avatar upload"
+          ],
+          "dependencies": ["AUTH-001"],
+          "status": "pending",
+          "estimatedHours": 16,
+          "priority": "critical"
+        },
+        {
+          "id": "AUTH-003",
+          "title": "Protected route guards",
+          "description": "Implement route protection with redirect logic for authenticated routes",
+          "pages": ["/presentations/*", "/profile", "/settings"],
+          "components": [
+            "ProtectedRoute",
+            "AuthGuard",
+            "RedirectHandler"
+          ],
+          "tests": ["unit", "e2e"],
+          "deliverables": [
+            "ProtectedRoute.tsx",
+            "auth-guards.ts",
+            "Redirect logic"
+          ],
+          "dependencies": ["AUTH-001", "AUTH-002"],
+          "status": "pending",
+          "estimatedHours": 12,
+          "priority": "critical"
+        },
+        {
+          "id": "AUTH-004",
+          "title": "Authentication tests",
+          "description": "Comprehensive test suite for auth flow including E2E scenarios",
+          "pages": [],
+          "components": [],
+          "tests": ["unit", "integration", "e2e"],
+          "deliverables": [
+            "auth.test.tsx",
+            "oauth.test.ts",
+            "session.test.ts",
+            "e2e/auth-flow.spec.ts"
+          ],
+          "dependencies": ["AUTH-001", "AUTH-002", "AUTH-003"],
+          "status": "pending",
+          "estimatedHours": 16,
+          "priority": "high"
+        }
+      ]
+    },
+
+    {
+      "phase": "2",
+      "name": "Information Architecture & Placement Design",
+      "tier": "P0",
+      "status": "pending",
+      "duration": "4 days",
+      "blockedBy": ["AUTH-001"],
+      "stories": [
+        {
+          "id": "IA-001",
+          "title": "Design feature placement matrix",
+          "description": "Create comprehensive placement matrix mapping all 35 features to UI locations",
+          "pages": [],
+          "components": [],
+          "tests": [],
+          "deliverables": [
+            "PagePlacementMatrix.csv",
+            "FeaturePlacementSpec.md"
+          ],
+          "dependencies": ["AUTH-001"],
+          "status": "pending",
+          "estimatedHours": 12,
+          "priority": "high"
+        },
+        {
+          "id": "IA-002",
+          "title": "Create icon map and shortcuts",
+          "description": "Design iconography system with keyboard shortcuts for all features",
+          "pages": [],
+          "components": [],
+          "tests": [],
+          "deliverables": [
+            "IconMap.json",
+            "KeyboardShortcuts.json",
+            "ShortcutGuide.md"
+          ],
+          "dependencies": ["IA-001"],
+          "status": "pending",
+          "estimatedHours": 8,
+          "priority": "high"
+        },
+        {
+          "id": "IA-003",
+          "title": "Navigation structure design",
+          "description": "Design main navigation, sidebar, toolbar, and context menus",
+          "pages": [],
+          "components": [
+            "MainNav",
+            "EditorToolbar",
+            "FeatureSidebar",
+            "ContextMenu"
+          ],
+          "tests": [],
+          "deliverables": [
+            "NavigationSpec.md",
+            "Wireframes",
+            "Component hierarchy"
+          ],
+          "dependencies": ["IA-001", "IA-002"],
+          "status": "pending",
+          "estimatedHours": 12,
+          "priority": "high"
+        }
+      ]
+    },
+
+    {
+      "phase": "3",
+      "name": "P0 Features - Completed",
+      "tier": "P0",
+      "status": "completed",
+      "duration": "3 weeks",
+      "completedDate": "2025-11-09",
+      "stories": [
+        {
+          "id": "P0-001",
+          "title": "Grid Layout System",
+          "feature": "P0.1",
+          "description": "12-column grid with 6 layout templates and smart constraints",
+          "pages": ["/presentations/[id]/edit"],
+          "placements": ["toolbar:layout", "keyboard:Cmd+L"],
+          "components": ["GridLayoutEditor"],
+          "tests": ["unit", "integration", "e2e"],
+          "deliverables": [
+            "GridLayoutEditor.tsx",
+            "GridLayoutEditor.test.tsx"
+          ],
+          "status": "completed",
+          "estimatedHours": 16,
+          "actualHours": 16
+        },
+        {
+          "id": "P0-002",
+          "title": "Professional Typography System",
+          "feature": "P0.2",
+          "description": "Responsive type scale with 9 sizes and professional font pairings",
+          "pages": ["/presentations/[id]/edit"],
+          "placements": ["toolbar:typography", "keyboard:Cmd+T"],
+          "components": ["TypographyControls"],
+          "tests": ["unit", "integration"],
+          "deliverables": [
+            "TypographyControls.tsx",
+            "typography-engine.ts"
+          ],
+          "status": "completed",
+          "estimatedHours": 12,
+          "actualHours": 12
+        },
+        {
+          "id": "P0-003",
+          "title": "Color Palettes with WCAG Compliance",
+          "feature": "P0.3",
+          "description": "6 professional palettes with automatic contrast checking",
+          "pages": ["/presentations/[id]/edit"],
+          "placements": ["toolbar:colors", "keyboard:Cmd+K"],
+          "components": ["ColorPaletteSelector"],
+          "tests": ["unit", "integration"],
+          "deliverables": [
+            "ColorPaletteSelector.tsx",
+            "color-engine.ts"
+          ],
+          "status": "completed",
+          "estimatedHours": 8,
+          "actualHours": 8
+        },
+        {
+          "id": "P0-004",
+          "title": "Chart Integration",
+          "feature": "P0.4",
+          "description": "Bar, line, pie, area charts with Chart.js integration",
+          "pages": ["/presentations/[id]/edit"],
+          "placements": ["toolbar:insert-chart", "keyboard:Cmd+Shift+C"],
+          "components": ["ChartInserter"],
+          "tests": ["unit", "integration", "e2e"],
+          "deliverables": [
+            "ChartInserter.tsx",
+            "chart-renderer.ts"
+          ],
+          "status": "completed",
+          "estimatedHours": 12,
+          "actualHours": 12
+        },
+        {
+          "id": "P0-005",
+          "title": "Smart Text Overflow Handling",
+          "feature": "P0.5",
+          "description": "4 overflow strategies: truncate, resize, split, fade",
+          "pages": ["/presentations/[id]/edit"],
+          "placements": ["auto-detect", "toolbar:overflow"],
+          "components": ["TextOverflowManager"],
+          "tests": ["unit", "integration"],
+          "deliverables": [
+            "TextOverflowManager.tsx",
+            "text-overflow-handler.ts"
+          ],
+          "status": "completed",
+          "estimatedHours": 16,
+          "actualHours": 16
+        },
+        {
+          "id": "P0-006",
+          "title": "Master Slides & Branding",
+          "feature": "P0.6",
+          "description": "4 master slide templates with inheritance system",
+          "pages": ["/presentations/[id]/edit"],
+          "placements": ["toolbar:master-slides", "keyboard:Cmd+M"],
+          "components": ["MasterSlideEditor"],
+          "tests": ["unit", "integration"],
+          "deliverables": [
+            "MasterSlideEditor.tsx",
+            "master-slide-manager.ts"
+          ],
+          "status": "completed",
+          "estimatedHours": 12,
+          "actualHours": 12
+        },
+        {
+          "id": "P0-007",
+          "title": "Slide Transitions & Animations",
+          "feature": "P0.7",
+          "description": "4 professional transitions with timing controls",
+          "pages": ["/presentations/[id]/edit"],
+          "placements": ["toolbar:transitions", "keyboard:Cmd+Shift+T"],
+          "components": ["TransitionSelector"],
+          "tests": ["unit", "integration"],
+          "deliverables": [
+            "TransitionSelector.tsx",
+            "transition-engine.ts"
+          ],
+          "status": "completed",
+          "estimatedHours": 8,
+          "actualHours": 8
+        },
+        {
+          "id": "P0-008",
+          "title": "Accessibility (WCAG AAA)",
+          "feature": "P0.8",
+          "description": "WCAG 2.1 compliance checking with auto-fix",
+          "pages": ["/presentations/[id]/edit"],
+          "placements": ["toolbar:accessibility", "keyboard:Cmd+Shift+A"],
+          "components": ["AccessibilityChecker"],
+          "tests": ["unit", "integration", "e2e"],
+          "deliverables": [
+            "AccessibilityChecker.tsx",
+            "accessibility-engine.ts"
+          ],
+          "status": "completed",
+          "estimatedHours": 16,
+          "actualHours": 16
+        },
+        {
+          "id": "P0-009",
+          "title": "Export Quality (PDF/PPTX)",
+          "feature": "P0.9",
+          "description": "300 DPI PDF and PPTX export with quality controls",
+          "pages": ["/presentations/[id]/edit"],
+          "placements": ["toolbar:export", "keyboard:Cmd+E"],
+          "components": ["ExportDialog"],
+          "tests": ["unit", "integration", "e2e"],
+          "deliverables": [
+            "ExportDialog.tsx",
+            "export-engine.ts"
+          ],
+          "status": "completed",
+          "estimatedHours": 16,
+          "actualHours": 16
+        },
+        {
+          "id": "P0-010",
+          "title": "Image Optimization",
+          "feature": "P0.10",
+          "description": "WebP conversion, compression, responsive images",
+          "pages": ["/presentations/[id]/edit"],
+          "placements": ["toolbar:optimize-image", "context-menu:image"],
+          "components": ["ImageOptimizer"],
+          "tests": ["unit", "integration"],
+          "deliverables": [
+            "ImageOptimizer.tsx",
+            "image-optimizer.ts"
+          ],
+          "status": "completed",
+          "estimatedHours": 12,
+          "actualHours": 12
+        },
+        {
+          "id": "P0-011",
+          "title": "Content Validation Engine",
+          "feature": "P0.11",
+          "description": "Spelling, grammar, readability, formatting checks",
+          "pages": ["/presentations/[id]/edit"],
+          "placements": ["auto-detect", "toolbar:validate"],
+          "components": ["ContentValidator"],
+          "tests": ["unit", "integration"],
+          "deliverables": [
+            "ContentValidator.tsx",
+            "validation-engine.ts"
+          ],
+          "status": "completed",
+          "estimatedHours": 16,
+          "actualHours": 16
+        },
+        {
+          "id": "P0-012",
+          "title": "LLM Judge Quality Control",
+          "feature": "P0.12",
+          "description": "AI-powered quality scoring and improvement suggestions",
+          "pages": ["/presentations/[id]/edit"],
+          "placements": ["panel:quality", "auto-analyze"],
+          "components": ["ContentQualityPanel"],
+          "tests": ["unit", "integration"],
+          "deliverables": [
+            "ContentQualityPanel.tsx",
+            "llm-judge.ts"
+          ],
+          "status": "completed",
+          "estimatedHours": 16,
+          "actualHours": 16
+        }
+      ]
+    },
+
+    {
+      "phase": "4",
+      "name": "P1 Features - Batch 1: Core Management",
+      "tier": "P1",
+      "status": "pending",
+      "duration": "1.5 weeks",
+      "blockedBy": ["AUTH-001", "IA-001"],
+      "stories": [
+        {
+          "id": "P1-003",
+          "title": "Speaker Notes UI",
+          "feature": "P1.3",
+          "description": "Presenter view with speaker notes for each slide",
+          "pages": ["/presentations/[id]/edit", "/presentations/[id]/present"],
+          "placements": ["toolbar:notes", "keyboard:Cmd+Shift+N"],
+          "components": [
+            "SpeakerNotesEditor",
+            "PresenterView"
+          ],
+          "tests": ["unit", "integration"],
+          "deliverables": [
+            "SpeakerNotesEditor.tsx",
+            "speaker-notes.ts"
+          ],
+          "dependencies": ["AUTH-001"],
+          "status": "pending",
+          "estimatedHours": 8,
+          "priority": "high"
+        },
+        {
+          "id": "P1-004",
+          "title": "Slide Duplication & Reordering",
+          "feature": "P1.4",
+          "description": "Drag-and-drop slide reordering with duplicate functionality",
+          "pages": ["/presentations/[id]/edit"],
+          "placements": ["sidebar:slides", "context-menu:slide"],
+          "components": [
+            "SlideReorderer",
+            "SlideDuplicator"
+          ],
+          "tests": ["unit", "integration", "e2e"],
+          "deliverables": [
+            "slide-manager.ts",
+            "SlideReorderer.tsx"
+          ],
+          "dependencies": ["AUTH-001"],
+          "status": "pending",
+          "estimatedHours": 12,
+          "priority": "high"
+        },
+        {
+          "id": "P1-005",
+          "title": "Template Library",
+          "feature": "P1.5",
+          "description": "20 pre-built presentation templates (pitch, sales, education, etc.)",
+          "pages": ["/presentations/new", "/templates"],
+          "placements": ["page:templates", "modal:new-presentation"],
+          "components": [
+            "TemplateGallery",
+            "TemplatePreview",
+            "TemplateSelector"
+          ],
+          "tests": ["unit", "integration"],
+          "deliverables": [
+            "template-library.ts",
+            "TemplateGallery.tsx",
+            "20 templates"
+          ],
+          "dependencies": ["AUTH-001"],
+          "status": "pending",
+          "estimatedHours": 16,
+          "priority": "medium"
+        }
+      ]
+    },
+
+    {
+      "phase": "5",
+      "name": "P1 Features - Batch 2: Media & Data",
+      "tier": "P1",
+      "status": "pending",
+      "duration": "1.5 weeks",
+      "blockedBy": ["AUTH-001", "P1-004"],
+      "stories": [
+        {
+          "id": "P1-007",
+          "title": "Video Embed Support",
+          "feature": "P1.7",
+          "description": "YouTube and Vimeo video embeds with playback controls",
+          "pages": ["/presentations/[id]/edit"],
+          "placements": ["toolbar:insert-video", "keyboard:Cmd+Shift+V"],
+          "components": [
+            "VideoEmbed",
+            "VideoUploader"
+          ],
+          "tests": ["unit", "integration"],
+          "deliverables": [
+            "video-embed.ts",
+            "VideoEmbed.tsx"
+          ],
+          "dependencies": ["AUTH-001"],
+          "status": "pending",
+          "estimatedHours": 8,
+          "priority": "medium"
+        },
+        {
+          "id": "P1-008",
+          "title": "Custom Font Upload",
+          "feature": "P1.8",
+          "description": "Upload and use custom .ttf/.woff fonts",
+          "pages": ["/presentations/[id]/edit", "/settings/fonts"],
+          "placements": ["toolbar:fonts", "settings:custom-fonts"],
+          "components": [
+            "FontUploader",
+            "CustomFontManager"
+          ],
+          "tests": ["unit", "integration"],
+          "deliverables": [
+            "custom-fonts.ts",
+            "FontUploader.tsx"
+          ],
+          "dependencies": ["AUTH-001"],
+          "status": "pending",
+          "estimatedHours": 8,
+          "priority": "low"
+        },
+        {
+          "id": "P1-012",
+          "title": "Data Import (CSV/Excel)",
+          "feature": "P1.12",
+          "description": "Import CSV, Excel, JSON data for charts",
+          "pages": ["/presentations/[id]/edit"],
+          "placements": ["toolbar:import-data", "context-menu:chart"],
+          "components": [
+            "DataImporter",
+            "DataPreview"
+          ],
+          "tests": ["unit", "integration"],
+          "deliverables": [
+            "data-import.ts",
+            "DataImporter.tsx"
+          ],
+          "dependencies": ["P0-004"],
+          "status": "pending",
+          "estimatedHours": 8,
+          "priority": "medium"
+        }
+      ]
+    },
+
+    {
+      "phase": "6",
+      "name": "P1 Features - Batch 3: i18n & AI",
+      "tier": "P1",
+      "status": "pending",
+      "duration": "2 weeks",
+      "blockedBy": ["AUTH-001"],
+      "stories": [
+        {
+          "id": "P1-006",
+          "title": "Multi-Language Support (i18n)",
+          "feature": "P1.6",
+          "description": "10 languages with RTL support (Arabic, Hebrew)",
+          "pages": ["ALL"],
+          "placements": ["settings:language", "toolbar:language"],
+          "components": [
+            "LanguageSelector",
+            "TranslationManager"
+          ],
+          "tests": ["unit", "integration", "e2e"],
+          "deliverables": [
+            "i18n.ts",
+            "LanguageSelector.tsx",
+            "10 translation files"
+          ],
+          "dependencies": ["AUTH-001"],
+          "status": "pending",
+          "estimatedHours": 16,
+          "priority": "high"
+        },
+        {
+          "id": "P1-010",
+          "title": "Version History",
+          "feature": "P1.10",
+          "description": "Git-style version control with diff view",
+          "pages": ["/presentations/[id]/history"],
+          "placements": ["toolbar:history", "keyboard:Cmd+H"],
+          "components": [
+            "VersionHistory",
+            "VersionDiff",
+            "VersionRestore"
+          ],
+          "tests": ["unit", "integration"],
+          "deliverables": [
+            "version-history.ts",
+            "VersionHistory.tsx"
+          ],
+          "dependencies": ["P1-004"],
+          "status": "pending",
+          "estimatedHours": 16,
+          "priority": "medium"
+        },
+        {
+          "id": "P1-011",
+          "title": "AI Image Generation (DALL-E 3)",
+          "feature": "P1.11",
+          "description": "Generate custom images from text prompts",
+          "pages": ["/presentations/[id]/edit"],
+          "placements": ["toolbar:generate-image", "keyboard:Cmd+Shift+I"],
+          "components": [
+            "AIImageGenerator",
+            "ImagePromptEditor"
+          ],
+          "tests": ["unit", "integration"],
+          "deliverables": [
+            "ai-image-generation.ts",
+            "AIImageGenerator.tsx"
+          ],
+          "dependencies": ["AUTH-001"],
+          "status": "pending",
+          "estimatedHours": 8,
+          "priority": "low"
+        }
+      ]
+    },
+
+    {
+      "phase": "7",
+      "name": "P1 Features - Batch 4: Analytics & Collaboration",
+      "tier": "P1",
+      "status": "pending",
+      "duration": "2.5 weeks",
+      "blockedBy": ["AUTH-001", "P1-010"],
+      "stories": [
+        {
+          "id": "P1-009",
+          "title": "Collaboration Features",
+          "feature": "P1.9",
+          "description": "Multi-user collaboration with comments and mentions",
+          "pages": ["/presentations/[id]/edit", "/presentations/[id]/comments"],
+          "placements": ["panel:comments", "toolbar:share"],
+          "components": [
+            "CommentThread",
+            "CollaboratorList",
+            "ShareDialog"
+          ],
+          "tests": ["unit", "integration", "e2e"],
+          "deliverables": [
+            "collaboration.ts",
+            "CommentThread.tsx"
+          ],
+          "dependencies": ["AUTH-001", "P1-010"],
+          "status": "pending",
+          "estimatedHours": 24,
+          "priority": "high"
+        },
+        {
+          "id": "P1-013",
+          "title": "Presentation Analytics",
+          "feature": "P1.13",
+          "description": "View time per slide, engagement metrics, audience analytics",
+          "pages": ["/presentations/[id]/analytics"],
+          "placements": ["page:analytics", "toolbar:analytics"],
+          "components": [
+            "AnalyticsDashboard",
+            "SlideEngagement",
+            "AudienceInsights"
+          ],
+          "tests": ["unit", "integration"],
+          "deliverables": [
+            "analytics.ts",
+            "AnalyticsDashboard.tsx"
+          ],
+          "dependencies": ["AUTH-001"],
+          "status": "pending",
+          "estimatedHours": 16,
+          "priority": "medium"
+        },
+        {
+          "id": "P1-014",
+          "title": "Mobile App (React Native)",
+          "feature": "P1.14",
+          "description": "iOS and Android apps for mobile presentation editing",
+          "pages": ["MOBILE_APP"],
+          "placements": ["mobile:app-store", "mobile:play-store"],
+          "components": [
+            "MobileEditor",
+            "MobilePresenterView"
+          ],
+          "tests": ["unit", "integration", "e2e"],
+          "deliverables": [
+            "mobile-app/",
+            "iOS app",
+            "Android app"
+          ],
+          "dependencies": ["P1-006"],
+          "status": "pending",
+          "estimatedHours": 48,
+          "priority": "low"
+        }
+      ]
+    },
+
+    {
+      "phase": "8",
+      "name": "P1 Features - Batch 5: Live Features",
+      "tier": "P1",
+      "status": "pending",
+      "duration": "2 weeks",
+      "blockedBy": ["P1-009"],
+      "stories": [
+        {
+          "id": "P1-015",
+          "title": "Live Presentation Mode",
+          "feature": "P1.15",
+          "description": "Live remote presenting with audience Q&A",
+          "pages": ["/presentations/[id]/live"],
+          "placements": ["toolbar:go-live", "keyboard:Cmd+Shift+L"],
+          "components": [
+            "LivePresenter",
+            "AudienceView",
+            "QAPanel"
+          ],
+          "tests": ["unit", "integration", "e2e"],
+          "deliverables": [
+            "live-presentation.ts",
+            "LivePresenter.tsx"
+          ],
+          "dependencies": ["P1-009"],
+          "status": "pending",
+          "estimatedHours": 24,
+          "priority": "medium"
+        },
+        {
+          "id": "P1-001",
+          "title": "Icon Library Expansion",
+          "feature": "P1.1",
+          "description": "Expand icon library from 10 to 100+ icons with search",
+          "pages": ["/presentations/[id]/edit"],
+          "placements": ["toolbar:icons", "modal:icon-picker"],
+          "components": [
+            "IconPicker",
+            "IconSearch"
+          ],
+          "tests": ["unit", "integration"],
+          "deliverables": [
+            "icon-library.ts",
+            "IconPicker.tsx",
+            "100+ icons"
+          ],
+          "dependencies": [],
+          "status": "pending",
+          "estimatedHours": 12,
+          "priority": "low"
+        },
+        {
+          "id": "P1-002",
+          "title": "Background Patterns & Textures",
+          "feature": "P1.2",
+          "description": "20 subtle background patterns and textures",
+          "pages": ["/presentations/[id]/edit"],
+          "placements": ["toolbar:backgrounds", "panel:design"],
+          "components": [
+            "BackgroundPicker",
+            "PatternPreview"
+          ],
+          "tests": ["unit", "integration"],
+          "deliverables": [
+            "background-patterns.ts",
+            "BackgroundPicker.tsx",
+            "20 patterns"
+          ],
+          "dependencies": [],
+          "status": "pending",
+          "estimatedHours": 12,
+          "priority": "low"
+        }
+      ]
+    },
+
+    {
+      "phase": "9",
+      "name": "P2 Features - Advanced & Future",
+      "tier": "P2",
+      "status": "pending",
+      "duration": "6 weeks",
+      "blockedBy": ["P1-015"],
+      "stories": [
+        {
+          "id": "P2-001",
+          "title": "3D Animations (Three.js)",
+          "feature": "P2.1",
+          "description": "3D object animations and transitions using Three.js",
+          "pages": ["/presentations/[id]/edit"],
+          "placements": ["toolbar:3d-animations"],
+          "components": ["ThreeDAnimator"],
+          "tests": ["unit", "integration"],
+          "status": "pending",
+          "estimatedHours": 32,
+          "priority": "low"
+        },
+        {
+          "id": "P2-002",
+          "title": "AR Presentation Mode (WebXR)",
+          "feature": "P2.2",
+          "description": "Augmented reality presentation viewing",
+          "pages": ["/presentations/[id]/ar"],
+          "placements": ["toolbar:ar-mode"],
+          "components": ["ARPresenter"],
+          "tests": ["unit", "integration"],
+          "status": "pending",
+          "estimatedHours": 48,
+          "priority": "low"
+        },
+        {
+          "id": "P2-003",
+          "title": "Voice Narration (TTS)",
+          "feature": "P2.3",
+          "description": "Text-to-speech narration for slides",
+          "pages": ["/presentations/[id]/edit"],
+          "placements": ["toolbar:narration"],
+          "components": ["VoiceNarrator"],
+          "tests": ["unit", "integration"],
+          "status": "pending",
+          "estimatedHours": 8,
+          "priority": "low"
+        },
+        {
+          "id": "P2-004",
+          "title": "Interactive Elements (Polls/Quizzes)",
+          "feature": "P2.4",
+          "description": "Add interactive polls and quizzes to slides",
+          "pages": ["/presentations/[id]/edit"],
+          "placements": ["toolbar:interactive"],
+          "components": ["PollCreator", "QuizBuilder"],
+          "tests": ["unit", "integration"],
+          "status": "pending",
+          "estimatedHours": 24,
+          "priority": "low"
+        },
+        {
+          "id": "P2-005",
+          "title": "Slide Themes Marketplace",
+          "feature": "P2.5",
+          "description": "Marketplace for buying/selling custom slide themes",
+          "pages": ["/marketplace"],
+          "placements": ["page:marketplace"],
+          "components": ["ThemeMarketplace"],
+          "tests": ["unit", "integration"],
+          "status": "pending",
+          "estimatedHours": 32,
+          "priority": "low"
+        },
+        {
+          "id": "P2-006",
+          "title": "API Access for Developers",
+          "feature": "P2.6",
+          "description": "Public API for third-party integrations",
+          "pages": ["/docs/api"],
+          "placements": ["developer-portal"],
+          "components": ["APIDocumentation"],
+          "tests": ["unit", "integration"],
+          "status": "pending",
+          "estimatedHours": 16,
+          "priority": "low"
+        },
+        {
+          "id": "P2-007",
+          "title": "Figma/Sketch Import",
+          "feature": "P2.7",
+          "description": "Import designs from Figma and Sketch",
+          "pages": ["/presentations/[id]/edit"],
+          "placements": ["toolbar:import"],
+          "components": ["DesignImporter"],
+          "tests": ["unit", "integration"],
+          "status": "pending",
+          "estimatedHours": 48,
+          "priority": "low"
+        },
+        {
+          "id": "P2-008",
+          "title": "Blockchain Presentation NFTs",
+          "feature": "P2.8",
+          "description": "Mint presentations as NFTs on blockchain",
+          "pages": ["/presentations/[id]/nft"],
+          "placements": ["toolbar:mint-nft"],
+          "components": ["NFTMinter"],
+          "tests": ["unit", "integration"],
+          "status": "pending",
+          "estimatedHours": 64,
+          "priority": "low"
+        }
+      ]
+    },
+
+    {
+      "phase": "10",
+      "name": "Testing & Quality Assurance",
+      "tier": "ALL",
+      "status": "pending",
+      "duration": "2 weeks",
+      "blockedBy": ["P1-015"],
+      "stories": [
+        {
+          "id": "TEST-001",
+          "title": "Comprehensive unit test coverage",
+          "description": "Achieve 90%+ unit test coverage for all features",
+          "pages": [],
+          "components": [],
+          "tests": ["unit"],
+          "deliverables": ["All .test.tsx files", "Jest coverage report"],
+          "dependencies": [],
+          "status": "pending",
+          "estimatedHours": 40,
+          "priority": "critical"
+        },
+        {
+          "id": "TEST-002",
+          "title": "Integration test suite",
+          "description": "Test all feature interactions and data flows",
+          "pages": [],
+          "components": [],
+          "tests": ["integration"],
+          "deliverables": ["Integration tests", "API integration tests"],
+          "dependencies": [],
+          "status": "pending",
+          "estimatedHours": 32,
+          "priority": "high"
+        },
+        {
+          "id": "TEST-003",
+          "title": "E2E test scenarios",
+          "description": "Complete user flow testing with Playwright/Cypress",
+          "pages": [],
+          "components": [],
+          "tests": ["e2e"],
+          "deliverables": ["E2E test suite", "CI/CD integration"],
+          "dependencies": [],
+          "status": "pending",
+          "estimatedHours": 40,
+          "priority": "high"
+        },
+        {
+          "id": "TEST-004",
+          "title": "Accessibility testing",
+          "description": "WCAG AAA compliance testing across all features",
+          "pages": [],
+          "components": [],
+          "tests": ["accessibility"],
+          "deliverables": ["A11y test report", "Compliance certification"],
+          "dependencies": ["P0-008"],
+          "status": "pending",
+          "estimatedHours": 24,
+          "priority": "high"
+        },
+        {
+          "id": "TEST-005",
+          "title": "Performance benchmarking",
+          "description": "Load testing, render performance, bundle size optimization",
+          "pages": [],
+          "components": [],
+          "tests": ["performance"],
+          "deliverables": ["Performance report", "Optimization recommendations"],
+          "dependencies": [],
+          "status": "pending",
+          "estimatedHours": 16,
+          "priority": "medium"
+        }
+      ]
+    },
+
+    {
+      "phase": "11",
+      "name": "Production Deployment",
+      "tier": "ALL",
+      "status": "pending",
+      "duration": "1 week",
+      "blockedBy": ["TEST-003"],
+      "stories": [
+        {
+          "id": "DEPLOY-001",
+          "title": "Production environment setup",
+          "description": "Configure production environment with monitoring and logging",
+          "pages": [],
+          "components": [],
+          "tests": [],
+          "deliverables": [
+            "Production environment",
+            "Monitoring setup",
+            "Logging configuration"
+          ],
+          "dependencies": [],
+          "status": "pending",
+          "estimatedHours": 16,
+          "priority": "critical"
+        },
+        {
+          "id": "DEPLOY-002",
+          "title": "CI/CD pipeline",
+          "description": "Automated build, test, and deployment pipeline",
+          "pages": [],
+          "components": [],
+          "tests": [],
+          "deliverables": [
+            "GitHub Actions workflows",
+            "Deployment automation",
+            "Rollback procedures"
+          ],
+          "dependencies": ["TEST-003"],
+          "status": "pending",
+          "estimatedHours": 12,
+          "priority": "critical"
+        },
+        {
+          "id": "DEPLOY-003",
+          "title": "Production deployment",
+          "description": "Deploy application to production with zero downtime",
+          "pages": [],
+          "components": [],
+          "tests": [],
+          "deliverables": [
+            "Production deployment",
+            "Health checks",
+            "Smoke tests"
+          ],
+          "dependencies": ["DEPLOY-001", "DEPLOY-002"],
+          "status": "pending",
+          "estimatedHours": 8,
+          "priority": "critical"
+        },
+        {
+          "id": "DEPLOY-004",
+          "title": "Documentation and user guides",
+          "description": "Complete user documentation and onboarding guides",
+          "pages": ["/docs"],
+          "components": [],
+          "tests": [],
+          "deliverables": [
+            "User guides",
+            "API documentation",
+            "Video tutorials"
+          ],
+          "dependencies": [],
+          "status": "pending",
+          "estimatedHours": 24,
+          "priority": "high"
+        }
+      ]
+    }
+  ],
+
+  "dependencies": {
+    "AUTH-001": [],
+    "AUTH-002": ["AUTH-001"],
+    "AUTH-003": ["AUTH-001", "AUTH-002"],
+    "AUTH-004": ["AUTH-001", "AUTH-002", "AUTH-003"],
+    "IA-001": ["AUTH-001"],
+    "IA-002": ["IA-001"],
+    "IA-003": ["IA-001", "IA-002"],
+    "P0-004": [],
+    "P1-003": ["AUTH-001"],
+    "P1-004": ["AUTH-001"],
+    "P1-005": ["AUTH-001"],
+    "P1-006": ["AUTH-001"],
+    "P1-007": ["AUTH-001"],
+    "P1-008": ["AUTH-001"],
+    "P1-009": ["AUTH-001", "P1-010"],
+    "P1-010": ["P1-004"],
+    "P1-011": ["AUTH-001"],
+    "P1-012": ["P0-004"],
+    "P1-013": ["AUTH-001"],
+    "P1-014": ["P1-006"],
+    "P1-015": ["P1-009"],
+    "TEST-001": [],
+    "TEST-002": [],
+    "TEST-003": [],
+    "TEST-004": ["P0-008"],
+    "TEST-005": [],
+    "DEPLOY-001": [],
+    "DEPLOY-002": ["TEST-003"],
+    "DEPLOY-003": ["DEPLOY-001", "DEPLOY-002"],
+    "DEPLOY-004": []
+  },
+
+  "risks": [
+    {
+      "id": "RISK-001",
+      "description": "Google OAuth setup requires external credentials and approval",
+      "impact": "Blocks all authenticated features",
+      "severity": "critical",
+      "mitigation": "Document OAuth setup process early, provide environment template, create mock auth for development",
+      "owner": "Backend Team"
+    },
+    {
+      "id": "RISK-002",
+      "description": "P1 features may have undocumented backend dependencies",
+      "impact": "Delays P1 integration timeline",
+      "severity": "high",
+      "mitigation": "Early API documentation review, feature flag system to disable incomplete features",
+      "owner": "Integration Team"
+    },
+    {
+      "id": "RISK-003",
+      "description": "Mobile app (P1.14) requires specialized React Native expertise",
+      "impact": "Could delay or require outsourcing",
+      "severity": "medium",
+      "mitigation": "Consider P1.14 as optional, focus on web experience first, evaluate PWA alternative",
+      "owner": "Mobile Team"
+    },
+    {
+      "id": "RISK-004",
+      "description": "Real-time collaboration (P1.9) requires WebSocket infrastructure",
+      "impact": "Significant backend changes needed",
+      "severity": "high",
+      "mitigation": "Plan WebSocket architecture early, consider Firebase/Supabase for real-time features",
+      "owner": "Backend Team"
+    },
+    {
+      "id": "RISK-005",
+      "description": "AI features (P1.11, P0.12) depend on external API availability and cost",
+      "impact": "Budget overruns, service outages",
+      "severity": "medium",
+      "mitigation": "Implement rate limiting, caching, fallback mechanisms, budget alerts",
+      "owner": "Product Team"
+    },
+    {
+      "id": "RISK-006",
+      "description": "P2 features are experimental with unclear ROI",
+      "impact": "Resource allocation inefficiency",
+      "severity": "low",
+      "mitigation": "Mark P2 as optional, gather user feedback before implementing, use feature flags",
+      "owner": "Product Team"
+    }
+  ],
+
+  "successCriteria": {
+    "p0": [
+      "All 12 P0 features fully integrated and tested",
+      "Zero TypeScript errors across codebase",
+      "90%+ test coverage for P0 features",
+      "WCAG AAA compliance verified",
+      "LLM Judge scores ≥85 for 95% of generated slides",
+      "Export quality matches Beautiful.ai benchmarks"
+    ],
+    "p1": [
+      "15 P1 features implemented and stable",
+      "Multi-language support for 10 languages",
+      "Collaboration features support 10+ concurrent users",
+      "Analytics dashboard provides actionable insights",
+      "Mobile app available on iOS and Android app stores"
+    ],
+    "p2": [
+      "At least 3 P2 features implemented based on user demand",
+      "API documentation complete for developer access",
+      "Marketplace has 20+ premium themes available"
+    ],
+    "production": [
+      "Application deployed to production environment",
+      "Uptime ≥99.9% over 30 days",
+      "Page load time <2 seconds",
+      "Zero critical security vulnerabilities",
+      "User satisfaction ≥4.5/5 stars"
+    ]
+  },
+
+  "timeline": {
+    "phase0": "3 days (COMPLETED)",
+    "phase1": "1 week",
+    "phase2": "4 days",
+    "phase3": "3 weeks (COMPLETED)",
+    "phase4": "1.5 weeks",
+    "phase5": "1.5 weeks",
+    "phase6": "2 weeks",
+    "phase7": "2.5 weeks",
+    "phase8": "2 weeks",
+    "phase9": "6 weeks (optional)",
+    "phase10": "2 weeks",
+    "phase11": "1 week",
+    "totalEstimate": "22.5 weeks (without P2)",
+    "totalWithP2": "28.5 weeks"
+  },
+
+  "metrics": {
+    "totalStories": 58,
+    "completedStories": 15,
+    "pendingStories": 43,
+    "totalEstimatedHours": 982,
+    "completedHours": 176,
+    "remainingHours": 806,
+    "p0Progress": "100%",
+    "p1Progress": "0%",
+    "p2Progress": "0%",
+    "overallProgress": "34%"
+  },
+
+  "notes": [
+    "P0 features are complete and production-ready",
+    "Authentication (Phase 1) is the critical blocker for all remaining work",
+    "P1 features are organized in 5 batches for systematic implementation",
+    "P2 features are optional and should be prioritized based on user feedback",
+    "All features support graceful degradation via feature flags",
+    "Testing phase runs in parallel with later P1 development",
+    "Mobile app (P1.14) can be deprioritized or replaced with PWA",
+    "P2 features can be implemented post-launch based on demand"
+  ]
+}

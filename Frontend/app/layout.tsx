@@ -1,28 +1,9 @@
-import './globals.css';
-import type { Metadata } from 'next';
-import { Providers } from './providers';
-
-export const metadata: Metadata = {
-  title: 'Slide Designer - AI-Powered Presentation Generator',
-  description: 'Create beautiful presentations with AI assistance',
-};
-
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <html lang="en">
-      <body>
-        <Providers>{children}</Providers>
-      </body>
-    </html>
-  );
 import type React from "react"
 import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
+import { AuthProvider } from "@/lib/auth/AuthProvider"
+import { getServerSession } from "@/lib/auth/session"
 import "./globals.css"
 
 const _geist = Geist({ subsets: ["latin"] })
@@ -51,15 +32,19 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const session = await getServerSession()
+
   return (
     <html lang="en">
       <body className={`font-sans antialiased`}>
-        {children}
+        <AuthProvider session={session}>
+          {children}
+        </AuthProvider>
         <Analytics />
       </body>
     </html>

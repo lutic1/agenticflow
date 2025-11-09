@@ -58,6 +58,8 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { EditorToolbar } from '@/components/editor/EditorToolbar';
+import { KeyboardShortcutsButton } from '@/components/KeyboardShortcutsModal';
 
 export default function EditorPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -101,63 +103,77 @@ export default function EditorPage({ params }: { params: Promise<{ id: string }>
 
   return (
     <div className="h-screen flex flex-col bg-gray-50">
-      {/* Top Toolbar */}
-      <div className="bg-white border-b border-gray-200 px-4 py-3">
-        <div className="flex items-center justify-between">
+      {/* Top Toolbar with Dropdowns */}
+      <div className="bg-white border-b border-gray-200">
+        <div className="flex items-center justify-between px-4 py-2">
           <div className="flex items-center gap-4">
             <Link
               href="/"
-              className="px-4 py-2 text-gray-600 hover:text-gray-900 transition-colors"
+              className="px-2 py-1 text-gray-600 hover:text-gray-900 transition-colors text-sm"
             >
               ← Back
             </Link>
             <div className="h-6 w-px bg-gray-300" />
-            <h1 className="text-lg font-semibold text-gray-900">
+            <h1 className="text-base font-semibold text-gray-900">
               Presentation Editor - {id}
             </h1>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             {/* Language Selector */}
             <LanguageSelector presentationId={id} />
 
             {/* Collaboration Indicator */}
-            <div className="flex items-center gap-2 px-3 py-2 border border-gray-200 rounded-lg">
-              <Users className="w-4 h-4 text-green-600" />
-              <span className="text-sm text-gray-600">2 online</span>
+            <div className="flex items-center gap-2 px-2 py-1 border border-gray-200 rounded-lg">
+              <Users className="w-3 h-3 text-green-600" />
+              <span className="text-xs text-gray-600">2 online</span>
             </div>
+
+            {/* Keyboard Shortcuts */}
+            <KeyboardShortcutsButton />
 
             {/* Present Button */}
             <button
               onClick={handlePresentationMode}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
             >
               <Play className="w-4 h-4" />
               <span>Present</span>
             </button>
 
             {/* Slide Navigation */}
-            <div className="flex items-center gap-2 px-3 py-2 border border-gray-200 rounded-lg">
-              <span className="text-sm text-gray-600">Slide {currentSlide} / 10</span>
+            <div className="flex items-center gap-2 px-2 py-1 border border-gray-200 rounded-lg">
+              <span className="text-xs text-gray-600">Slide {currentSlide} / 10</span>
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => setCurrentSlide(Math.max(1, currentSlide - 1))}
                   disabled={currentSlide === 1}
                   className="p-1 hover:bg-gray-100 rounded disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <ChevronLeft className="w-4 h-4" />
+                  <ChevronLeft className="w-3 h-3" />
                 </button>
                 <button
                   onClick={() => setCurrentSlide(Math.min(10, currentSlide + 1))}
                   disabled={currentSlide === 10}
                   className="p-1 hover:bg-gray-100 rounded disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <ChevronRight className="w-4 h-4" />
+                  <ChevronRight className="w-3 h-3" />
                 </button>
               </div>
             </div>
           </div>
         </div>
+
+        {/* Editor Toolbar with File/Edit/View/Tools Dropdowns */}
+        <EditorToolbar
+          presentationId={id}
+          onUndo={() => console.log('Undo')}
+          onRedo={() => console.log('Redo')}
+          canUndo={true}
+          canRedo={true}
+          viewMode="slide"
+          onViewModeChange={(mode) => console.log('View mode:', mode)}
+        />
       </div>
 
       <div className="flex flex-1 overflow-hidden">

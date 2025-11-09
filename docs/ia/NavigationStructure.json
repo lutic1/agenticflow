@@ -1,0 +1,716 @@
+{
+  "metadata": {
+    "generated": "2025-11-09",
+    "designer": "Information Architecture Agent",
+    "total_routes": 27,
+    "navigation_levels": 3
+  },
+  "header": {
+    "logo": {
+      "position": "left",
+      "text": "SlideForge",
+      "link": "/",
+      "icon": "Presentation"
+    },
+    "main_nav": {
+      "position": "left",
+      "items": [
+        {
+          "label": "Home",
+          "path": "/",
+          "icon": "Home",
+          "auth_required": false
+        },
+        {
+          "label": "My Presentations",
+          "path": "/presentations",
+          "icon": "FolderOpen",
+          "auth_required": true
+        },
+        {
+          "label": "Templates",
+          "path": "/library",
+          "icon": "LayoutTemplate",
+          "auth_required": false
+        },
+        {
+          "label": "Marketplace",
+          "path": "/marketplace",
+          "icon": "Store",
+          "auth_required": false
+        }
+      ]
+    },
+    "utility_nav": {
+      "position": "right",
+      "items": [
+        {
+          "label": "Analytics",
+          "path": "/analytics",
+          "icon": "BarChart3",
+          "auth_required": true,
+          "badge": "P1"
+        },
+        {
+          "label": "API Docs",
+          "path": "/api-docs",
+          "icon": "Code2",
+          "auth_required": false
+        },
+        {
+          "label": "Settings",
+          "path": "/settings",
+          "icon": "Settings",
+          "auth_required": true
+        },
+        {
+          "label": "Profile",
+          "path": "/profile",
+          "icon": "User",
+          "auth_required": true,
+          "dropdown": [
+            {
+              "label": "My Account",
+              "path": "/settings",
+              "icon": "Settings"
+            },
+            {
+              "label": "Integrations",
+              "path": "/settings/integrations",
+              "icon": "Plug"
+            },
+            {
+              "label": "Custom Fonts",
+              "path": "/settings/fonts",
+              "icon": "Type"
+            },
+            {
+              "label": "Language",
+              "path": "/settings/language",
+              "icon": "Globe"
+            },
+            {
+              "label": "Logout",
+              "path": "/logout",
+              "icon": "LogOut"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "editor_toolbar": {
+    "context": "/presentations/[id]/edit",
+    "layout": "three_column",
+    "header": {
+      "left": [
+        {
+          "type": "button",
+          "label": "Back",
+          "icon": "ArrowLeft",
+          "action": "navigate:/presentations"
+        }
+      ],
+      "center": [
+        {
+          "type": "text",
+          "label": "Presentation Title",
+          "editable": true
+        }
+      ],
+      "right": [
+        {
+          "type": "dropdown",
+          "featureId": "P1.6",
+          "label": "Language",
+          "icon": "Globe",
+          "items": ["en", "es", "fr", "de", "zh", "ja", "ko", "ar", "ru", "pt"]
+        },
+        {
+          "type": "indicator",
+          "featureId": "P1.2",
+          "label": "Sync Status",
+          "icon": "Wifi",
+          "states": ["synced", "syncing", "offline"]
+        },
+        {
+          "type": "indicator",
+          "featureId": "P1.9",
+          "label": "Collaborators",
+          "icon": "Users",
+          "display": "avatar_stack"
+        },
+        {
+          "type": "button",
+          "featureId": "P1.15",
+          "label": "Present",
+          "icon": "Presentation",
+          "shortcut": "Cmd+Shift+P",
+          "style": "primary"
+        }
+      ]
+    },
+    "left_sidebar": {
+      "title": "Tools",
+      "width": "64px",
+      "sections": [
+        {
+          "name": "Layout",
+          "collapsed": false,
+          "tools": [
+            {
+              "featureId": "P0.1",
+              "icon": "Grid3x3",
+              "tooltip": "Grid Layout (Cmd+G)",
+              "opens_panel": "right"
+            }
+          ]
+        },
+        {
+          "name": "Content",
+          "collapsed": false,
+          "tools": [
+            {
+              "featureId": "P0.2",
+              "icon": "Type",
+              "tooltip": "Typography (Cmd+T)",
+              "opens_panel": "right"
+            },
+            {
+              "featureId": "P0.3",
+              "icon": "Palette",
+              "tooltip": "Colors (Cmd+K)",
+              "opens_panel": "right"
+            },
+            {
+              "featureId": "P0.4",
+              "icon": "BarChart3",
+              "tooltip": "Charts (Cmd+Shift+C)",
+              "opens_panel": "right"
+            }
+          ]
+        },
+        {
+          "name": "Media",
+          "collapsed": false,
+          "tools": [
+            {
+              "featureId": "P1.11",
+              "icon": "Sparkles",
+              "tooltip": "AI Image (Cmd+Shift+I)",
+              "opens_modal": true,
+              "ai_badge": true
+            },
+            {
+              "featureId": "P1.7",
+              "icon": "Video",
+              "tooltip": "Video Embed (Cmd+Shift+V)",
+              "opens_panel": "right"
+            },
+            {
+              "featureId": "P1.1",
+              "icon": "BoxSelect",
+              "tooltip": "Widgets (Cmd+Shift+W)",
+              "opens_panel": "right"
+            },
+            {
+              "featureId": "P2.3",
+              "icon": "MousePointerClick",
+              "tooltip": "Interactive Elements",
+              "opens_panel": "right"
+            }
+          ]
+        },
+        {
+          "name": "Actions",
+          "collapsed": false,
+          "tools": [
+            {
+              "featureId": "P0.9",
+              "icon": "Download",
+              "tooltip": "Export (Cmd+E)",
+              "opens_modal": true
+            },
+            {
+              "featureId": "P1.3",
+              "icon": "StickyNote",
+              "tooltip": "Speaker Notes (Cmd+Shift+N)",
+              "toggles_panel": "bottom"
+            }
+          ]
+        }
+      ]
+    },
+    "main_canvas": {
+      "title": "Slide Canvas",
+      "overlays": [
+        {
+          "featureId": "P0.12",
+          "type": "floating_badge",
+          "position": "top-right",
+          "icon": "BadgeCheck",
+          "label": "Quality Score",
+          "ai_badge": true,
+          "display": "score"
+        },
+        {
+          "featureId": "P0.5",
+          "type": "auto_modal",
+          "trigger": "text_overflow_detected",
+          "icon": "AlertTriangle",
+          "label": "Text Overflow"
+        }
+      ]
+    },
+    "right_sidebar": {
+      "title": "Properties",
+      "width": "320px",
+      "conditional": true,
+      "description": "Opens when tool selected from left sidebar",
+      "panels": [
+        {
+          "featureId": "P0.1",
+          "title": "Grid Layout",
+          "component": "GridLayoutEditor"
+        },
+        {
+          "featureId": "P0.2",
+          "title": "Typography",
+          "component": "TypographyControls"
+        },
+        {
+          "featureId": "P0.3",
+          "title": "Color Palette",
+          "component": "ColorPaletteSelector"
+        },
+        {
+          "featureId": "P0.4",
+          "title": "Chart Editor",
+          "component": "ChartInserter"
+        },
+        {
+          "featureId": "P1.7",
+          "title": "Video Embed",
+          "component": "VideoEmbedder"
+        },
+        {
+          "featureId": "P1.1",
+          "title": "Widgets",
+          "component": "InteractiveWidgets"
+        },
+        {
+          "featureId": "P2.3",
+          "title": "Interactive Elements",
+          "component": "InteractiveElementsInserter"
+        }
+      ]
+    },
+    "bottom_panel": {
+      "title": "Speaker Notes",
+      "height": "200px",
+      "collapsible": true,
+      "default_state": "collapsed",
+      "toggles_via": [
+        {
+          "featureId": "P1.3",
+          "shortcut": "Cmd+Shift+N"
+        }
+      ],
+      "component": "SpeakerNotesPanel"
+    },
+    "slide_navigator": {
+      "position": "left",
+      "width": "180px",
+      "collapsible": true,
+      "features": [
+        {
+          "featureId": "P1.4",
+          "action": "duplicate",
+          "context_menu": true
+        },
+        {
+          "featureId": "P1.4",
+          "action": "reorder",
+          "drag_drop": true
+        },
+        {
+          "featureId": "P1.4",
+          "action": "delete",
+          "context_menu": true
+        }
+      ]
+    }
+  },
+  "dropdown_menus": {
+    "file_menu": {
+      "label": "File",
+      "shortcut": "Alt+F",
+      "items": [
+        {
+          "label": "New Presentation",
+          "icon": "FilePlus",
+          "action": "navigate:/presentations/new",
+          "shortcut": "Cmd+N"
+        },
+        {
+          "label": "Open",
+          "icon": "FolderOpen",
+          "action": "navigate:/presentations",
+          "shortcut": "Cmd+O"
+        },
+        {
+          "label": "Save",
+          "icon": "Save",
+          "action": "save_presentation",
+          "shortcut": "Cmd+S"
+        },
+        {
+          "separator": true
+        },
+        {
+          "label": "Import Data",
+          "featureId": "P1.12",
+          "icon": "FileInput",
+          "action": "open_import_modal",
+          "shortcut": "Cmd+Shift+D"
+        },
+        {
+          "label": "Import Design (Figma/Sketch)",
+          "featureId": "P2.6",
+          "icon": "Figma",
+          "action": "open_design_import"
+        },
+        {
+          "separator": true
+        },
+        {
+          "label": "Export",
+          "featureId": "P0.9",
+          "icon": "Download",
+          "action": "open_export_modal",
+          "shortcut": "Cmd+E",
+          "submenu": [
+            {
+              "label": "PDF",
+              "icon": "FileText"
+            },
+            {
+              "label": "PowerPoint (PPTX)",
+              "icon": "FileSpreadsheet"
+            },
+            {
+              "label": "HTML",
+              "icon": "Code"
+            },
+            {
+              "label": "Add Voice Narration",
+              "featureId": "P2.1",
+              "icon": "Mic",
+              "ai_badge": true
+            }
+          ]
+        }
+      ]
+    },
+    "edit_menu": {
+      "label": "Edit",
+      "shortcut": "Alt+E",
+      "items": [
+        {
+          "label": "Undo",
+          "icon": "Undo",
+          "action": "undo",
+          "shortcut": "Cmd+Z"
+        },
+        {
+          "label": "Redo",
+          "icon": "Redo",
+          "action": "redo",
+          "shortcut": "Cmd+Shift+Z"
+        },
+        {
+          "separator": true
+        },
+        {
+          "label": "Duplicate Slide",
+          "featureId": "P1.4",
+          "icon": "Copy",
+          "action": "duplicate_slide",
+          "shortcut": "Cmd+D"
+        },
+        {
+          "label": "Delete Slide",
+          "featureId": "P1.4",
+          "icon": "Trash2",
+          "action": "delete_slide",
+          "shortcut": "Delete"
+        }
+      ]
+    },
+    "view_menu": {
+      "label": "View",
+      "shortcut": "Alt+V",
+      "items": [
+        {
+          "label": "Grid View",
+          "icon": "LayoutGrid",
+          "action": "toggle_grid_view"
+        },
+        {
+          "label": "Outline View",
+          "icon": "List",
+          "action": "toggle_outline_view"
+        },
+        {
+          "separator": true
+        },
+        {
+          "label": "Master Slides",
+          "featureId": "P0.6",
+          "icon": "Layers",
+          "action": "open_master_slides"
+        },
+        {
+          "label": "Speaker Notes",
+          "featureId": "P1.3",
+          "icon": "StickyNote",
+          "action": "toggle_notes",
+          "shortcut": "Cmd+Shift+N"
+        },
+        {
+          "separator": true
+        },
+        {
+          "label": "Version History",
+          "featureId": "P1.10",
+          "icon": "History",
+          "action": "navigate:/presentations/[id]/versions",
+          "shortcut": "Cmd+Shift+H"
+        }
+      ]
+    },
+    "tools_menu": {
+      "label": "Tools",
+      "shortcut": "Alt+T",
+      "items": [
+        {
+          "label": "Transitions",
+          "featureId": "P0.7",
+          "icon": "Zap",
+          "action": "open_transitions",
+          "shortcut": "Cmd+Shift+T"
+        },
+        {
+          "label": "3D Animations",
+          "featureId": "P2.5",
+          "icon": "Box",
+          "action": "open_3d_editor"
+        },
+        {
+          "separator": true
+        },
+        {
+          "label": "Accessibility Check",
+          "featureId": "P0.8",
+          "icon": "Eye",
+          "action": "run_accessibility_audit",
+          "shortcut": "Cmd+Shift+A"
+        },
+        {
+          "label": "Content Validation",
+          "featureId": "P0.11",
+          "icon": "CheckCircle",
+          "action": "run_validation"
+        },
+        {
+          "separator": true
+        },
+        {
+          "label": "AI Image Generation",
+          "featureId": "P1.11",
+          "icon": "Sparkles",
+          "action": "open_ai_image_modal",
+          "shortcut": "Cmd+Shift+I",
+          "ai_badge": true
+        }
+      ]
+    }
+  },
+  "pages": {
+    "public": [
+      {
+        "path": "/",
+        "title": "Home",
+        "features": ["P0.GENERATE"],
+        "description": "Landing page with AI presentation generator"
+      },
+      {
+        "path": "/library",
+        "title": "Template Library",
+        "features": ["P1.5"],
+        "description": "Browse and preview templates"
+      },
+      {
+        "path": "/library/[templateId]",
+        "title": "Template Preview",
+        "features": ["P1.5"],
+        "description": "Detailed template preview and application"
+      },
+      {
+        "path": "/marketplace",
+        "title": "Themes Marketplace",
+        "features": ["P2.4"],
+        "description": "Browse, purchase, and install themes"
+      },
+      {
+        "path": "/marketplace/[themeId]",
+        "title": "Theme Details",
+        "features": ["P2.4"],
+        "description": "Theme preview, ratings, purchase"
+      },
+      {
+        "path": "/api-docs",
+        "title": "API Documentation",
+        "features": ["P2.2"],
+        "description": "OpenAPI docs with try-it functionality"
+      },
+      {
+        "path": "/presentations/[id]",
+        "title": "View Presentation",
+        "features": [],
+        "description": "Public presentation viewer"
+      }
+    ],
+    "protected": [
+      {
+        "path": "/presentations",
+        "title": "My Presentations",
+        "features": [],
+        "description": "User's presentation library with search/filter"
+      },
+      {
+        "path": "/presentations/new",
+        "title": "New Presentation",
+        "features": ["P0.GENERATE"],
+        "description": "AI generation form with template selection"
+      },
+      {
+        "path": "/presentations/[id]/edit",
+        "title": "Edit Presentation",
+        "features": ["P0.1-P0.12", "P1.1-P1.12", "P2.3", "P2.5"],
+        "description": "Full-featured slide editor with all P0/P1/P2 tools"
+      },
+      {
+        "path": "/presentations/[id]/present",
+        "title": "Present Mode",
+        "features": ["P1.15"],
+        "description": "Live presentation with navigation sync"
+      },
+      {
+        "path": "/presentations/[id]/present/ar",
+        "title": "AR Presentation",
+        "features": ["P2.7"],
+        "description": "WebXR AR presentation mode"
+      },
+      {
+        "path": "/presentations/[id]/analytics",
+        "title": "Presentation Analytics",
+        "features": ["P1.13"],
+        "description": "Detailed analytics for single presentation"
+      },
+      {
+        "path": "/presentations/[id]/versions",
+        "title": "Version History",
+        "features": ["P1.10"],
+        "description": "Version timeline with restore functionality"
+      },
+      {
+        "path": "/analytics",
+        "title": "Global Analytics",
+        "features": ["P1.13"],
+        "description": "Analytics across all presentations"
+      },
+      {
+        "path": "/settings",
+        "title": "Settings",
+        "features": [],
+        "description": "User settings hub"
+      },
+      {
+        "path": "/settings/fonts",
+        "title": "Custom Fonts",
+        "features": ["P1.8"],
+        "description": "Upload and manage custom fonts"
+      },
+      {
+        "path": "/settings/language",
+        "title": "Language Preferences",
+        "features": ["P1.6"],
+        "description": "UI and content language settings"
+      },
+      {
+        "path": "/settings/integrations",
+        "title": "Integrations",
+        "features": ["P2.2", "P2.6", "P2.8"],
+        "description": "API keys, Figma/Sketch, NFT settings"
+      },
+      {
+        "path": "/marketplace/publish",
+        "title": "Publish Theme",
+        "features": ["P2.4"],
+        "description": "Upload and publish custom theme"
+      }
+    ],
+    "auth": [
+      {
+        "path": "/login",
+        "title": "Login",
+        "features": [],
+        "description": "User authentication"
+      },
+      {
+        "path": "/register",
+        "title": "Register",
+        "features": [],
+        "description": "User registration"
+      }
+    ]
+  },
+  "mobile_navigation": {
+    "bottom_nav": [
+      {
+        "label": "Home",
+        "icon": "Home",
+        "path": "/"
+      },
+      {
+        "label": "Presentations",
+        "icon": "FolderOpen",
+        "path": "/presentations"
+      },
+      {
+        "label": "New",
+        "icon": "Plus",
+        "path": "/presentations/new",
+        "style": "fab"
+      },
+      {
+        "label": "Templates",
+        "icon": "LayoutTemplate",
+        "path": "/library"
+      },
+      {
+        "label": "More",
+        "icon": "Menu",
+        "action": "open_menu"
+      }
+    ],
+    "hamburger_menu": [
+      "Analytics",
+      "Settings",
+      "Marketplace",
+      "API Docs",
+      "Profile"
+    ]
+  }
+}

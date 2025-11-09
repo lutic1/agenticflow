@@ -298,10 +298,12 @@ export default function Home() {
             <Search className="w-4 h-4" />
             Search
           </button>
-          <button className="w-full flex items-center gap-2 px-3 py-2 text-muted-foreground hover:bg-sidebar-accent rounded-lg transition text-sm">
-            <BookOpen className="w-4 h-4" />
-            Library
-          </button>
+          <Link href="/library" className="w-full">
+            <button className="w-full flex items-center gap-2 px-3 py-2 text-muted-foreground hover:bg-sidebar-accent rounded-lg transition text-sm">
+              <BookOpen className="w-4 h-4" />
+              Template Library
+            </button>
+          </Link>
         </div>
 
         {/* Recent Projects Section */}
@@ -451,9 +453,17 @@ export default function Home() {
             <div className="mb-12">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-sm font-medium text-foreground">Choose a template</h3>
-                <select className="text-xs text-muted-foreground bg-card border border-border rounded px-2 py-1 cursor-pointer">
-                  <option>8 - 12</option>
-                </select>
+                <div className="flex items-center gap-3">
+                  <Link href="/library">
+                    <Button variant="outline" size="sm">
+                      <BookOpen className="w-4 h-4 mr-2" />
+                      Browse Library
+                    </Button>
+                  </Link>
+                  <select className="text-xs text-muted-foreground bg-card border border-border rounded px-2 py-1 cursor-pointer">
+                    <option>8 - 12</option>
+                  </select>
+                </div>
               </div>
               <TemplateSelector
                 templates={SLIDE_TEMPLATES}

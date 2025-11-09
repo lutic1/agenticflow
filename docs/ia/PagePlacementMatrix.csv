@@ -1,0 +1,43 @@
+feature_id,feature_name,tier,class,page,placement_type,control_id,rationale,priority,keyboard_shortcut
+P0.GENERATE,Presentation Generator,P0,AGENTIC_WORKFLOW,/,primary_cta,generate-presentation-btn,"Primary home page action - most important user flow. Large prominent button/form.",critical,Cmd+N
+P0.1,Grid Layout System,P0,UI_TOOL,/presentations/[id]/edit,icon,grid-layout-icon,"High-frequency layout tool. Users change layouts frequently during editing.",high,Cmd+G
+P0.2,Typography System,P0,UI_TOOL,/presentations/[id]/edit,icon,typography-icon,"High-frequency text styling. Essential for every slide.",high,Cmd+T
+P0.3,Color Palettes & WCAG,P0,UI_TOOL,/presentations/[id]/edit,icon,color-palette-icon,"High-frequency color changes. Visual prominence needed.",high,Cmd+K
+P0.4,Chart Integration,P0,UI_TOOL,/presentations/[id]/edit,icon,chart-icon,"Medium-high frequency. Data visualizations are common.",high,Cmd+Shift+C
+P0.5,Text Overflow Handling,P0,UI_TOOL,/presentations/[id]/edit,auto_modal,text-overflow-modal,"Auto-triggered modal when overflow detected. Not a manual control.",medium,
+P0.6,Master Slides & Branding,P0,UI_TOOL,/presentations/[id]/edit,dropdown,view-menu-master,"Medium frequency. Users set once per presentation.",medium,
+P0.7,Transitions & Animations,P0,UI_TOOL,/presentations/[id]/edit,dropdown,tools-menu-transitions,"Medium frequency. Applied per-slide or globally.",medium,Cmd+Shift+T
+P0.8,Accessibility Engine,P0,UI_TOOL,/presentations/[id]/edit,dropdown,tools-menu-accessibility,"Low-medium frequency. Run before export.",medium,Cmd+Shift+A
+P0.9,Export Engine,P0,UI_TOOL,/presentations/[id]/edit,icon,export-icon,"High frequency - users export often. Prominent placement.",high,Cmd+E
+P0.10,Image Optimization,P0,UI_TOOL,/presentations/[id]/edit,auto_process,image-optimizer,"Auto-triggered on image upload. Background process.",low,
+P0.11,Content Validation,P0,UI_TOOL,/presentations/[id]/edit,dropdown,tools-menu-validation,"Medium frequency. Run before presenting.",medium,
+P0.12,LLM Judge Quality Control,P0,LLM_CALL,/presentations/[id]/edit,floating_badge,quality-score-badge,"LLM feature - background scoring. Display as floating quality score badge with AI icon.",medium,
+P1.1,Interactive Widgets,P1,UI_TOOL,/presentations/[id]/edit,icon,widget-icon,"Medium-high frequency for interactive presentations.",medium,Cmd+Shift+W
+P1.2,Real-time Synchronization,P1,UI_TOOL,/presentations/[id]/edit,status_indicator,sync-status,"Background feature. Show sync status in header with avatar badges.",low,
+P1.3,Speaker Notes UI,P1,UI_TOOL,/presentations/[id]/edit,panel,notes-panel,"High frequency for presenters. Toggle panel below canvas.",high,Cmd+Shift+N
+P1.4,Slide Duplication & Reordering,P1,UI_TOOL,/presentations/[id]/edit,context_menu,slide-context-menu,"High frequency. Right-click context menu + keyboard shortcuts.",high,Cmd+D
+P1.5,Template Library,P1,UI_TOOL,/library,page,library-page,"Exploratory feature. Dedicated page for browsing.",medium,
+P1.6,Multi-Language Support,P1,UI_TOOL,/presentations/[id]/edit,dropdown,language-dropdown-header,"Medium frequency. Header dropdown for UI language.",medium,
+P1.7,Video Embed Support,P1,UI_TOOL,/presentations/[id]/edit,icon,video-embed-icon,"Medium frequency. Media insertion tool.",medium,Cmd+Shift+V
+P1.8,Custom Font Upload,P1,UI_TOOL,/settings/fonts,page,fonts-settings-page,"Low frequency setup task. Settings page.",low,
+P1.9,Collaboration Features,P1,UI_TOOL,/presentations/[id]/edit,status_indicator,collaboration-avatars,"Background feature. Show collaborators in header with real-time cursors.",low,
+P1.10,Version History,P1,UI_TOOL,/presentations/[id]/versions,page,version-history-page,"Medium frequency. Dedicated page for version management.",medium,Cmd+Shift+H
+P1.11,AI Image Generation,P1,LLM_CALL,/presentations/[id]/edit,icon+modal,ai-image-icon,"LLM feature - prominent placement. Icon with sparkle/AI badge opens modal for prompt input.",high,Cmd+Shift+I
+P1.12,Data Import (CSV/Excel/JSON),P1,UI_TOOL,/presentations/[id]/edit,dropdown,file-menu-import,"Medium frequency for data-heavy presentations. File menu.",medium,Cmd+Shift+D
+P1.13,Presentation Analytics,P1,UI_TOOL,/presentations/[id]/analytics,page,analytics-page,"Post-presentation analysis. Dedicated analytics page.",medium,
+P1.14,Mobile App,P1,UI_TOOL,/mobile-app,external_link,mobile-app-link,"Separate app. Link in settings/footer.",low,
+P1.15,Live Presentation Mode,P1,UI_TOOL,/presentations/[id]/present,page,present-page,"Primary presentation action. Large 'Present' button in header.",high,Cmd+Shift+P
+P2.1,Voice Narration (TTS),P2,LLM_CALL,/presentations/[id]/edit,dropdown,export-menu-narration,"LLM feature - TTS service. Add to export dropdown with AI badge.",medium,
+P2.2,API Access for Developers,P2,UI_TOOL,/settings/integrations,page,api-settings-page,"Developer feature. Settings page for API key management.",low,
+P2.3,Interactive Elements (Polls/Quizzes),P2,UI_TOOL,/presentations/[id]/edit,icon,interactive-icon,"Similar to widgets but specialized. Toolbar icon.",low,
+P2.4,Themes Marketplace,P2,UI_TOOL,/marketplace,page,marketplace-page,"E-commerce feature. Dedicated marketplace page.",low,
+P2.5,3D Animations (Three.js),P2,UI_TOOL,/presentations/[id]/edit,dropdown,tools-menu-3d,"Low frequency advanced feature. Tools menu.",low,
+P2.6,Design Import (Figma/Sketch),P2,UI_TOOL,/settings/integrations,page,design-import-settings,"Setup task. Settings page with OAuth connections.",low,
+P2.7,AR Presentation (WebXR),P2,UI_TOOL,/presentations/[id]/present/ar,page,ar-present-page,"Experimental feature. Link from present page.",low,
+P2.8,Blockchain NFTs,P2,UI_TOOL,/settings/integrations,page,nft-settings-page,"Experimental Web3 feature. Settings page.",low,
+AUTH.LOGIN,User Login,AUTH,UI_TOOL,/login,page,login-page,"Authentication flow. Standalone page.",critical,
+AUTH.REGISTER,User Registration,AUTH,UI_TOOL,/register,page,register-page,"Authentication flow. Standalone page.",critical,
+NAV.PRESENTATIONS,Presentation List,NAV,UI_TOOL,/presentations,page,presentations-page,"User's presentation library. Dedicated page.",high,
+NAV.VIEW,View Presentation,NAV,UI_TOOL,/presentations/[id],page,view-page,"Public presentation viewer. Dedicated page.",high,
+NAV.SETTINGS,Settings,NAV,UI_TOOL,/settings,page,settings-page,"User settings hub. Dedicated page.",medium,
+NAV.ANALYTICS_GLOBAL,Global Analytics,NAV,UI_TOOL,/analytics,page,analytics-global-page,"All presentations analytics. Dedicated page.",low,

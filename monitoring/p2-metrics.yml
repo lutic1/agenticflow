@@ -1,0 +1,1184 @@
+# P2 Features Monitoring Configuration (Nice-to-Have)
+# This configuration extends P0+P1 monitoring with P2-specific metrics,
+# feature flag tracking, canary deployment monitoring, and security metrics
+
+version: "2.0"
+monitoring_scope: p2-features
+deployment_strategy: canary
+
+# P2-Specific Metrics Collection
+metrics:
+  # P2 Feature Response Time Metrics
+  p2_response_time:
+    enabled: true
+    collection_interval: 30s
+    retention_period: 30d
+
+    endpoints:
+      # Batch 1: Low Risk Features
+      - name: batch1_voice_narration
+        path: /api/v2/p2/batch1/voice-narration/*
+        method: ALL
+        percentiles: [50, 90, 95, 99]
+
+      - name: batch1_api_access
+        path: /api/v2/p2/batch1/api-access/*
+        method: ALL
+        percentiles: [50, 90, 95, 99]
+
+      - name: batch1_interactive_elements
+        path: /api/v2/p2/batch1/interactive-elements/*
+        method: ALL
+        percentiles: [50, 90, 95, 99]
+
+      - name: batch1_themes_marketplace
+        path: /api/v2/p2/batch1/themes-marketplace/*
+        method: ALL
+        percentiles: [50, 90, 95, 99]
+
+      # Batch 2: Medium Risk Features
+      - name: batch2_3d_animations
+        path: /api/v2/p2/batch2/3d-animations/*
+        method: ALL
+        percentiles: [50, 90, 95, 99]
+
+      - name: batch2_figma_sketch_import
+        path: /api/v2/p2/batch2/figma-sketch-import/*
+        method: ALL
+        percentiles: [50, 90, 95, 99]
+
+      # Batch 3: High Risk/Experimental Features
+      - name: batch3_ar_presentation
+        path: /api/v2/p2/batch3/ar-presentation/*
+        method: ALL
+        percentiles: [50, 90, 95, 99]
+
+      - name: batch3_blockchain_nfts
+        path: /api/v2/p2/batch3/blockchain-nfts/*
+        method: ALL
+        percentiles: [50, 90, 95, 99]
+
+    thresholds:
+      batch1_p50_warning: 200ms
+      batch1_p50_critical: 400ms
+      batch1_p95_warning: 1500ms
+      batch1_p95_critical: 3000ms
+
+      batch2_p50_warning: 300ms  # 3D animations may be slower
+      batch2_p50_critical: 600ms
+      batch2_p95_warning: 2000ms
+      batch2_p95_critical: 4000ms
+
+      batch3_p50_warning: 500ms  # AR/Blockchain experimental
+      batch3_p50_critical: 1000ms
+      batch3_p95_warning: 3000ms
+      batch3_p95_critical: 6000ms
+
+  # P2 Error Rate Metrics
+  p2_error_rate:
+    enabled: true
+    collection_interval: 30s
+    retention_period: 30d
+
+    categories:
+      # Batch-level errors
+      - name: batch1_errors
+        description: Batch 1 feature errors (Voice, API, Interactive, Themes)
+        severity: warning
+
+      - name: batch2_errors
+        description: Batch 2 feature errors (3D, Figma/Sketch)
+        severity: warning
+
+      - name: batch3_errors
+        description: Batch 3 feature errors (AR, Blockchain) - Experimental
+        severity: warning
+
+      # Integration errors
+      - name: p0_p1_p2_integration_errors
+        description: P0+P1+P2 integration failures
+        severity: critical
+
+      # Feature-specific errors
+      - name: voice_narration_errors
+        description: Voice narration synthesis errors
+        severity: warning
+
+      - name: api_access_errors
+        description: API access authentication/rate limit errors
+        severity: critical
+
+      - name: ar_errors
+        description: AR presentation rendering errors
+        severity: warning
+
+      - name: blockchain_errors
+        description: Blockchain NFT transaction errors
+        severity: critical
+
+      # Feature flag errors
+      - name: p2_feature_flag_errors
+        description: P2 feature flag evaluation errors
+        severity: critical
+
+    thresholds:
+      batch1_errors_warning: 2%
+      batch1_errors_critical: 5%
+
+      batch2_errors_warning: 3%  # 3D/Import may have more issues
+      batch2_errors_critical: 7%
+
+      batch3_errors_warning: 5%  # Experimental - higher tolerance
+      batch3_errors_critical: 10%
+
+      integration_errors_warning: 1%
+      integration_errors_critical: 3%
+
+      api_access_errors_warning: 2%
+      api_access_errors_critical: 5%
+
+      blockchain_errors_warning: 3%
+      blockchain_errors_critical: 8%
+
+  # Canary Deployment Metrics
+  canary_deployment:
+    enabled: true
+    collection_interval: 30s
+    retention_period: 90d
+
+    stages:
+      - name: canary_1_percent
+        description: 1% canary deployment
+        soak_time: 3600  # 1 hour
+        error_threshold: 0.5%
+
+      - name: canary_10_percent
+        description: 10% canary deployment
+        soak_time: 7200  # 2 hours
+        error_threshold: 1%
+
+      - name: canary_50_percent
+        description: 50% canary deployment
+        soak_time: 14400  # 4 hours
+        error_threshold: 2%
+
+      - name: canary_100_percent
+        description: Full deployment
+        soak_time: 0
+        error_threshold: 3%
+
+    metrics:
+      - name: canary_error_rate
+        description: Error rate in canary deployment
+        unit: percentage
+        comparison: baseline
+        rollback_threshold: 150%  # Rollback if 50% worse than baseline
+
+      - name: canary_latency_p95
+        description: P95 latency in canary deployment
+        unit: ms
+        comparison: baseline
+        rollback_threshold: 125%  # Rollback if 25% slower
+
+      - name: canary_traffic_percentage
+        description: Percentage of traffic to canary
+        unit: percentage
+
+      - name: canary_health_score
+        description: Overall canary health score
+        unit: score (0-100)
+        rollback_threshold: 80
+
+  # Feature Flag Metrics (P2-specific)
+  p2_feature_flags:
+    enabled: true
+    collection_interval: 60s
+    retention_period: 90d
+
+    tracked_flags:
+      # Batch flags
+      - name: p2_batch1_enabled
+        description: Batch 1 features enabled flag
+        type: boolean
+        default: false
+
+      - name: p2_batch2_enabled
+        description: Batch 2 features enabled flag
+        type: boolean
+        default: false
+
+      - name: p2_batch3_enabled
+        description: Batch 3 features enabled flag
+        type: boolean
+        default: false
+
+      # Individual feature flags
+      - name: voice_narration_enabled
+        description: Voice narration feature
+        type: boolean
+        default: false
+
+      - name: api_access_enabled
+        description: API access feature
+        type: boolean
+        default: false
+
+      - name: interactive_elements_enabled
+        description: Interactive elements feature
+        type: boolean
+        default: false
+
+      - name: themes_marketplace_enabled
+        description: Themes marketplace feature
+        type: boolean
+        default: false
+
+      - name: 3d_animations_enabled
+        description: 3D animations feature
+        type: boolean
+        default: false
+
+      - name: figma_sketch_import_enabled
+        description: Figma/Sketch import feature
+        type: boolean
+        default: false
+
+      - name: ar_presentation_enabled
+        description: AR presentation feature
+        type: boolean
+        default: false
+
+      - name: blockchain_nfts_enabled
+        description: Blockchain NFTs feature
+        type: boolean
+        default: false
+
+      # Master flag
+      - name: p2_all_features_enabled
+        description: All P2 features enabled
+        type: boolean
+        default: false
+
+    metrics:
+      - name: flag_evaluation_time
+        description: Time to evaluate P2 feature flags
+        unit: ms
+        thresholds:
+          warning: 75
+          critical: 150
+
+      - name: flag_toggle_frequency
+        description: Frequency of P2 flag changes
+        unit: toggles/hour
+        thresholds:
+          warning: 15
+          critical: 30
+
+      - name: flag_evaluation_errors
+        description: Errors during P2 flag evaluation
+        unit: count
+        thresholds:
+          warning: 10
+          critical: 25
+
+  # P2 Feature Initialization Metrics
+  p2_initialization:
+    enabled: true
+    collection_interval: 60s
+    retention_period: 30d
+
+    features:
+      - name: voice_narration_init_time
+        description: Voice narration feature initialization time
+        unit: ms
+        target: 500
+        thresholds:
+          warning: 1000
+          critical: 2000
+
+      - name: 3d_animations_init_time
+        description: 3D animations engine initialization time
+        unit: ms
+        target: 1000
+        thresholds:
+          warning: 2000
+          critical: 4000
+
+      - name: ar_presentation_init_time
+        description: AR presentation session initialization time
+        unit: ms
+        target: 2000
+        thresholds:
+          warning: 4000
+          critical: 8000
+
+      - name: blockchain_wallet_init_time
+        description: Blockchain wallet connection time
+        unit: ms
+        target: 3000
+        thresholds:
+          warning: 6000
+          critical: 12000
+
+  # API Request Metrics (Batch 1)
+  api_access_metrics:
+    enabled: true
+    collection_interval: 30s
+    retention_period: 30d
+
+    measurements:
+      - name: api_requests_per_second
+        description: API requests per second
+        unit: req/s
+        thresholds:
+          min: 1
+          max: 1000
+
+      - name: api_rate_limit_hits
+        description: Number of rate limit hits
+        unit: count/min
+        thresholds:
+          warning: 10
+          critical: 50
+
+      - name: api_auth_failures
+        description: API authentication failures
+        unit: count/min
+        thresholds:
+          warning: 5
+          critical: 20
+
+      - name: api_quota_usage
+        description: API quota usage percentage
+        unit: percentage
+        thresholds:
+          warning: 80
+          critical: 95
+
+  # 3D Rendering Performance (Batch 2)
+  3d_rendering_performance:
+    enabled: true
+    collection_interval: 30s
+    retention_period: 30d
+
+    measurements:
+      - name: 3d_render_time
+        description: Time to render 3D animations
+        unit: ms
+        percentiles: [50, 90, 95, 99]
+        thresholds:
+          p50_warning: 1000
+          p50_critical: 2000
+          p95_warning: 3000
+          p95_critical: 6000
+
+      - name: 3d_frame_rate
+        description: 3D animation frame rate
+        unit: fps
+        thresholds:
+          warning: 30
+          critical: 20
+
+      - name: 3d_memory_usage
+        description: Memory usage for 3D rendering
+        unit: MB
+        thresholds:
+          warning: 500
+          critical: 1000
+
+      - name: gpu_utilization
+        description: GPU utilization percentage
+        unit: percentage
+        thresholds:
+          warning: 80
+          critical: 95
+
+  # AR Session Metrics (Batch 3)
+  ar_presentation_metrics:
+    enabled: true
+    collection_interval: 30s
+    retention_period: 30d
+
+    measurements:
+      - name: ar_session_duration
+        description: Average AR session duration
+        unit: seconds
+        target: 300  # 5 minutes
+
+      - name: ar_sessions_active
+        description: Number of active AR sessions
+        unit: count
+
+      - name: ar_session_errors
+        description: AR session initialization/tracking errors
+        unit: count/min
+        thresholds:
+          warning: 3
+          critical: 10
+
+      - name: ar_tracking_quality
+        description: AR tracking quality score
+        unit: score (0-100)
+        target: 85
+        thresholds:
+          warning: 70
+          critical: 50
+
+  # Blockchain NFT Metrics (Batch 3)
+  blockchain_nft_metrics:
+    enabled: true
+    collection_interval: 60s
+    retention_period: 90d
+
+    measurements:
+      - name: nft_transactions_per_minute
+        description: NFT transactions per minute
+        unit: tx/min
+
+      - name: nft_transaction_time
+        description: Time to complete NFT transaction
+        unit: seconds
+        percentiles: [50, 90, 95, 99]
+        thresholds:
+          p50_warning: 30
+          p50_critical: 60
+          p95_warning: 120
+          p95_critical: 300
+
+      - name: nft_gas_costs
+        description: Average gas costs for NFT transactions
+        unit: gwei
+        tracking: enabled
+
+      - name: nft_transaction_failures
+        description: Failed NFT transactions
+        unit: count/hour
+        thresholds:
+          warning: 5
+          critical: 15
+
+      - name: wallet_connection_errors
+        description: Blockchain wallet connection errors
+        unit: count/hour
+        thresholds:
+          warning: 3
+          critical: 10
+
+  # P0/P1 Performance Degradation Monitoring
+  performance_degradation:
+    enabled: true
+    collection_interval: 60s
+    retention_period: 30d
+
+    baselines:
+      - name: p0_baseline_performance
+        description: P0 performance baseline (without P2)
+        metrics:
+          - p0_response_time_p95
+          - p0_error_rate
+          - p0_throughput
+
+      - name: p1_baseline_performance
+        description: P1 performance baseline (without P2)
+        metrics:
+          - p1_response_time_p95
+          - p1_error_rate
+          - p1_throughput
+
+    degradation_thresholds:
+      p0_degradation_warning: 5%   # Warn if P0 degrades by 5%
+      p0_degradation_critical: 10%  # Critical if P0 degrades by 10%
+      p1_degradation_warning: 5%
+      p1_degradation_critical: 10%
+
+    auto_rollback:
+      enabled: true
+      threshold: 10%  # Auto rollback if degradation exceeds 10%
+
+  # Integration Health Metrics
+  integration_health:
+    enabled: true
+    collection_interval: 60s
+    retention_period: 30d
+
+    components:
+      - name: p0_p1_p2_compatibility
+        description: P0+P1+P2 compatibility score
+        unit: percentage
+        target: 99
+        thresholds:
+          warning: 95
+          critical: 90
+
+      - name: p2_batch_isolation_score
+        description: P2 batch feature isolation score
+        unit: percentage
+        target: 100
+        thresholds:
+          warning: 98
+          critical: 95
+
+      - name: backward_compatibility_p0_p1
+        description: Backward compatibility with P0+P1
+        unit: percentage
+        target: 100
+        thresholds:
+          warning: 98
+          critical: 95
+
+      - name: cross_batch_dependencies
+        description: Number of cross-batch dependencies detected in P2
+        unit: count
+        target: 0
+        thresholds:
+          warning: 3
+          critical: 5
+
+  # Security Metrics (P2-specific)
+  p2_security:
+    enabled: true
+    collection_interval: 300s  # 5 minutes
+    retention_period: 90d
+
+    measurements:
+      - name: api_key_validation_failures
+        description: API key validation failures
+        unit: count/hour
+        thresholds:
+          warning: 10
+          critical: 50
+
+      - name: blockchain_wallet_unauthorized_access
+        description: Unauthorized blockchain wallet access attempts
+        unit: count/hour
+        thresholds:
+          warning: 5
+          critical: 20
+
+      - name: secret_exposure_attempts
+        description: Attempts to expose secrets/keys
+        unit: count/hour
+        thresholds:
+          warning: 1
+          critical: 5
+
+      - name: security_scan_violations
+        description: Security scan violations detected
+        unit: count
+        thresholds:
+          warning: 3
+          critical: 10
+
+  # Batch Deployment Metrics
+  batch_deployment:
+    enabled: true
+    collection_interval: 60s
+    retention_period: 90d
+
+    batches:
+      - name: batch1_deployment_status
+        description: Batch 1 deployment health (Low Risk)
+        states: [deployed, deploying, canary, failed, rolled_back]
+
+      - name: batch2_deployment_status
+        description: Batch 2 deployment health (Medium Risk)
+        states: [deployed, deploying, canary, failed, rolled_back]
+
+      - name: batch3_deployment_status
+        description: Batch 3 deployment health (High Risk/Experimental)
+        states: [deployed, deploying, canary, failed, rolled_back]
+
+    metrics:
+      - name: deployment_time_per_batch
+        description: Time to deploy each batch
+        unit: minutes
+        target: 15
+        thresholds:
+          warning: 25
+          critical: 35
+
+      - name: canary_rollout_time
+        description: Time for complete canary rollout (1%->100%)
+        unit: hours
+        target: 8
+        thresholds:
+          warning: 12
+          critical: 16
+
+      - name: rollback_frequency
+        description: Number of rollbacks per batch
+        unit: count/week
+        thresholds:
+          warning: 2
+          critical: 5
+
+      - name: deployment_success_rate
+        description: Percentage of successful batch deployments
+        unit: percentage
+        target: 95
+        thresholds:
+          warning: 90
+          critical: 85
+
+  # P2 Business Metrics
+  p2_business:
+    enabled: true
+    collection_interval: 60s
+    retention_period: 90d
+
+    kpis:
+      - name: p2_feature_adoption_rate
+        description: Percentage of users using P2 features
+        unit: percentage
+        target: 50  # Nice-to-have, lower target
+        thresholds:
+          warning: 30
+          critical: 15
+
+      - name: p2_feature_success_rate
+        description: P2 feature execution success rate
+        unit: percentage
+        target: 93
+        thresholds:
+          warning: 88
+          critical: 83
+
+      - name: experimental_features_usage
+        description: Usage of experimental features (Batch 3)
+        unit: percentage
+        tracking: enabled
+
+      - name: p0_p1_regression_incidents
+        description: P0/P1 regressions caused by P2
+        unit: count/week
+        target: 0
+        thresholds:
+          warning: 1
+          critical: 3
+
+      - name: api_quota_revenue
+        description: Revenue from API access quota
+        unit: currency
+        tracking: enabled
+
+      - name: nft_marketplace_volume
+        description: NFT marketplace transaction volume
+        unit: currency
+        tracking: enabled
+
+# P2-Specific Alert Configuration
+alerts:
+  channels:
+    - type: github_issues
+      enabled: true
+      severity_levels: [critical, warning]
+      repository: agenticflow
+
+    - type: github_actions
+      enabled: true
+      severity_levels: [critical]
+      workflow: .github/workflows/p2-integration.yml
+
+    - type: slack
+      enabled: false
+      webhook_url: ${SLACK_WEBHOOK_URL}
+      severity_levels: [critical, warning, info]
+      channel: "#p2-features"
+
+    - type: email
+      enabled: false
+      recipients: ${ALERT_EMAIL_RECIPIENTS}
+      severity_levels: [critical]
+
+    - type: pagerduty
+      enabled: false
+      integration_key: ${PAGERDUTY_INTEGRATION_KEY}
+      severity_levels: [critical]
+
+  rules:
+    # Canary Deployment Alerts
+    - name: canary_error_rate_spike
+      metric: canary_deployment.canary_error_rate
+      condition: greater_than_baseline
+      threshold: 150%
+      duration: 5m
+      severity: critical
+      message: "Canary deployment error rate 50% higher than baseline - initiating rollback"
+      action: auto_rollback
+
+    - name: canary_latency_degradation
+      metric: canary_deployment.canary_latency_p95
+      condition: greater_than_baseline
+      threshold: 125%
+      duration: 10m
+      severity: critical
+      message: "Canary deployment P95 latency 25% higher than baseline"
+      action: auto_rollback
+
+    - name: canary_health_score_low
+      metric: canary_deployment.canary_health_score
+      condition: less_than
+      threshold: 80
+      duration: 5m
+      severity: critical
+      message: "Canary health score below 80"
+      action: auto_rollback
+
+    # P2 Response Time Alerts
+    - name: p2_batch3_high_latency
+      metric: p2_response_time.batch3_ar_presentation.p95
+      condition: greater_than
+      threshold: 6000
+      duration: 5m
+      severity: warning
+      message: "Batch 3 (AR) P95 latency exceeded 6000ms"
+
+    - name: p2_blockchain_slow_transactions
+      metric: blockchain_nft_metrics.nft_transaction_time.p95
+      condition: greater_than
+      threshold: 300
+      duration: 10m
+      severity: warning
+      message: "Blockchain NFT transactions P95 time exceeded 5 minutes"
+
+    # P2 Error Rate Alerts
+    - name: p2_batch3_high_error_rate
+      metric: p2_error_rate.batch3_errors
+      condition: greater_than
+      threshold: 10
+      duration: 5m
+      severity: critical
+      message: "Batch 3 (Experimental) error rate exceeded 10%"
+
+    - name: api_access_errors_spike
+      metric: p2_error_rate.api_access_errors
+      condition: greater_than
+      threshold: 5
+      duration: 3m
+      severity: critical
+      message: "API access error rate exceeded 5%"
+
+    - name: blockchain_transaction_failures
+      metric: p2_error_rate.blockchain_errors
+      condition: greater_than
+      threshold: 8
+      duration: 5m
+      severity: critical
+      message: "Blockchain transaction error rate exceeded 8%"
+
+    # Integration Alerts
+    - name: p0_p1_p2_integration_failures
+      metric: p2_error_rate.p0_p1_p2_integration_errors
+      condition: greater_than
+      threshold: 3
+      duration: 3m
+      severity: critical
+      message: "P0+P1+P2 integration error rate exceeded 3%"
+
+    - name: low_p0_p1_p2_compatibility
+      metric: integration_health.p0_p1_p2_compatibility
+      condition: less_than
+      threshold: 95
+      duration: 10m
+      severity: critical
+      message: "P0+P1+P2 compatibility score below 95%"
+
+    # Performance Degradation Alerts
+    - name: p0_performance_degraded
+      metric: performance_degradation.p0_baseline_performance
+      condition: degraded_by
+      threshold: 10
+      duration: 5m
+      severity: critical
+      message: "P0 performance degraded by 10% with P2 enabled - auto rollback triggered"
+      action: auto_rollback
+
+    - name: p1_performance_degraded
+      metric: performance_degradation.p1_baseline_performance
+      condition: degraded_by
+      threshold: 10
+      duration: 5m
+      severity: critical
+      message: "P1 performance degraded by 10% with P2 enabled - auto rollback triggered"
+      action: auto_rollback
+
+    # Security Alerts
+    - name: api_key_validation_failures_spike
+      metric: p2_security.api_key_validation_failures
+      condition: greater_than
+      threshold: 50
+      duration: 1h
+      severity: critical
+      message: "Excessive API key validation failures detected"
+
+    - name: blockchain_unauthorized_access
+      metric: p2_security.blockchain_wallet_unauthorized_access
+      condition: greater_than
+      threshold: 20
+      duration: 1h
+      severity: critical
+      message: "Multiple unauthorized blockchain wallet access attempts"
+
+    - name: secret_exposure_detected
+      metric: p2_security.secret_exposure_attempts
+      condition: greater_than
+      threshold: 5
+      duration: 1h
+      severity: critical
+      message: "Secret exposure attempts detected - security breach possible"
+
+    # Feature Flag Alerts
+    - name: p2_feature_flag_evaluation_errors
+      metric: p2_feature_flags.flag_evaluation_errors
+      condition: greater_than
+      threshold: 25
+      duration: 5m
+      severity: critical
+      message: "P2 feature flag evaluation errors exceeded threshold"
+
+    - name: feature_flag_slow_evaluation
+      metric: p2_feature_flags.flag_evaluation_time
+      condition: greater_than
+      threshold: 150
+      duration: 10m
+      severity: warning
+      message: "P2 feature flag evaluation time exceeded 150ms"
+
+    # 3D Rendering Alerts
+    - name: 3d_rendering_slow
+      metric: 3d_rendering_performance.3d_render_time.p95
+      condition: greater_than
+      threshold: 6000
+      duration: 10m
+      severity: warning
+      message: "3D rendering P95 time exceeded 6000ms"
+
+    - name: 3d_low_frame_rate
+      metric: 3d_rendering_performance.3d_frame_rate
+      condition: less_than
+      threshold: 20
+      duration: 5m
+      severity: warning
+      message: "3D animation frame rate below 20fps"
+
+    # AR Presentation Alerts
+    - name: ar_session_errors_spike
+      metric: ar_presentation_metrics.ar_session_errors
+      condition: greater_than
+      threshold: 10
+      duration: 1m
+      severity: warning
+      message: "AR session errors exceeded 10/min"
+
+    - name: ar_tracking_quality_low
+      metric: ar_presentation_metrics.ar_tracking_quality
+      condition: less_than
+      threshold: 50
+      duration: 5m
+      severity: critical
+      message: "AR tracking quality score below 50"
+
+    # Batch Deployment Alerts
+    - name: batch_deployment_failed
+      metric: batch_deployment.deployment_success_rate
+      condition: less_than
+      threshold: 90
+      duration: 5m
+      severity: critical
+      message: "P2 batch deployment success rate below 90%"
+
+    - name: frequent_rollbacks
+      metric: batch_deployment.rollback_frequency
+      condition: greater_than
+      threshold: 5
+      duration: 1w
+      severity: warning
+      message: "P2 rollback frequency exceeding threshold (5 per week)"
+
+    # Business Metrics Alerts
+    - name: low_p2_adoption
+      metric: p2_business.p2_feature_adoption_rate
+      condition: less_than
+      threshold: 30
+      duration: 48h
+      severity: warning
+      message: "P2 feature adoption rate below 30% after 48 hours"
+
+    - name: p0_p1_regression_detected
+      metric: p2_business.p0_p1_regression_incidents
+      condition: greater_than
+      threshold: 3
+      duration: 1w
+      severity: critical
+      message: "Multiple P0/P1 regressions caused by P2 features"
+
+# P2 Dashboard Configuration
+dashboards:
+  - name: p2_overview
+    title: "P2 Features Overview Dashboard"
+    refresh_interval: 30s
+    layout: grid
+
+    panels:
+      - title: "P2 Canary Deployment Status"
+        type: status_indicator
+        metrics:
+          - canary_deployment.canary_traffic_percentage
+          - canary_deployment.canary_health_score
+        position: { row: 0, col: 0, width: 4, height: 3 }
+
+      - title: "P2 Request Rate by Batch"
+        type: line_chart
+        metrics:
+          - p2_response_time.batch1_voice_narration
+          - p2_response_time.batch2_3d_animations
+          - p2_response_time.batch3_ar_presentation
+        time_range: 1h
+        position: { row: 0, col: 4, width: 8, height: 4 }
+
+      - title: "P2 Error Rate by Feature"
+        type: area_chart
+        metrics:
+          - p2_error_rate.voice_narration_errors
+          - p2_error_rate.api_access_errors
+          - p2_error_rate.ar_errors
+          - p2_error_rate.blockchain_errors
+        time_range: 1h
+        position: { row: 4, col: 0, width: 6, height: 4 }
+
+      - title: "P0/P1 Performance Degradation"
+        type: line_chart
+        metrics:
+          - performance_degradation.p0_baseline_performance
+          - performance_degradation.p1_baseline_performance
+        time_range: 6h
+        position: { row: 4, col: 6, width: 6, height: 4 }
+
+      - title: "P2 Feature Flags Status"
+        type: table
+        metrics:
+          - p2_feature_flags.p2_batch1_enabled
+          - p2_feature_flags.p2_batch2_enabled
+          - p2_feature_flags.p2_batch3_enabled
+          - p2_feature_flags.voice_narration_enabled
+          - p2_feature_flags.api_access_enabled
+          - p2_feature_flags.ar_presentation_enabled
+          - p2_feature_flags.blockchain_nfts_enabled
+        position: { row: 8, col: 0, width: 6, height: 5 }
+
+      - title: "P2 Compatibility Score"
+        type: gauge
+        metric: integration_health.p0_p1_p2_compatibility
+        position: { row: 8, col: 6, width: 3, height: 3 }
+
+      - title: "P2 Feature Adoption"
+        type: gauge
+        metric: p2_business.p2_feature_adoption_rate
+        position: { row: 8, col: 9, width: 3, height: 3 }
+
+  - name: p2_canary_deployment
+    title: "P2 Canary Deployment Monitoring"
+    refresh_interval: 15s
+    layout: grid
+
+    panels:
+      - title: "Canary Traffic Distribution"
+        type: pie_chart
+        metrics:
+          - canary_deployment.canary_traffic_percentage
+        position: { row: 0, col: 0, width: 4, height: 4 }
+
+      - title: "Canary Error Rate vs Baseline"
+        type: comparison_chart
+        metric: canary_deployment.canary_error_rate
+        baseline: true
+        time_range: 1h
+        position: { row: 0, col: 4, width: 8, height: 4 }
+
+      - title: "Canary Latency vs Baseline"
+        type: comparison_chart
+        metric: canary_deployment.canary_latency_p95
+        baseline: true
+        time_range: 1h
+        position: { row: 4, col: 0, width: 6, height: 4 }
+
+      - title: "Canary Health Score"
+        type: gauge
+        metric: canary_deployment.canary_health_score
+        position: { row: 4, col: 6, width: 6, height: 4 }
+
+  - name: p2_security_monitoring
+    title: "P2 Security Monitoring"
+    refresh_interval: 60s
+    layout: grid
+
+    panels:
+      - title: "API Key Validation Failures"
+        type: line_chart
+        metric: p2_security.api_key_validation_failures
+        time_range: 24h
+        position: { row: 0, col: 0, width: 6, height: 4 }
+
+      - title: "Blockchain Unauthorized Access Attempts"
+        type: line_chart
+        metric: p2_security.blockchain_wallet_unauthorized_access
+        time_range: 24h
+        position: { row: 0, col: 6, width: 6, height: 4 }
+
+      - title: "Secret Exposure Attempts"
+        type: counter
+        metric: p2_security.secret_exposure_attempts
+        time_range: 7d
+        position: { row: 4, col: 0, width: 4, height: 3 }
+
+      - title: "Security Scan Violations"
+        type: counter
+        metric: p2_security.security_scan_violations
+        time_range: 7d
+        position: { row: 4, col: 4, width: 4, height: 3 }
+
+  - name: p2_experimental_features
+    title: "P2 Experimental Features (Batch 3)"
+    refresh_interval: 30s
+    layout: grid
+
+    panels:
+      - title: "AR Session Metrics"
+        type: multi_metric
+        metrics:
+          - ar_presentation_metrics.ar_sessions_active
+          - ar_presentation_metrics.ar_session_duration
+          - ar_presentation_metrics.ar_tracking_quality
+        time_range: 1h
+        position: { row: 0, col: 0, width: 6, height: 4 }
+
+      - title: "Blockchain NFT Transactions"
+        type: multi_metric
+        metrics:
+          - blockchain_nft_metrics.nft_transactions_per_minute
+          - blockchain_nft_metrics.nft_transaction_time
+          - blockchain_nft_metrics.nft_gas_costs
+        time_range: 1h
+        position: { row: 0, col: 6, width: 6, height: 4 }
+
+      - title: "NFT Transaction Success Rate"
+        type: gauge
+        metric: blockchain_nft_metrics.nft_transaction_failures
+        position: { row: 4, col: 0, width: 4, height: 3 }
+
+      - title: "AR Tracking Quality"
+        type: gauge
+        metric: ar_presentation_metrics.ar_tracking_quality
+        position: { row: 4, col: 4, width: 4, height: 3 }
+
+# P2 Logging Configuration
+logging:
+  level: info
+  format: json
+
+  categories:
+    - name: p2_access_logs
+      retention: 7d
+      filter:
+        path_prefix: /api/v2/p2/
+
+    - name: p2_error_logs
+      retention: 30d
+      filter:
+        severity: [error, critical]
+
+    - name: p2_feature_flag_logs
+      retention: 14d
+      filter:
+        component: p2_feature_flags
+
+    - name: p2_canary_deployment_logs
+      retention: 90d
+      filter:
+        component: canary_deployment
+
+    - name: p2_security_logs
+      retention: 90d
+      filter:
+        component: p2_security
+
+    - name: blockchain_transaction_logs
+      retention: 90d
+      filter:
+        component: blockchain_nfts
+
+# P2 Health Check Configuration
+health_checks:
+  interval: 30s
+  timeout: 10s
+
+  endpoints:
+    # Batch 1 health checks
+    - name: p2_batch1_health
+      url: /health/p2/batch1
+      expected_status: 200
+
+    - name: voice_narration_health
+      url: /health/p2/voice-narration
+      expected_status: 200
+
+    - name: api_access_health
+      url: /health/p2/api-access
+      expected_status: 200
+
+    # Batch 2 health checks
+    - name: p2_batch2_health
+      url: /health/p2/batch2
+      expected_status: 200
+
+    - name: 3d_animations_health
+      url: /health/p2/3d-animations
+      expected_status: 200
+
+    # Batch 3 health checks
+    - name: p2_batch3_health
+      url: /health/p2/batch3
+      expected_status: 200
+
+    - name: ar_presentation_health
+      url: /health/p2/ar-presentation
+      expected_status: 200
+
+    - name: blockchain_nfts_health
+      url: /health/p2/blockchain-nfts
+      expected_status: 200
+
+    # Integration health checks
+    - name: p0_p1_p2_integration_health
+      url: /health/integration/p0-p1-p2
+      expected_status: 200
+
+    - name: p2_feature_flags_health
+      url: /health/p2/feature-flags
+      expected_status: 200
+
+# Export Configuration
+exports:
+  - type: prometheus
+    enabled: true
+    port: 9092
+    path: /metrics/p2
+
+  - type: json
+    enabled: true
+    destination: /var/log/p2-metrics/
+    rotation: daily
+    retention: 30d
+
+  - type: grafana
+    enabled: false
+    dashboard_url: ${GRAFANA_DASHBOARD_URL}
+    api_key: ${GRAFANA_API_KEY}
+
+  - type: datadog
+    enabled: false
+    api_key: ${DATADOG_API_KEY}
+    tags:
+      - env:${DEPLOY_ENV}
+      - service:p2-features
+      - version:${APP_VERSION}

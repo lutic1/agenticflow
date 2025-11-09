@@ -96,6 +96,61 @@ export {
   HealthCheckError,
 } from './types/p0-integration.js';
 
+// P1 Integration exports
+export { P1Integration, p1Integration } from './p1-integration.js';
+export type {
+  P1FeatureId,
+  P1FeatureInfo,
+  P1FeatureStatus,
+  P1IntegrationHealth,
+  P1IntegrationConfig,
+  P1InitializationResult,
+  P1FeatureHealthCheck,
+  P1IntegrationHealthReport,
+  BatchResult,
+} from './types/p1-integration.js';
+export {
+  P1IntegrationError,
+  P1FeatureInitializationError,
+  P1DependencyError,
+  P1HealthCheckError,
+  P1FeatureDisabledError,
+} from './types/p1-integration.js';
+
+// P2 Integration exports (Nice-to-Have features)
+export { P2Integration, p2Integration } from './p2-integration.js';
+export type {
+  P2FeatureId,
+  P2FeatureInfo,
+  P2FeatureStatus,
+  P2IntegrationHealth,
+  P2IntegrationConfig,
+  P2InitializationResult,
+  P2FeatureHealthCheck,
+  P2IntegrationHealthReport,
+  P2BatchResult,
+} from './types/p2-integration.js';
+export {
+  P2IntegrationError,
+  P2FeatureInitializationError,
+  P2DependencyError,
+  P2HealthCheckError,
+  P2FeatureDisabledError,
+  P2LazyLoadError,
+} from './types/p2-integration.js';
+
+// Combined Integration exports (P0 + P1 + P2)
+export {
+  SlideDesignerIntegration,
+  slideDesignerIntegration,
+} from './integration.js';
+export type {
+  FeatureId,
+  SlideDesignerIntegrationConfig,
+  CombinedInitializationResult,
+  CombinedHealthReport,
+} from './integration.js';
+
 // Core V2 exports (P0 features)
 export * from './core-v2/index.js';
 export * from './quality-control/index.js';

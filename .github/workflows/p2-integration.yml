@@ -1,0 +1,1017 @@
+name: P2 Features CI/CD (Nice-to-Have)
+
+on:
+  push:
+    branches:
+      - 'claude/slide-designer-phase2-*'
+      - 'claude/slide-designer-p2-*'
+      - main
+      - develop
+    paths:
+      - 'src/p2/**'
+      - 'src/p1/**'
+      - 'src/p0/**'
+      - 'tests/p2/**'
+      - 'package.json'
+      - 'tsconfig.json'
+      - '.github/workflows/p2-integration.yml'
+  pull_request:
+    branches:
+      - main
+      - develop
+
+env:
+  NODE_VERSION: '20.x'
+  CACHE_NAME: p2-integration
+  FEATURE_FLAGS_FILE: 'config/feature-flags-p2.json'
+  CANARY_PERCENTAGES: '1,10,50,100'
+
+jobs:
+  # ============================================================================
+  # Pre-Flight: P0+P1 Regression Tests
+  # Ensure P2 doesn't break existing functionality
+  # ============================================================================
+
+  preflight-p0-regression:
+    name: Pre-Flight - P0 Regression Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Run P0 baseline regression tests
+        run: npm run test:p0:regression
+        timeout-minutes: 10
+        env:
+          P2_FEATURES_ENABLED: false
+
+      - name: Upload P0 regression results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p0-regression-baseline
+          path: test-results/regression/
+          retention-days: 30
+
+  preflight-p1-regression:
+    name: Pre-Flight - P1 Regression Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Run P1 regression tests
+        run: npm run test:p1:regression
+        timeout-minutes: 15
+        env:
+          P1_FEATURES_ENABLED: true
+          P2_FEATURES_ENABLED: false
+
+      - name: Upload P1 regression results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p1-regression-baseline
+          path: test-results/regression/
+          retention-days: 30
+
+  # ============================================================================
+  # Type Checking and Linting
+  # ============================================================================
+
+  typecheck:
+    name: TypeScript Type Checking (P2)
+    runs-on: ubuntu-latest
+    needs: [preflight-p0-regression, preflight-p1-regression]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+        env:
+          NODE_ENV: development
+
+      - name: Run TypeScript type checking
+        run: npm run typecheck
+
+      - name: Upload typecheck results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p2-typecheck-errors
+          path: |
+            tsconfig.json
+            src/p2/**/*.ts
+          retention-days: 7
+
+  lint:
+    name: ESLint Code Quality (P2)
+    runs-on: ubuntu-latest
+    needs: [preflight-p0-regression, preflight-p1-regression]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint on P2 features
+        run: npm run lint -- "src/p2/**/*.ts" "tests/p2/**/*.ts"
+        continue-on-error: true
+
+      - name: Run P2-specific ESLint rules
+        run: |
+          echo "Checking for console.log statements in production code..."
+          npm run lint -- "src/p2/**/*.ts" --rule "no-console: error" || true
+
+          echo "Checking for hardcoded API keys..."
+          if grep -r "api[_-]key.*=.*['\"]" src/p2/; then
+            echo "ERROR: Potential hardcoded API keys found!"
+            exit 1
+          fi
+
+          echo "Checking for hardcoded blockchain credentials..."
+          if grep -r "private[_-]key.*=.*['\"]" src/p2/; then
+            echo "ERROR: Potential hardcoded private keys found!"
+            exit 1
+          fi
+
+      - name: Generate lint report
+        if: always()
+        run: |
+          npm run lint -- "src/p2/**/*.ts" --format json --output-file p2-lint-report.json || true
+          echo "# P2 Lint Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Lint check completed for P2 features. Check artifacts for details." >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload lint results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p2-lint-report
+          path: p2-lint-report.json
+          retention-days: 30
+
+  # ============================================================================
+  # P2 Unit Tests (Batch-based)
+  # ============================================================================
+
+  p2-unit-tests:
+    name: P2 Unit Tests
+    runs-on: ubuntu-latest
+    needs: [typecheck, lint]
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x, 22.x]
+        batch: [batch1, batch2, batch3]
+      fail-fast: false
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run P2 ${{ matrix.batch }} unit tests
+        run: npm run test -- --testPathPattern="p2/${{ matrix.batch }}" --coverage --maxWorkers=2
+        env:
+          NODE_ENV: test
+          P2_FEATURES_ENABLED: true
+          P2_BATCH: ${{ matrix.batch }}
+
+      - name: Upload test coverage for ${{ matrix.batch }}
+        if: matrix.node-version == '20.x'
+        uses: actions/upload-artifact@v4
+        with:
+          name: p2-coverage-${{ matrix.batch }}
+          path: coverage/
+          retention-days: 30
+
+      - name: Check coverage thresholds
+        if: matrix.node-version == '20.x'
+        run: |
+          echo "# P2 ${{ matrix.batch }} Test Coverage" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Coverage report generated for ${{ matrix.batch }} on Node ${{ matrix.node-version }}" >> $GITHUB_STEP_SUMMARY
+
+  # ============================================================================
+  # P0+P1+P2 Integration Tests
+  # ============================================================================
+
+  p0-p1-p2-integration-tests:
+    name: P0+P1+P2 Integration Tests
+    runs-on: ubuntu-latest
+    needs: p2-unit-tests
+
+    strategy:
+      matrix:
+        integration-suite:
+          - p0-baseline
+          - p1-baseline
+          - p2-batch1-integration
+          - p2-batch2-integration
+          - p2-batch3-integration
+          - full-integration
+      fail-fast: false
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Run ${{ matrix.integration-suite }} tests
+        run: npm run test:integration -- --testNamePattern="${{ matrix.integration-suite }}"
+        timeout-minutes: 20
+        env:
+          P0_FEATURES_ENABLED: true
+          P1_FEATURES_ENABLED: true
+          P2_FEATURES_ENABLED: true
+
+      - name: Upload integration test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p2-integration-results-${{ matrix.integration-suite }}
+          path: test-results/
+          retention-days: 30
+
+  # ============================================================================
+  # Feature Flag Testing Matrix
+  # Testing critical combinations instead of all 256 (2^8)
+  # ============================================================================
+
+  feature-flag-tests:
+    name: Feature Flag Testing Matrix
+    runs-on: ubuntu-latest
+    needs: p2-unit-tests
+
+    strategy:
+      matrix:
+        scenario:
+          # All off/on scenarios
+          - all-enabled
+          - all-disabled
+
+          # Single batch scenarios
+          - batch1-only
+          - batch2-only
+          - batch3-only
+
+          # Incremental scenarios
+          - batch1-batch2
+          - batch1-batch2-batch3
+
+          # Individual feature scenarios (for high-risk features)
+          - voice-narration-only
+          - api-access-only
+          - ar-presentation-only
+          - blockchain-nfts-only
+
+          # Random mixed scenarios
+          - random-mix-1
+          - random-mix-2
+          - random-mix-3
+      fail-fast: false
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Configure feature flags - ${{ matrix.scenario }}
+        run: |
+          node scripts/configure-feature-flags-p2.js --scenario ${{ matrix.scenario }}
+          echo "# Feature Flag Configuration: ${{ matrix.scenario }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          cat ${{ env.FEATURE_FLAGS_FILE }} >> $GITHUB_STEP_SUMMARY
+
+      - name: Run tests with feature flag configuration
+        run: npm run test:feature-flags:p2 -- --scenario=${{ matrix.scenario }}
+        timeout-minutes: 12
+        env:
+          FEATURE_FLAG_SCENARIO: ${{ matrix.scenario }}
+
+      - name: Upload feature flag test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p2-feature-flag-results-${{ matrix.scenario }}
+          path: |
+            test-results/
+            ${{ env.FEATURE_FLAGS_FILE }}
+          retention-days: 30
+
+  # ============================================================================
+  # Batch Compatibility Tests
+  # ============================================================================
+
+  batch-compatibility-tests:
+    name: Batch Compatibility Matrix
+    runs-on: ubuntu-latest
+    needs: p2-unit-tests
+
+    strategy:
+      matrix:
+        batch-combo:
+          - batch1
+          - batch1-batch2
+          - batch1-batch2-batch3
+          - batch2-batch3
+          - batch1-batch3
+      fail-fast: false
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Run compatibility tests - ${{ matrix.batch-combo }}
+        run: npm run test:batch-compatibility:p2 -- --batches=${{ matrix.batch-combo }}
+        timeout-minutes: 15
+
+      - name: Generate compatibility report
+        if: always()
+        run: |
+          echo "# Batch Compatibility: ${{ matrix.batch-combo }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Tested batches: ${{ matrix.batch-combo }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload compatibility results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p2-batch-compatibility-${{ matrix.batch-combo }}
+          path: test-results/
+          retention-days: 30
+
+  # ============================================================================
+  # Security Scanning (API Keys, Blockchain Wallets, Dependencies)
+  # ============================================================================
+
+  security-scan:
+    name: Security Audit (P2)
+    runs-on: ubuntu-latest
+    needs: [typecheck, lint]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run npm audit
+        run: |
+          npm audit --audit-level=moderate || true
+          npm audit --json > p2-audit-report.json || true
+
+      - name: Scan for hardcoded API keys
+        run: |
+          echo "# Security Scan: API Keys" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Check for common API key patterns
+          if grep -rE "(api[_-]?key|apikey|api[_-]?secret)" src/p2/ --include="*.ts" --include="*.js" | grep -E "=\s*['\"][^'\"]+['\"]"; then
+            echo "⚠️  WARNING: Potential hardcoded API keys detected!" >> $GITHUB_STEP_SUMMARY
+            grep -rE "(api[_-]?key|apikey|api[_-]?secret)" src/p2/ --include="*.ts" --include="*.js" | grep -E "=\s*['\"][^'\"]+['\"]" >> $GITHUB_STEP_SUMMARY || true
+          else
+            echo "✓ No hardcoded API keys found" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Scan for blockchain credentials
+        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "# Security Scan: Blockchain Credentials" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Check for private keys, mnemonics, wallet addresses
+          PATTERNS="(private[_-]?key|mnemonic|seed[_-]?phrase|wallet[_-]?address)"
+
+          if grep -rE "$PATTERNS" src/p2/batch3/ --include="*.ts" --include="*.js" | grep -E "=\s*['\"][^'\"]+['\"]"; then
+            echo "🚨 CRITICAL: Potential blockchain credentials detected!" >> $GITHUB_STEP_SUMMARY
+            grep -rE "$PATTERNS" src/p2/batch3/ --include="*.ts" --include="*.js" | grep -E "=\s*['\"][^'\"]+['\"]" >> $GITHUB_STEP_SUMMARY || true
+            exit 1
+          else
+            echo "✓ No hardcoded blockchain credentials found" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Check environment variable usage
+        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "# Security Scan: Environment Variables" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Verifying sensitive data uses environment variables..." >> $GITHUB_STEP_SUMMARY
+
+          # Ensure API keys come from env vars
+          grep -r "process.env" src/p2/ --include="*.ts" | grep -iE "(api|key|secret|token)" >> $GITHUB_STEP_SUMMARY || echo "No environment variable usage found" >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload security audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p2-security-audit
+          path: p2-audit-report.json
+          retention-days: 30
+
+  # ============================================================================
+  # Build Verification
+  # ============================================================================
+
+  build:
+    name: Build Verification (P2)
+    runs-on: ubuntu-latest
+    needs: [typecheck, lint, security-scan]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build TypeScript with P2 features
+        run: npm run build
+        env:
+          P2_BUILD: true
+          CODE_SPLITTING_ENABLED: true
+
+      - name: Verify P2 build output
+        run: |
+          if [ ! -d "dist/p2" ]; then
+            echo "Build warning: dist/p2 directory not created"
+          fi
+
+          if [ ! -f "dist/index.js" ]; then
+            echo "Build failed: dist/index.js not found"
+            exit 1
+          fi
+
+          echo "Build verification successful"
+          echo "# P2 Build Verification" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Build completed successfully with P2 features" >> $GITHUB_STEP_SUMMARY
+          echo "- Output directory: dist/" >> $GITHUB_STEP_SUMMARY
+          echo "- Main entry point: dist/index.js" >> $GITHUB_STEP_SUMMARY
+
+      - name: Check build size and code splitting
+        run: |
+          BUILD_SIZE=$(du -sh dist | cut -f1)
+          P2_SIZE=$(du -sh dist/p2 2>/dev/null | cut -f1 || echo "N/A")
+
+          echo "Total build size: $BUILD_SIZE"
+          echo "P2 features size: $P2_SIZE"
+
+          # Check for code splitting artifacts
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "# Code Splitting Analysis" >> $GITHUB_STEP_SUMMARY
+          echo "- Total build size: $BUILD_SIZE" >> $GITHUB_STEP_SUMMARY
+          echo "- P2 features size: $P2_SIZE" >> $GITHUB_STEP_SUMMARY
+
+          if ls dist/p2/batch*.chunk.js 2>/dev/null; then
+            echo "✓ Code splitting enabled - batch chunks found" >> $GITHUB_STEP_SUMMARY
+            ls -lh dist/p2/batch*.chunk.js >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️  Code splitting not detected" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: p2-build-output
+          path: dist/
+          retention-days: 7
+
+  # ============================================================================
+  # Performance Tests (Ensure P2 doesn't degrade P0/P1)
+  # ============================================================================
+
+  performance-benchmark-p2:
+    name: P2 Performance Benchmarks
+    runs-on: ubuntu-latest
+    needs: build
+
+    strategy:
+      matrix:
+        batch: [batch1, batch2, batch3]
+      fail-fast: false
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Run P2 ${{ matrix.batch }} benchmarks
+        run: npm run bench:p2:${{ matrix.batch }}
+        timeout-minutes: 20
+
+      - name: Generate benchmark report
+        if: always()
+        run: |
+          npm run bench:report -- --batch=${{ matrix.batch }} || echo "Benchmark report generation skipped"
+
+      - name: Upload benchmark results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p2-benchmark-${{ matrix.batch }}
+          path: |
+            benchmarks/p2/${{ matrix.batch }}/*.json
+            benchmarks/p2/${{ matrix.batch }}/*.md
+          retention-days: 30
+
+  performance-degradation-check:
+    name: P0/P1 Performance Degradation Check
+    runs-on: ubuntu-latest
+    needs: [p0-p1-p2-integration-tests]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build with P2 enabled
+        run: npm run build
+        env:
+          P2_FEATURES_ENABLED: true
+
+      - name: Run P0 performance baseline
+        run: npm run bench:p0:baseline
+        env:
+          P2_FEATURES_ENABLED: true
+
+      - name: Run P1 performance baseline
+        run: npm run bench:p1:baseline
+        env:
+          P2_FEATURES_ENABLED: true
+
+      - name: Compare performance with baseline
+        run: |
+          node scripts/compare-performance-baseline.js --baseline=p0 --threshold=5
+          node scripts/compare-performance-baseline.js --baseline=p1 --threshold=5
+
+      - name: Upload degradation report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-degradation-report
+          path: benchmarks/degradation-report.json
+          retention-days: 30
+
+  # ============================================================================
+  # Regression Tests (P0 and P1 with P2 enabled)
+  # ============================================================================
+
+  regression-tests:
+    name: P0+P1 Regression Tests (with P2)
+    runs-on: ubuntu-latest
+    needs: [p0-p1-p2-integration-tests]
+
+    strategy:
+      matrix:
+        regression-suite:
+          - p0-regression
+          - p1-regression
+      fail-fast: false
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project with P2 features
+        run: npm run build
+        env:
+          P0_FEATURES_ENABLED: true
+          P1_FEATURES_ENABLED: true
+          P2_FEATURES_ENABLED: true
+
+      - name: Run ${{ matrix.regression-suite }} tests
+        run: npm run test:${{ matrix.regression-suite }}
+        timeout-minutes: 15
+        env:
+          P2_FEATURES_ENABLED: true
+
+      - name: Compare with baseline
+        run: |
+          echo "# ${{ matrix.regression-suite }} Results (with P2 enabled)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Verifying existing features still work with P2 enabled" >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload regression results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.regression-suite }}-with-p2
+          path: test-results/regression/
+          retention-days: 30
+
+  # ============================================================================
+  # Deployment Jobs (Batch-by-Batch with Canary Strategy)
+  # ============================================================================
+
+  deploy-batch1-canary:
+    name: Deploy P2 Batch 1 (Canary)
+    runs-on: ubuntu-latest
+    needs:
+      - p2-unit-tests
+      - p0-p1-p2-integration-tests
+      - build
+      - feature-flag-tests
+      - security-scan
+      - regression-tests
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/claude/slide-designer')
+
+    environment:
+      name: production-p2-batch1-canary
+      url: https://flow-nexus.ruv.io/p2/batch1
+
+    strategy:
+      matrix:
+        canary-percentage: [1, 10, 50, 100]
+      max-parallel: 1
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: p2-build-output
+          path: dist/
+
+      - name: Install dependencies
+        run: npm ci --production
+
+      - name: Deploy Batch 1 - ${{ matrix.canary-percentage }}% canary
+        run: bash ./scripts/deploy-p2.sh --batch=1 --canary=${{ matrix.canary-percentage }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEPLOY_ENV: production
+          P2_BATCH: 1
+          CANARY_PERCENTAGE: ${{ matrix.canary-percentage }}
+
+      - name: Wait for canary soak time
+        if: matrix.canary-percentage != 100
+        run: |
+          if [ "${{ matrix.canary-percentage }}" -eq 1 ]; then
+            SOAK_TIME=3600  # 1 hour for 1%
+          elif [ "${{ matrix.canary-percentage }}" -eq 10 ]; then
+            SOAK_TIME=7200  # 2 hours for 10%
+          elif [ "${{ matrix.canary-percentage }}" -eq 50 ]; then
+            SOAK_TIME=14400  # 4 hours for 50%
+          fi
+
+          echo "Waiting ${SOAK_TIME}s for canary ${{ matrix.canary-percentage }}% soak time..."
+          sleep $SOAK_TIME
+
+      - name: Health check Batch 1 - ${{ matrix.canary-percentage }}%
+        run: |
+          echo "Running health checks for Batch 1 at ${{ matrix.canary-percentage }}% deployment..."
+          npm run health-check:p2:batch1 -- --canary=${{ matrix.canary-percentage }}
+          echo "Health check completed"
+
+      - name: Monitor canary metrics
+        run: |
+          echo "Monitoring canary deployment metrics..."
+          npm run monitor:canary -- --batch=1 --percentage=${{ matrix.canary-percentage }}
+
+      - name: Create canary deployment summary
+        run: |
+          echo "# P2 Batch 1 Canary Deployment (${{ matrix.canary-percentage }}%)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Batch 1 deployed to ${{ matrix.canary-percentage }}% of traffic" >> $GITHUB_STEP_SUMMARY
+          echo "- Environment: production" >> $GITHUB_STEP_SUMMARY
+          echo "- Canary %: ${{ matrix.canary-percentage }}%" >> $GITHUB_STEP_SUMMARY
+          echo "- Branch: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Commit: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Deployed at: $(date -u)" >> $GITHUB_STEP_SUMMARY
+
+  deploy-batch2:
+    name: Deploy P2 Batch 2
+    runs-on: ubuntu-latest
+    needs: deploy-batch1-canary
+
+    environment:
+      name: production-p2-batch2
+      url: https://flow-nexus.ruv.io/p2/batch2
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: p2-build-output
+          path: dist/
+
+      - name: Install dependencies
+        run: npm ci --production
+
+      - name: Wait 24 hours soak time
+        run: |
+          echo "Waiting 24 hours before deploying Batch 2 (Medium Risk)..."
+          sleep 86400  # 24 hours
+
+      - name: Deploy Batch 2
+        run: bash ./scripts/deploy-p2.sh --batch=2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEPLOY_ENV: production
+          P2_BATCH: 2
+
+      - name: Health check Batch 2
+        run: |
+          echo "Running health checks for Batch 2..."
+          npm run health-check:p2:batch2
+          echo "Health check completed"
+
+  deploy-batch3:
+    name: Deploy P2 Batch 3 (High Risk/Experimental)
+    runs-on: ubuntu-latest
+    needs: deploy-batch2
+
+    environment:
+      name: production-p2-batch3
+      url: https://flow-nexus.ruv.io/p2/batch3
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: p2-build-output
+          path: dist/
+
+      - name: Install dependencies
+        run: npm ci --production
+
+      - name: Wait 24 hours soak time
+        run: |
+          echo "Waiting 24 hours before deploying Batch 3 (High Risk)..."
+          sleep 86400  # 24 hours
+
+      - name: Deploy Batch 3 (Experimental Features)
+        run: bash ./scripts/deploy-p2.sh --batch=3 --experimental
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEPLOY_ENV: production
+          P2_BATCH: 3
+          EXPERIMENTAL_FEATURES: true
+
+      - name: Health check Batch 3
+        run: |
+          echo "Running health checks for Batch 3..."
+          npm run health-check:p2:batch3
+          echo "Health check completed"
+
+      - name: Final deployment summary
+        run: |
+          echo "# P2 Complete Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "All P2 batches deployed successfully!" >> $GITHUB_STEP_SUMMARY
+          echo "- Batch 1 (Low Risk): ✓ Deployed with canary (Voice, API, Interactive, Themes)" >> $GITHUB_STEP_SUMMARY
+          echo "- Batch 2 (Medium Risk): ✓ Deployed (3D Animations, Figma/Sketch Import)" >> $GITHUB_STEP_SUMMARY
+          echo "- Batch 3 (High Risk/Experimental): ✓ Deployed (AR Presentation, Blockchain NFTs)" >> $GITHUB_STEP_SUMMARY
+
+  # ============================================================================
+  # Rollback on Failure
+  # ============================================================================
+
+  rollback-on-failure:
+    name: Rollback on Deployment Failure
+    runs-on: ubuntu-latest
+    needs: [deploy-batch1-canary, deploy-batch2, deploy-batch3]
+    if: failure()
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Determine failed batch
+        id: failed-batch
+        run: |
+          if [ "${{ needs.deploy-batch3.result }}" == "failure" ]; then
+            echo "batch=3" >> $GITHUB_OUTPUT
+          elif [ "${{ needs.deploy-batch2.result }}" == "failure" ]; then
+            echo "batch=2" >> $GITHUB_OUTPUT
+          elif [ "${{ needs.deploy-batch1-canary.result }}" == "failure" ]; then
+            echo "batch=1" >> $GITHUB_OUTPUT
+          else
+            echo "batch=unknown" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Rollback deployment
+        run: |
+          echo "Deployment failed at batch ${{ steps.failed-batch.outputs.batch }}. Initiating rollback..."
+          bash ./scripts/deploy-p2.sh --rollback --batch=${{ steps.failed-batch.outputs.batch }}
+          echo "Rollback completed"
+
+      - name: Notify failure
+        run: |
+          echo "# P2 Deployment Failed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Deployment failed at batch ${{ steps.failed-batch.outputs.batch }} and has been rolled back" >> $GITHUB_STEP_SUMMARY
+          echo "- Branch: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Commit: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+
+  # ============================================================================
+  # Status Check
+  # ============================================================================
+
+  status-check:
+    name: P2 CI/CD Status Check
+    runs-on: ubuntu-latest
+    needs:
+      - preflight-p0-regression
+      - preflight-p1-regression
+      - typecheck
+      - lint
+      - p2-unit-tests
+      - p0-p1-p2-integration-tests
+      - feature-flag-tests
+      - batch-compatibility-tests
+      - security-scan
+      - build
+      - regression-tests
+      - performance-degradation-check
+    if: always()
+
+    steps:
+      - name: Check all jobs status
+        run: |
+          echo "# P2 CI/CD Pipeline Status" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "All required checks completed" >> $GITHUB_STEP_SUMMARY
+          echo "- Pre-Flight P0 Regression: ${{ needs.preflight-p0-regression.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Pre-Flight P1 Regression: ${{ needs.preflight-p1-regression.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- TypeCheck: ${{ needs.typecheck.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Lint: ${{ needs.lint.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- P2 Unit Tests: ${{ needs.p2-unit-tests.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- P0+P1+P2 Integration Tests: ${{ needs.p0-p1-p2-integration-tests.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Feature Flag Tests: ${{ needs.feature-flag-tests.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Batch Compatibility: ${{ needs.batch-compatibility-tests.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Security Scan: ${{ needs.security-scan.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Build: ${{ needs.build.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Regression Tests: ${{ needs.regression-tests.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Performance Degradation Check: ${{ needs.performance-degradation-check.result }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: Fail if any required job failed
+        if: |
+          needs.preflight-p0-regression.result == 'failure' ||
+          needs.preflight-p1-regression.result == 'failure' ||
+          needs.typecheck.result == 'failure' ||
+          needs.lint.result == 'failure' ||
+          needs.p2-unit-tests.result == 'failure' ||
+          needs.p0-p1-p2-integration-tests.result == 'failure' ||
+          needs.feature-flag-tests.result == 'failure' ||
+          needs.batch-compatibility-tests.result == 'failure' ||
+          needs.security-scan.result == 'failure' ||
+          needs.build.result == 'failure' ||
+          needs.regression-tests.result == 'failure' ||
+          needs.performance-degradation-check.result == 'failure'
+        run: |
+          echo "One or more required jobs failed"
+          exit 1

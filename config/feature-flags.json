@@ -1,0 +1,71 @@
+{
+  "p1Features": {
+    "batch1": {
+      "iconLibrary": true,
+      "backgroundPatterns": true,
+      "slideManager": true
+    },
+    "batch2": {
+      "templateLibrary": true,
+      "videoEmbed": true,
+      "dataImport": true
+    },
+    "batch3": {
+      "speakerNotes": true,
+      "customFonts": true,
+      "aiImageGeneration": true
+    },
+    "batch4": {
+      "i18n": true,
+      "versionHistory": true,
+      "presentationAnalytics": true
+    },
+    "batch5": {
+      "collaboration": true,
+      "livePresentation": true,
+      "mobileApp": true
+    }
+  },
+  "scenarios": {
+    "all-enabled": {
+      "description": "All P1 features enabled",
+      "batches": ["batch1", "batch2", "batch3", "batch4", "batch5"]
+    },
+    "all-disabled": {
+      "description": "All P1 features disabled",
+      "batches": []
+    },
+    "batch1-only": {
+      "description": "Only Batch 1 features enabled",
+      "batches": ["batch1"]
+    },
+    "batch2-only": {
+      "description": "Only Batch 2 features enabled",
+      "batches": ["batch2"]
+    },
+    "batch3-only": {
+      "description": "Only Batch 3 features enabled",
+      "batches": ["batch3"]
+    },
+    "batch4-only": {
+      "description": "Only Batch 4 features enabled",
+      "batches": ["batch4"]
+    },
+    "batch5-only": {
+      "description": "Only Batch 5 features enabled",
+      "batches": ["batch5"]
+    },
+    "incremental-batch1-2": {
+      "description": "Batch 1 and 2 enabled",
+      "batches": ["batch1", "batch2"]
+    },
+    "incremental-batch1-2-3": {
+      "description": "Batch 1, 2, and 3 enabled",
+      "batches": ["batch1", "batch2", "batch3"]
+    },
+    "random-mix": {
+      "description": "Random mix of features",
+      "batches": ["batch1", "batch3", "batch5"]
+    }
+  }
+}

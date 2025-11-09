@@ -1,0 +1,949 @@
+{
+  "dashboard": {
+    "title": "Agentic Flow - P1 Features Monitoring",
+    "tags": ["p1", "sre", "slide-designer", "features"],
+    "timezone": "browser",
+    "schemaVersion": 16,
+    "version": 1,
+    "refresh": "30s",
+    "time": {
+      "from": "now-6h",
+      "to": "now"
+    },
+    "panels": [
+      {
+        "id": 1,
+        "title": "P1 Overall System Health",
+        "type": "stat",
+        "gridPos": {
+          "x": 0,
+          "y": 0,
+          "w": 24,
+          "h": 4
+        },
+        "targets": [
+          {
+            "expr": "avg(p1_batch_health_score)",
+            "legendFormat": "Overall P1 Health",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "red"},
+                {"value": 95, "color": "yellow"},
+                {"value": 98, "color": "green"}
+              ]
+            },
+            "unit": "percent",
+            "decimals": 2
+          }
+        }
+      },
+      {
+        "id": 2,
+        "title": "Feature Flag Status",
+        "type": "table",
+        "gridPos": {
+          "x": 0,
+          "y": 4,
+          "w": 24,
+          "h": 6
+        },
+        "targets": [
+          {
+            "expr": "p1_feature_flag_rollout_percentage",
+            "format": "table",
+            "refId": "A"
+          }
+        ],
+        "transformations": [
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {},
+              "indexByName": {},
+              "renameByName": {
+                "flag": "Feature Flag",
+                "Value": "Rollout %"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Batch 1: Quick Wins - Health Score",
+        "type": "gauge",
+        "gridPos": {
+          "x": 0,
+          "y": 10,
+          "w": 6,
+          "h": 6
+        },
+        "targets": [
+          {
+            "expr": "p1_batch_health_score{batch=\"batch1\"}",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "red"},
+                {"value": 95, "color": "yellow"},
+                {"value": 98, "color": "green"}
+              ]
+            },
+            "unit": "percent",
+            "max": 100,
+            "min": 0
+          }
+        }
+      },
+      {
+        "id": 4,
+        "title": "Batch 2: Content Enhancement - Health Score",
+        "type": "gauge",
+        "gridPos": {
+          "x": 6,
+          "y": 10,
+          "w": 6,
+          "h": 6
+        },
+        "targets": [
+          {
+            "expr": "p1_batch_health_score{batch=\"batch2\"}",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "red"},
+                {"value": 95, "color": "yellow"},
+                {"value": 98, "color": "green"}
+              ]
+            },
+            "unit": "percent",
+            "max": 100,
+            "min": 0
+          }
+        }
+      },
+      {
+        "id": 5,
+        "title": "Batch 3: Advanced Features - Health Score",
+        "type": "gauge",
+        "gridPos": {
+          "x": 12,
+          "y": 10,
+          "w": 6,
+          "h": 6
+        },
+        "targets": [
+          {
+            "expr": "p1_batch_health_score{batch=\"batch3\"}",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "red"},
+                {"value": 94, "color": "yellow"},
+                {"value": 97, "color": "green"}
+              ]
+            },
+            "unit": "percent",
+            "max": 100,
+            "min": 0
+          }
+        }
+      },
+      {
+        "id": 6,
+        "title": "Batch 4: System Features - Health Score",
+        "type": "gauge",
+        "gridPos": {
+          "x": 18,
+          "y": 10,
+          "w": 6,
+          "h": 6
+        },
+        "targets": [
+          {
+            "expr": "p1_batch_health_score{batch=\"batch4\"}",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "red"},
+                {"value": 94, "color": "yellow"},
+                {"value": 97, "color": "green"}
+              ]
+            },
+            "unit": "percent",
+            "max": 100,
+            "min": 0
+          }
+        }
+      },
+      {
+        "id": 7,
+        "title": "Batch 5: Collaborative Features - Health Score",
+        "type": "gauge",
+        "gridPos": {
+          "x": 0,
+          "y": 16,
+          "w": 6,
+          "h": 6
+        },
+        "targets": [
+          {
+            "expr": "p1_batch_health_score{batch=\"batch5\"}",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "red"},
+                {"value": 93, "color": "yellow"},
+                {"value": 96, "color": "green"}
+              ]
+            },
+            "unit": "percent",
+            "max": 100,
+            "min": 0
+          }
+        }
+      },
+      {
+        "id": 8,
+        "title": "P0 Performance Impact (P1 Enabled)",
+        "type": "graph",
+        "gridPos": {
+          "x": 6,
+          "y": 16,
+          "w": 18,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "(p0_with_p1_latency / p0_baseline_latency) * 100",
+            "legendFormat": "{{p0_component}} - Latency Impact %",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "percent",
+            "label": "Performance Impact",
+            "min": 90,
+            "max": 120
+          }
+        ],
+        "alert": {
+          "name": "P1 Degrading P0 Performance",
+          "conditions": [
+            {
+              "evaluator": {
+                "params": [110],
+                "type": "gt"
+              },
+              "query": {
+                "params": ["A", "10m", "now"]
+              },
+              "reducer": {
+                "params": [],
+                "type": "avg"
+              },
+              "type": "query"
+            }
+          ],
+          "executionErrorState": "alerting",
+          "frequency": "1m",
+          "handler": 1,
+          "noDataState": "no_data",
+          "notifications": [
+            {"uid": "pagerduty-p1"}
+          ]
+        }
+      },
+      {
+        "id": 9,
+        "title": "P1.1 Icon Library - Search Latency",
+        "type": "graph",
+        "gridPos": {
+          "x": 0,
+          "y": 24,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.50, rate(p1_feature_request_duration_seconds_bucket{feature=\"icon_library\",operation=\"search\"}[5m]))",
+            "legendFormat": "p50",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.95, rate(p1_feature_request_duration_seconds_bucket{feature=\"icon_library\",operation=\"search\"}[5m]))",
+            "legendFormat": "p95 (SLO: 10ms)",
+            "refId": "B"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "ms",
+            "label": "Latency"
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "title": "P1.2 Background Patterns - Generation Time",
+        "type": "graph",
+        "gridPos": {
+          "x": 12,
+          "y": 24,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(p1_feature_request_duration_seconds_bucket{feature=\"background_patterns\",operation=\"generate\"}[5m]))",
+            "legendFormat": "p95 (SLO: 20ms)",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "ms",
+            "label": "Generation Time"
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "title": "P1.4 Slide Management - Operation Latency",
+        "type": "graph",
+        "gridPos": {
+          "x": 0,
+          "y": 32,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(p1_feature_request_duration_seconds_bucket{feature=\"slide_management\",operation=\"duplicate\"}[5m]))",
+            "legendFormat": "Duplicate p95 (SLO: 100ms)",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.95, rate(p1_feature_request_duration_seconds_bucket{feature=\"slide_management\",operation=\"reorder\"}[5m]))",
+            "legendFormat": "Reorder p95 (SLO: 50ms)",
+            "refId": "B"
+          },
+          {
+            "expr": "histogram_quantile(0.95, rate(p1_feature_request_duration_seconds_bucket{feature=\"slide_management\",operation=\"undo\"}[5m]))",
+            "legendFormat": "Undo p95 (SLO: 30ms)",
+            "refId": "C"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "ms",
+            "label": "Latency"
+          }
+        ]
+      },
+      {
+        "id": 12,
+        "title": "P1.5 Template Library - Load Time",
+        "type": "graph",
+        "gridPos": {
+          "x": 12,
+          "y": 32,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(p1_feature_request_duration_seconds_bucket{feature=\"template_library\",operation=\"load\"}[5m]))",
+            "legendFormat": "p95 (SLO: 200ms)",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "ms",
+            "label": "Load Time"
+          }
+        ]
+      },
+      {
+        "id": 13,
+        "title": "P1.7 Video Embed - Success Rate",
+        "type": "stat",
+        "gridPos": {
+          "x": 0,
+          "y": 40,
+          "w": 6,
+          "h": 4
+        },
+        "targets": [
+          {
+            "expr": "sum(rate(p1_feature_requests_total{feature=\"video_embed\",status=\"success\"}[5m])) / sum(rate(p1_feature_requests_total{feature=\"video_embed\"}[5m]))",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "red"},
+                {"value": 0.98, "color": "yellow"},
+                {"value": 0.99, "color": "green"}
+              ]
+            },
+            "unit": "percentunit",
+            "decimals": 3
+          }
+        }
+      },
+      {
+        "id": 14,
+        "title": "P1.12 Data Import - Success Rate",
+        "type": "stat",
+        "gridPos": {
+          "x": 6,
+          "y": 40,
+          "w": 6,
+          "h": 4
+        },
+        "targets": [
+          {
+            "expr": "sum(rate(p1_feature_requests_total{feature=\"data_import\",status=\"success\"}[5m])) / sum(rate(p1_feature_requests_total{feature=\"data_import\"}[5m]))",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "red"},
+                {"value": 0.98, "color": "yellow"},
+                {"value": 0.99, "color": "green"}
+              ]
+            },
+            "unit": "percentunit",
+            "decimals": 3
+          }
+        }
+      },
+      {
+        "id": 15,
+        "title": "P1.3 Speaker Notes - Presenter View Load",
+        "type": "graph",
+        "gridPos": {
+          "x": 12,
+          "y": 40,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(p1_feature_request_duration_seconds_bucket{feature=\"speaker_notes\",operation=\"presenter_view\"}[5m]))",
+            "legendFormat": "p95 (SLO: 500ms)",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "ms",
+            "label": "Load Time"
+          }
+        ]
+      },
+      {
+        "id": 16,
+        "title": "P1.8 Custom Fonts - Upload Success",
+        "type": "stat",
+        "gridPos": {
+          "x": 0,
+          "y": 44,
+          "w": 6,
+          "h": 4
+        },
+        "targets": [
+          {
+            "expr": "sum(rate(p1_feature_requests_total{feature=\"custom_fonts\",operation=\"upload\",status=\"success\"}[5m])) / sum(rate(p1_feature_requests_total{feature=\"custom_fonts\",operation=\"upload\"}[5m]))",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "red"},
+                {"value": 0.98, "color": "yellow"},
+                {"value": 0.99, "color": "green"}
+              ]
+            },
+            "unit": "percentunit",
+            "decimals": 3
+          }
+        }
+      },
+      {
+        "id": 17,
+        "title": "P1.11 AI Image Generation - Latency & Success",
+        "type": "graph",
+        "gridPos": {
+          "x": 6,
+          "y": 44,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(p1_feature_request_duration_seconds_bucket{feature=\"ai_image_gen\",operation=\"generate\"}[5m]))",
+            "legendFormat": "p95 Latency (SLO: 30s)",
+            "refId": "A"
+          },
+          {
+            "expr": "sum(rate(p1_feature_requests_total{feature=\"ai_image_gen\",status=\"success\"}[5m])) / sum(rate(p1_feature_requests_total{feature=\"ai_image_gen\"}[5m])) * 100",
+            "legendFormat": "Success Rate % (SLO: 95%)",
+            "refId": "B"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "s",
+            "label": "Latency / Success %"
+          }
+        ]
+      },
+      {
+        "id": 18,
+        "title": "P1.11 AI Image Gen - Daily Cost",
+        "type": "stat",
+        "gridPos": {
+          "x": 18,
+          "y": 44,
+          "w": 6,
+          "h": 4
+        },
+        "targets": [
+          {
+            "expr": "sum(increase(p1_feature_cost_usd{feature=\"ai_image_gen\"}[1d]))",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "green"},
+                {"value": 50, "color": "yellow"},
+                {"value": 75, "color": "red"}
+              ]
+            },
+            "unit": "currencyUSD",
+            "decimals": 2
+          }
+        }
+      },
+      {
+        "id": 19,
+        "title": "P1.6 i18n - Locale Switch Latency",
+        "type": "graph",
+        "gridPos": {
+          "x": 0,
+          "y": 52,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(p1_feature_request_duration_seconds_bucket{feature=\"i18n\",operation=\"locale_switch\"}[5m]))",
+            "legendFormat": "p95 (SLO: 200ms)",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "ms",
+            "label": "Switch Time"
+          }
+        ]
+      },
+      {
+        "id": 20,
+        "title": "P1.10 Version History - Restore Latency",
+        "type": "graph",
+        "gridPos": {
+          "x": 12,
+          "y": 52,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(p1_feature_request_duration_seconds_bucket{feature=\"version_history\",operation=\"restore\"}[5m]))",
+            "legendFormat": "p95 (SLO: 2s)",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "s",
+            "label": "Restore Time"
+          }
+        ]
+      },
+      {
+        "id": 21,
+        "title": "P1.13 Analytics - Event Tracking Rate",
+        "type": "stat",
+        "gridPos": {
+          "x": 0,
+          "y": 60,
+          "w": 6,
+          "h": 4
+        },
+        "targets": [
+          {
+            "expr": "sum(rate(p1_feature_requests_total{feature=\"analytics\",operation=\"track_event\",status=\"success\"}[5m])) / sum(rate(p1_feature_requests_total{feature=\"analytics\",operation=\"track_event\"}[5m]))",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "red"},
+                {"value": 0.99, "color": "yellow"},
+                {"value": 0.995, "color": "green"}
+              ]
+            },
+            "unit": "percentunit",
+            "decimals": 3
+          }
+        }
+      },
+      {
+        "id": 22,
+        "title": "P1.9 Collaboration - Sync Latency",
+        "type": "graph",
+        "gridPos": {
+          "x": 6,
+          "y": 60,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(p1_feature_request_duration_seconds_bucket{feature=\"collaboration\",operation=\"sync\"}[5m]))",
+            "legendFormat": "p95 (SLO: 500ms)",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "ms",
+            "label": "Sync Latency"
+          }
+        ]
+      },
+      {
+        "id": 23,
+        "title": "P1.9 Collaboration - Concurrent Users",
+        "type": "stat",
+        "gridPos": {
+          "x": 18,
+          "y": 60,
+          "w": 6,
+          "h": 4
+        },
+        "targets": [
+          {
+            "expr": "max(p1_feature_concurrent_users{feature=\"collaboration\"})",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "green"},
+                {"value": 10, "color": "yellow"},
+                {"value": 20, "color": "red"}
+              ]
+            },
+            "unit": "users",
+            "decimals": 0
+          }
+        }
+      },
+      {
+        "id": 24,
+        "title": "P1.15 Live Presentation - Slide Sync Latency",
+        "type": "graph",
+        "gridPos": {
+          "x": 0,
+          "y": 68,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(p1_feature_request_duration_seconds_bucket{feature=\"live_presentation\",operation=\"slide_sync\"}[5m]))",
+            "legendFormat": "p95 (SLO: 300ms)",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "ms",
+            "label": "Sync Latency"
+          }
+        ]
+      },
+      {
+        "id": 25,
+        "title": "P1.15 Live Presentation - Attendees",
+        "type": "graph",
+        "gridPos": {
+          "x": 12,
+          "y": 68,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "max(p1_feature_concurrent_users{feature=\"live_presentation\"})",
+            "legendFormat": "Concurrent Attendees (Target: 100+)",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "users",
+            "label": "Attendees"
+          }
+        ]
+      },
+      {
+        "id": 26,
+        "title": "P1.14 Mobile App - Launch Time",
+        "type": "graph",
+        "gridPos": {
+          "x": 0,
+          "y": 76,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(p1_feature_request_duration_seconds_bucket{feature=\"mobile_app\",operation=\"launch\"}[5m]))",
+            "legendFormat": "p95 (SLO: 2s)",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "s",
+            "label": "Launch Time"
+          }
+        ]
+      },
+      {
+        "id": 27,
+        "title": "P1.14 Mobile App - Crash Rate",
+        "type": "stat",
+        "gridPos": {
+          "x": 12,
+          "y": 76,
+          "w": 6,
+          "h": 4
+        },
+        "targets": [
+          {
+            "expr": "sum(rate(p1_feature_errors_total{feature=\"mobile_app\",error_type=\"crash\"}[5m])) / sum(rate(p1_feature_requests_total{feature=\"mobile_app\"}[5m]))",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "green"},
+                {"value": 0.01, "color": "yellow"},
+                {"value": 0.02, "color": "red"}
+              ]
+            },
+            "unit": "percentunit",
+            "decimals": 3
+          }
+        }
+      },
+      {
+        "id": 28,
+        "title": "Error Budget Consumption by Batch",
+        "type": "graph",
+        "gridPos": {
+          "x": 0,
+          "y": 84,
+          "w": 24,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "p1_error_budget_consumed{batch=\"batch1\"}",
+            "legendFormat": "Batch 1: Quick Wins",
+            "refId": "A"
+          },
+          {
+            "expr": "p1_error_budget_consumed{batch=\"batch2\"}",
+            "legendFormat": "Batch 2: Content Enhancement",
+            "refId": "B"
+          },
+          {
+            "expr": "p1_error_budget_consumed{batch=\"batch3\"}",
+            "legendFormat": "Batch 3: Advanced Features",
+            "refId": "C"
+          },
+          {
+            "expr": "p1_error_budget_consumed{batch=\"batch4\"}",
+            "legendFormat": "Batch 4: System Features",
+            "refId": "D"
+          },
+          {
+            "expr": "p1_error_budget_consumed{batch=\"batch5\"}",
+            "legendFormat": "Batch 5: Collaborative Features",
+            "refId": "E"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "percentunit",
+            "label": "Error Budget Consumed",
+            "max": 1,
+            "min": 0
+          }
+        ],
+        "alert": {
+          "name": "P1 Error Budget Critical",
+          "conditions": [
+            {
+              "evaluator": {
+                "params": [0.90],
+                "type": "gt"
+              },
+              "query": {
+                "params": ["A", "5m", "now"]
+              },
+              "reducer": {
+                "params": [],
+                "type": "max"
+              },
+              "type": "query"
+            }
+          ],
+          "executionErrorState": "alerting",
+          "frequency": "1m",
+          "handler": 1,
+          "noDataState": "no_data",
+          "notifications": [
+            {"uid": "pagerduty-p1"}
+          ]
+        }
+      }
+    ],
+    "annotations": {
+      "list": [
+        {
+          "name": "P1 Deployments",
+          "datasource": "Prometheus",
+          "enable": true,
+          "expr": "changes(p1_deployment_timestamp[1m]) > 0",
+          "iconColor": "blue",
+          "tagKeys": "feature,batch,version"
+        },
+        {
+          "name": "Feature Flag Changes",
+          "datasource": "Prometheus",
+          "enable": true,
+          "expr": "changes(p1_feature_flag_rollout_percentage[1m]) > 0",
+          "iconColor": "green",
+          "tagKeys": "flag,action"
+        },
+        {
+          "name": "P1 Incidents",
+          "datasource": "Prometheus",
+          "enable": true,
+          "expr": "p1_incident_active == 1",
+          "iconColor": "red",
+          "tagKeys": "severity,feature,batch"
+        }
+      ]
+    },
+    "templating": {
+      "list": [
+        {
+          "name": "environment",
+          "type": "custom",
+          "options": [
+            {"text": "Production", "value": "prod"},
+            {"text": "Staging", "value": "staging"},
+            {"text": "Development", "value": "dev"}
+          ],
+          "current": {
+            "text": "Production",
+            "value": "prod"
+          }
+        },
+        {
+          "name": "batch",
+          "type": "custom",
+          "options": [
+            {"text": "All Batches", "value": "all"},
+            {"text": "Batch 1: Quick Wins", "value": "batch1"},
+            {"text": "Batch 2: Content Enhancement", "value": "batch2"},
+            {"text": "Batch 3: Advanced Features", "value": "batch3"},
+            {"text": "Batch 4: System Features", "value": "batch4"},
+            {"text": "Batch 5: Collaborative Features", "value": "batch5"}
+          ],
+          "current": {
+            "text": "All Batches",
+            "value": "all"
+          }
+        }
+      ]
+    }
+  }
+}

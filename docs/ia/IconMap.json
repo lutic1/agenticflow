@@ -1,0 +1,234 @@
+{
+  "metadata": {
+    "generated": "2025-11-09",
+    "designer": "Information Architecture Agent",
+    "icon_library": "lucide-react",
+    "total_icons": 15,
+    "toolbar_sections": 4
+  },
+  "toolbar_icons": {
+    "layout_section": [
+      {
+        "featureId": "P0.1",
+        "name": "Grid Layout",
+        "icon": "Grid3x3",
+        "tooltip": "Change slide layout (Cmd+G)",
+        "shortcut": "Cmd+G",
+        "position": "toolbar-left-1",
+        "category": "layout",
+        "priority": "high",
+        "ai_badge": false
+      }
+    ],
+    "content_section": [
+      {
+        "featureId": "P0.2",
+        "name": "Typography",
+        "icon": "Type",
+        "tooltip": "Format text (Cmd+T)",
+        "shortcut": "Cmd+T",
+        "position": "toolbar-left-2",
+        "category": "content",
+        "priority": "high",
+        "ai_badge": false
+      },
+      {
+        "featureId": "P0.3",
+        "name": "Color Palette",
+        "icon": "Palette",
+        "tooltip": "Change colors (Cmd+K)",
+        "shortcut": "Cmd+K",
+        "position": "toolbar-left-3",
+        "category": "content",
+        "priority": "high",
+        "ai_badge": false
+      },
+      {
+        "featureId": "P0.4",
+        "name": "Charts",
+        "icon": "BarChart3",
+        "tooltip": "Insert chart (Cmd+Shift+C)",
+        "shortcut": "Cmd+Shift+C",
+        "position": "toolbar-left-4",
+        "category": "content",
+        "priority": "high",
+        "ai_badge": false
+      }
+    ],
+    "media_section": [
+      {
+        "featureId": "P1.11",
+        "name": "AI Image Generation",
+        "icon": "Sparkles",
+        "tooltip": "Generate AI image (Cmd+Shift+I)",
+        "shortcut": "Cmd+Shift+I",
+        "position": "toolbar-left-5",
+        "category": "media",
+        "priority": "high",
+        "ai_badge": true,
+        "badge_text": "AI",
+        "badge_color": "purple",
+        "opens_modal": true,
+        "modal_id": "ai-image-modal",
+        "llm_feature": true
+      },
+      {
+        "featureId": "P1.7",
+        "name": "Video Embed",
+        "icon": "Video",
+        "tooltip": "Embed video (Cmd+Shift+V)",
+        "shortcut": "Cmd+Shift+V",
+        "position": "toolbar-left-6",
+        "category": "media",
+        "priority": "medium",
+        "ai_badge": false
+      },
+      {
+        "featureId": "P1.1",
+        "name": "Widgets",
+        "icon": "BoxSelect",
+        "tooltip": "Insert widget (Cmd+Shift+W)",
+        "shortcut": "Cmd+Shift+W",
+        "position": "toolbar-left-7",
+        "category": "media",
+        "priority": "medium",
+        "ai_badge": false
+      },
+      {
+        "featureId": "P2.3",
+        "name": "Interactive Elements",
+        "icon": "MousePointerClick",
+        "tooltip": "Add polls/quizzes",
+        "shortcut": "",
+        "position": "toolbar-left-8",
+        "category": "media",
+        "priority": "low",
+        "ai_badge": false
+      }
+    ],
+    "actions_section": [
+      {
+        "featureId": "P0.9",
+        "name": "Export",
+        "icon": "Download",
+        "tooltip": "Export presentation (Cmd+E)",
+        "shortcut": "Cmd+E",
+        "position": "toolbar-right-1",
+        "category": "actions",
+        "priority": "high",
+        "ai_badge": false,
+        "opens_modal": true,
+        "modal_id": "export-modal"
+      },
+      {
+        "featureId": "P1.15",
+        "name": "Present",
+        "icon": "Presentation",
+        "tooltip": "Start presentation (Cmd+Shift+P)",
+        "shortcut": "Cmd+Shift+P",
+        "position": "toolbar-right-2",
+        "category": "actions",
+        "priority": "high",
+        "ai_badge": false,
+        "style": "primary",
+        "color": "blue"
+      }
+    ]
+  },
+  "status_indicators": [
+    {
+      "featureId": "P0.12",
+      "name": "Quality Score",
+      "icon": "BadgeCheck",
+      "tooltip": "AI quality score",
+      "position": "canvas-top-right",
+      "category": "status",
+      "priority": "medium",
+      "ai_badge": true,
+      "badge_text": "AI",
+      "badge_color": "green",
+      "llm_feature": true,
+      "display_type": "floating_badge",
+      "shows_score": true,
+      "score_range": "0-100"
+    },
+    {
+      "featureId": "P1.2",
+      "name": "Real-time Sync",
+      "icon": "Wifi",
+      "tooltip": "Sync status",
+      "position": "header-right",
+      "category": "status",
+      "priority": "low",
+      "ai_badge": false,
+      "display_type": "indicator",
+      "states": ["synced", "syncing", "offline"]
+    },
+    {
+      "featureId": "P1.9",
+      "name": "Collaboration",
+      "icon": "Users",
+      "tooltip": "Active collaborators",
+      "position": "header-right",
+      "category": "status",
+      "priority": "low",
+      "ai_badge": false,
+      "display_type": "avatar_stack",
+      "shows_count": true
+    }
+  ],
+  "panel_toggles": [
+    {
+      "featureId": "P1.3",
+      "name": "Speaker Notes",
+      "icon": "StickyNote",
+      "tooltip": "Toggle speaker notes (Cmd+Shift+N)",
+      "shortcut": "Cmd+Shift+N",
+      "position": "toolbar-right-3",
+      "category": "panels",
+      "priority": "high",
+      "ai_badge": false,
+      "toggles_panel": "bottom"
+    }
+  ],
+  "context_menu_items": [
+    {
+      "featureId": "P1.4",
+      "name": "Duplicate Slide",
+      "icon": "Copy",
+      "tooltip": "Duplicate slide (Cmd+D)",
+      "shortcut": "Cmd+D",
+      "position": "context-menu",
+      "category": "actions",
+      "priority": "high",
+      "ai_badge": false,
+      "context": "slide_thumbnail"
+    }
+  ],
+  "icon_guidelines": {
+    "max_toolbar_icons": 20,
+    "current_toolbar_count": 13,
+    "sections": {
+      "layout": 1,
+      "content": 3,
+      "media": 4,
+      "actions": 2,
+      "panels": 1
+    },
+    "ai_feature_styling": {
+      "badge_required": true,
+      "badge_icon": "Sparkles",
+      "badge_colors": {
+        "ai_image": "purple",
+        "quality_score": "green",
+        "voice_narration": "blue"
+      },
+      "hover_effect": "glow",
+      "tooltip_prefix": "AI:"
+    },
+    "mobile_responsive": {
+      "tablet": "Show top 10 icons, rest in overflow menu",
+      "mobile": "Show top 6 icons, rest in hamburger menu"
+    }
+  }
+}

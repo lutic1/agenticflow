@@ -1,0 +1,13 @@
+export { SlideDuplicator } from './SlideDuplicator';
+export { TemplateLibrary } from './TemplateLibrary';
+export { SpeakerNotesPanel } from './SpeakerNotesPanel';
+export { LanguageSelector } from './LanguageSelector';
+export { VideoEmbedder } from './VideoEmbedder';
+export { FontUploader } from './FontUploader';
+export { CollaborationPanel } from './CollaborationPanel';
+export { VersionHistoryPanel } from './VersionHistoryPanel';
+export { AIImageGenerator } from './AIImageGenerator';
+export { DataImporter } from './DataImporter';
+export { AnalyticsDashboard } from './AnalyticsDashboard';
+export { LivePresentationMode } from './LivePresentationMode';
+export { SlideManager } from './SlideManager';

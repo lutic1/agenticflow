@@ -39,6 +39,42 @@ export {
   SecureConfigManager
 } from './encryption';
 
+// P1 Feature Security
+export {
+  FontSecurityManager,
+  AIImageSecurityManager,
+  DataImportSecurityManager,
+  VideoEmbedSecurityManager,
+  CollaborationSecurityManager,
+  TemplateSecurityManager,
+  MobileAppSecurityManager,
+  fontSecurity,
+  aiImageSecurity,
+  dataImportSecurity,
+  videoEmbedSecurity,
+  collaborationSecurity,
+  templateSecurity,
+  mobileAppSecurity,
+  validateP1Security
+} from './p1-security';
+
+// P2 Feature Security
+export {
+  VoiceNarrationSecurityManager,
+  APISecurityManager,
+  ThemeSecurityManager,
+  ModelSecurityManager,
+  BlockchainSecurityManager,
+  DesignImportSecurityManager,
+  voiceNarrationSecurity,
+  apiSecurity,
+  themeSecurity,
+  modelSecurity,
+  blockchainSecurity,
+  designImportSecurity,
+  validateP2Security
+} from './p2-security';
+
 /**
  * Security best practices summary:
  *

@@ -117,7 +117,29 @@ export {
   P1FeatureDisabledError,
 } from './types/p1-integration.js';
 
-// Combined Integration exports (P0 + P1)
+// P2 Integration exports (Nice-to-Have features)
+export { P2Integration, p2Integration } from './p2-integration.js';
+export type {
+  P2FeatureId,
+  P2FeatureInfo,
+  P2FeatureStatus,
+  P2IntegrationHealth,
+  P2IntegrationConfig,
+  P2InitializationResult,
+  P2FeatureHealthCheck,
+  P2IntegrationHealthReport,
+  P2BatchResult,
+} from './types/p2-integration.js';
+export {
+  P2IntegrationError,
+  P2FeatureInitializationError,
+  P2DependencyError,
+  P2HealthCheckError,
+  P2FeatureDisabledError,
+  P2LazyLoadError,
+} from './types/p2-integration.js';
+
+// Combined Integration exports (P0 + P1 + P2)
 export {
   SlideDesignerIntegration,
   slideDesignerIntegration,

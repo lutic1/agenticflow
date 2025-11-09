@@ -1,0 +1,83 @@
+{
+  "p2Features": {
+    "batch1": {
+      "voiceNarration": true,
+      "apiAccess": true,
+      "interactiveElements": true,
+      "advancedThemes": true
+    },
+    "batch2": {
+      "3dAnimations": true,
+      "figmaSketchImport": true
+    },
+    "batch3": {
+      "arPresentation": true,
+      "blockchainNFTs": true
+    }
+  },
+  "scenarios": {
+    "all-enabled": {
+      "description": "All P2 features enabled",
+      "batches": ["batch1", "batch2", "batch3"]
+    },
+    "all-disabled": {
+      "description": "All P2 features disabled",
+      "batches": []
+    },
+    "batch1-only": {
+      "description": "Only Batch 1 features (Low Risk)",
+      "batches": ["batch1"]
+    },
+    "batch2-only": {
+      "description": "Only Batch 2 features (Medium Risk)",
+      "batches": ["batch2"]
+    },
+    "batch3-only": {
+      "description": "Only Batch 3 features (High Risk/Experimental)",
+      "batches": ["batch3"]
+    },
+    "batch1-batch2": {
+      "description": "Batch 1 and 2 enabled",
+      "batches": ["batch1", "batch2"]
+    },
+    "batch1-batch2-batch3": {
+      "description": "All batches enabled",
+      "batches": ["batch1", "batch2", "batch3"]
+    },
+    "voice-narration-only": {
+      "description": "Only Voice Narration feature",
+      "batches": [],
+      "individualFeatures": ["voiceNarration"]
+    },
+    "api-access-only": {
+      "description": "Only API Access feature",
+      "batches": [],
+      "individualFeatures": ["apiAccess"]
+    },
+    "ar-presentation-only": {
+      "description": "Only AR Presentation feature",
+      "batches": [],
+      "individualFeatures": ["arPresentation"]
+    },
+    "blockchain-nfts-only": {
+      "description": "Only Blockchain NFTs feature",
+      "batches": [],
+      "individualFeatures": ["blockchainNFTs"]
+    },
+    "random-mix-1": {
+      "description": "Random mix: Voice + Figma + AR",
+      "batches": [],
+      "individualFeatures": ["voiceNarration", "figmaSketchImport", "arPresentation"]
+    },
+    "random-mix-2": {
+      "description": "Random mix: API + 3D + Blockchain",
+      "batches": [],
+      "individualFeatures": ["apiAccess", "3dAnimations", "blockchainNFTs"]
+    },
+    "random-mix-3": {
+      "description": "Random mix: Interactive + Themes + Figma",
+      "batches": [],
+      "individualFeatures": ["interactiveElements", "advancedThemes", "figmaSketchImport"]
+    }
+  }
+}

@@ -1,0 +1,1127 @@
+{
+  "dashboard": {
+    "title": "P2 Features Monitoring - Experimental Features",
+    "tags": ["p2", "experimental", "slide-designer"],
+    "timezone": "UTC",
+    "editable": true,
+    "graphTooltip": 1,
+    "refresh": "30s",
+    "time": {
+      "from": "now-6h",
+      "to": "now"
+    },
+    "panels": [
+      {
+        "id": 1,
+        "title": "🚨 P0 Protection - Critical Safety Metrics",
+        "type": "row",
+        "collapsed": false,
+        "gridPos": { "x": 0, "y": 0, "w": 24, "h": 1 }
+      },
+      {
+        "id": 2,
+        "title": "P0 Latency Impact from P2 Features",
+        "type": "graph",
+        "gridPos": { "x": 0, "y": 1, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "(p2_p0_latency_impact_ratio - 1) * 100",
+            "legendFormat": "{{p0_component}} latency increase (%)",
+            "refId": "A"
+          }
+        ],
+        "alert": {
+          "name": "P0 Latency Degradation",
+          "conditions": [
+            {
+              "evaluator": { "type": "gt", "params": [10] },
+              "query": { "params": ["A", "5m", "now"] },
+              "operator": { "type": "and" }
+            }
+          ],
+          "executionErrorState": "alerting",
+          "frequency": "60s",
+          "handler": 1,
+          "message": "P2 features causing >10% P0 latency degradation - AUTO-DISABLING P2",
+          "noDataState": "no_data",
+          "notifications": [
+            { "uid": "pagerduty-critical" }
+          ]
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "value": null, "color": "green" },
+                { "value": 5, "color": "yellow" },
+                { "value": 10, "color": "red" }
+              ]
+            }
+          }
+        },
+        "options": {
+          "legend": { "show": true },
+          "tooltip": { "mode": "multi" }
+        }
+      },
+      {
+        "id": 3,
+        "title": "P0 Error Rate Impact from P2",
+        "type": "graph",
+        "gridPos": { "x": 12, "y": 1, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "p2_p0_error_rate_impact * 100",
+            "legendFormat": "{{p0_component}} error rate increase (%)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "value": null, "color": "green" },
+                { "value": 0.05, "color": "yellow" },
+                { "value": 0.1, "color": "red" }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 4,
+        "title": "P0 Resource Overhead from P2",
+        "type": "stat",
+        "gridPos": { "x": 0, "y": 9, "w": 6, "h": 4 },
+        "targets": [
+          {
+            "expr": "(p2_p0_memory_overhead_bytes / 1073741824) * 100",
+            "legendFormat": "Memory Overhead (GB)"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "gbytes",
+            "thresholds": {
+              "steps": [
+                { "value": null, "color": "green" },
+                { "value": 0.5, "color": "yellow" },
+                { "value": 1, "color": "red" }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 5,
+        "title": "P0 CPU Overhead from P2",
+        "type": "stat",
+        "gridPos": { "x": 6, "y": 9, "w": 6, "h": 4 },
+        "targets": [
+          {
+            "expr": "p2_p0_cpu_overhead_ratio * 100",
+            "legendFormat": "CPU Overhead (%)"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "thresholds": {
+              "steps": [
+                { "value": null, "color": "green" },
+                { "value": 25, "color": "yellow" },
+                { "value": 40, "color": "red" }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 6,
+        "title": "P2 Auto-Disable Events",
+        "type": "table",
+        "gridPos": { "x": 12, "y": 9, "w": 12, "h": 4 },
+        "targets": [
+          {
+            "expr": "changes(p2_auto_disable_triggered[24h])",
+            "format": "table",
+            "instant": true
+          }
+        ],
+        "options": {
+          "showHeader": true,
+          "sortBy": [{ "displayName": "Time", "desc": true }]
+        }
+      },
+      {
+        "id": 7,
+        "title": "📊 P2 Features Overview",
+        "type": "row",
+        "collapsed": false,
+        "gridPos": { "x": 0, "y": 13, "w": 24, "h": 1 }
+      },
+      {
+        "id": 8,
+        "title": "P2 Feature Availability (SLO: 95%)",
+        "type": "graph",
+        "gridPos": { "x": 0, "y": 14, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "p2_feature_availability * 100",
+            "legendFormat": "{{feature}}",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "min": 90,
+            "max": 100,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "value": 90, "color": "red" },
+                { "value": 95, "color": "yellow" },
+                { "value": 98, "color": "green" }
+              ]
+            }
+          }
+        },
+        "options": {
+          "legend": { "show": true, "values": true, "current": true },
+          "tooltip": { "mode": "multi" }
+        }
+      },
+      {
+        "id": 9,
+        "title": "P2 Request Latency (p95)",
+        "type": "graph",
+        "gridPos": { "x": 12, "y": 14, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(p2_feature_request_duration_seconds_bucket[5m]))",
+            "legendFormat": "{{feature}} - {{operation}}",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "s",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "value": null, "color": "green" },
+                { "value": 5, "color": "yellow" },
+                { "value": 10, "color": "red" }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 10,
+        "title": "P2 Feature Status Grid",
+        "type": "stat",
+        "gridPos": { "x": 0, "y": 22, "w": 24, "h": 6 },
+        "targets": [
+          {
+            "expr": "p2_feature_availability",
+            "legendFormat": "{{feature}}",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percentunit",
+            "thresholds": {
+              "steps": [
+                { "value": 0, "color": "red" },
+                { "value": 0.95, "color": "yellow" },
+                { "value": 0.98, "color": "green" }
+              ]
+            },
+            "mappings": [],
+            "displayName": "${__field.labels.feature}"
+          }
+        },
+        "options": {
+          "orientation": "auto",
+          "textMode": "value_and_name",
+          "colorMode": "background",
+          "graphMode": "area"
+        }
+      },
+      {
+        "id": 11,
+        "title": "🎙️ Voice Narration (TTS)",
+        "type": "row",
+        "collapsed": true,
+        "gridPos": { "x": 0, "y": 28, "w": 24, "h": 1 },
+        "panels": [
+          {
+            "id": 12,
+            "title": "TTS Generation Latency",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "histogram_quantile(0.95, rate(p2_feature_request_duration_seconds_bucket{feature=\"voice_narration\"}[5m]))",
+                "legendFormat": "p95 latency"
+              },
+              {
+                "expr": "histogram_quantile(0.50, rate(p2_feature_request_duration_seconds_bucket{feature=\"voice_narration\"}[5m]))",
+                "legendFormat": "p50 latency"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": { "unit": "s" }
+            }
+          },
+          {
+            "id": 13,
+            "title": "TTS API Success Rate",
+            "type": "stat",
+            "targets": [
+              {
+                "expr": "rate(p2_feature_requests_total{feature=\"voice_narration\",status=\"success\"}[5m]) / rate(p2_feature_requests_total{feature=\"voice_narration\"}[5m]) * 100"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": {
+                "unit": "percent",
+                "thresholds": {
+                  "steps": [
+                    { "value": 95, "color": "red" },
+                    { "value": 98, "color": "yellow" },
+                    { "value": 99, "color": "green" }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "id": 14,
+            "title": "TTS Daily Cost",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "sum(increase(p2_feature_cost_usd{feature=\"voice_narration\"}[24h]))",
+                "legendFormat": "Daily cost"
+              },
+              {
+                "expr": "100",
+                "legendFormat": "Daily budget"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": { "unit": "currencyUSD" }
+            }
+          },
+          {
+            "id": 15,
+            "title": "Voice Library Usage",
+            "type": "piechart",
+            "targets": [
+              {
+                "expr": "sum by (voice) (rate(p2_voice_narration_requests_total[1h]))",
+                "legendFormat": "{{voice}}"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 16,
+        "title": "🔌 Developer API",
+        "type": "row",
+        "collapsed": true,
+        "gridPos": { "x": 0, "y": 29, "w": 24, "h": 1 },
+        "panels": [
+          {
+            "id": 17,
+            "title": "API Response Time (p95)",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "histogram_quantile(0.95, rate(p2_feature_request_duration_seconds_bucket{feature=\"developer_api\"}[5m]))",
+                "legendFormat": "{{operation}}"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": {
+                "unit": "s",
+                "thresholds": {
+                  "steps": [
+                    { "value": null, "color": "green" },
+                    { "value": 0.5, "color": "yellow" },
+                    { "value": 1, "color": "red" }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "id": 18,
+            "title": "API Request Rate",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "sum(rate(p2_feature_requests_total{feature=\"developer_api\"}[5m])) by (operation)",
+                "legendFormat": "{{operation}}"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": { "unit": "reqps" }
+            }
+          },
+          {
+            "id": 19,
+            "title": "Rate Limit Events",
+            "type": "stat",
+            "targets": [
+              {
+                "expr": "sum(increase(p2_api_rate_limit_events_total[1h]))"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": { "unit": "short" }
+            }
+          },
+          {
+            "id": 20,
+            "title": "API Error Rate by Type",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "sum(rate(p2_feature_errors_total{feature=\"developer_api\"}[5m])) by (error_type)",
+                "legendFormat": "{{error_type}}"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": { "unit": "reqps" }
+            }
+          }
+        ]
+      },
+      {
+        "id": 21,
+        "title": "🎮 Interactive Elements",
+        "type": "row",
+        "collapsed": true,
+        "gridPos": { "x": 0, "y": 30, "w": 24, "h": 1 },
+        "panels": [
+          {
+            "id": 22,
+            "title": "Real-time Sync Latency",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "histogram_quantile(0.95, rate(p2_interactive_sync_latency_seconds_bucket[5m]))",
+                "legendFormat": "p95 sync latency"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": {
+                "unit": "s",
+                "thresholds": {
+                  "steps": [
+                    { "value": null, "color": "green" },
+                    { "value": 1, "color": "yellow" },
+                    { "value": 2, "color": "red" }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "id": 23,
+            "title": "Concurrent Participants",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "sum(p2_interactive_participants_active) by (element_type)",
+                "legendFormat": "{{element_type}}"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": { "unit": "short" }
+            }
+          },
+          {
+            "id": 24,
+            "title": "Response Collection Rate",
+            "type": "stat",
+            "targets": [
+              {
+                "expr": "rate(p2_interactive_responses_collected_total[5m]) / rate(p2_interactive_responses_attempted_total[5m]) * 100"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": {
+                "unit": "percent",
+                "thresholds": {
+                  "steps": [
+                    { "value": 98, "color": "red" },
+                    { "value": 99, "color": "yellow" },
+                    { "value": 99.5, "color": "green" }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "id": 25,
+            "title": "WebSocket Connection Status",
+            "type": "stat",
+            "targets": [
+              {
+                "expr": "sum(p2_interactive_websocket_connections_active)"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": { "unit": "short" }
+            }
+          }
+        ]
+      },
+      {
+        "id": 26,
+        "title": "🛒 Themes Marketplace",
+        "type": "row",
+        "collapsed": true,
+        "gridPos": { "x": 0, "y": 31, "w": 24, "h": 1 },
+        "panels": [
+          {
+            "id": 27,
+            "title": "Theme Install Latency",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "histogram_quantile(0.95, rate(p2_theme_install_duration_seconds_bucket[5m]))",
+                "legendFormat": "p95 install time"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": {
+                "unit": "s",
+                "thresholds": {
+                  "steps": [
+                    { "value": null, "color": "green" },
+                    { "value": 3, "color": "yellow" },
+                    { "value": 5, "color": "red" }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "id": 28,
+            "title": "🔒 Malware Detection Events",
+            "type": "table",
+            "targets": [
+              {
+                "expr": "sum(increase(p2_theme_malware_detected_total[24h])) by (scanner, theme_id)",
+                "format": "table",
+                "instant": true
+              }
+            ],
+            "options": {
+              "showHeader": true,
+              "sortBy": [{ "displayName": "Value", "desc": true }]
+            },
+            "fieldConfig": {
+              "defaults": {
+                "thresholds": {
+                  "steps": [
+                    { "value": 0, "color": "green" },
+                    { "value": 1, "color": "red" }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "id": 29,
+            "title": "Theme Quality Score Distribution",
+            "type": "histogram",
+            "targets": [
+              {
+                "expr": "p2_theme_quality_score"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": { "unit": "percentunit" }
+            }
+          },
+          {
+            "id": 30,
+            "title": "Moderation Queue Size",
+            "type": "stat",
+            "targets": [
+              {
+                "expr": "sum(p2_marketplace_moderation_queue_size)"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": {
+                "unit": "short",
+                "thresholds": {
+                  "steps": [
+                    { "value": null, "color": "green" },
+                    { "value": 50, "color": "yellow" },
+                    { "value": 100, "color": "red" }
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": 31,
+        "title": "🎨 3D Animations (Three.js)",
+        "type": "row",
+        "collapsed": true,
+        "gridPos": { "x": 0, "y": 32, "w": 24, "h": 1 },
+        "panels": [
+          {
+            "id": 32,
+            "title": "3D Render FPS",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "p2_render_fps{feature=\"3d_animations\"}",
+                "legendFormat": "FPS"
+              },
+              {
+                "expr": "30",
+                "legendFormat": "Target (30 FPS)"
+              },
+              {
+                "expr": "60",
+                "legendFormat": "Ideal (60 FPS)"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": {
+                "unit": "short",
+                "thresholds": {
+                  "steps": [
+                    { "value": 0, "color": "red" },
+                    { "value": 24, "color": "yellow" },
+                    { "value": 30, "color": "green" }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "id": 33,
+            "title": "GPU Memory Usage",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "p2_memory_usage_bytes{feature=\"3d_animations\"} / 1048576",
+                "legendFormat": "GPU Memory (MB)"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": {
+                "unit": "decmbytes",
+                "thresholds": {
+                  "steps": [
+                    { "value": null, "color": "green" },
+                    { "value": 200, "color": "yellow" },
+                    { "value": 500, "color": "red" }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "id": 34,
+            "title": "Browser Compatibility Rate",
+            "type": "stat",
+            "targets": [
+              {
+                "expr": "sum(p2_3d_webgl_supported_users) / sum(p2_3d_total_users) * 100"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": {
+                "unit": "percent",
+                "thresholds": {
+                  "steps": [
+                    { "value": 70, "color": "red" },
+                    { "value": 80, "color": "yellow" },
+                    { "value": 90, "color": "green" }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "id": 35,
+            "title": "Fallback Activation Rate",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "rate(p2_3d_fallback_activated_total[5m])",
+                "legendFormat": "Fallback activations/sec"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 36,
+        "title": "📐 Figma/Sketch Import",
+        "type": "row",
+        "collapsed": true,
+        "gridPos": { "x": 0, "y": 33, "w": 24, "h": 1 },
+        "panels": [
+          {
+            "id": 37,
+            "title": "Import Latency by Source",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "histogram_quantile(0.95, rate(p2_import_duration_seconds_bucket[5m]))",
+                "legendFormat": "{{source}}"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": {
+                "unit": "s",
+                "thresholds": {
+                  "steps": [
+                    { "value": null, "color": "green" },
+                    { "value": 10, "color": "yellow" },
+                    { "value": 20, "color": "red" }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "id": 38,
+            "title": "Import Success Rate",
+            "type": "stat",
+            "targets": [
+              {
+                "expr": "rate(p2_import_success_total[5m]) / rate(p2_import_attempts_total[5m]) * 100"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": {
+                "unit": "percent",
+                "thresholds": {
+                  "steps": [
+                    { "value": 90, "color": "red" },
+                    { "value": 95, "color": "yellow" },
+                    { "value": 98, "color": "green" }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "id": 39,
+            "title": "Design Import API Costs",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "sum(increase(p2_feature_cost_usd{feature=\"design_import\"}[24h])) by (provider)",
+                "legendFormat": "{{provider}}"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": { "unit": "currencyUSD" }
+            }
+          },
+          {
+            "id": 40,
+            "title": "Fidelity Accuracy Score",
+            "type": "stat",
+            "targets": [
+              {
+                "expr": "avg(p2_import_fidelity_score) * 100"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": {
+                "unit": "percent",
+                "thresholds": {
+                  "steps": [
+                    { "value": 85, "color": "red" },
+                    { "value": 90, "color": "yellow" },
+                    { "value": 95, "color": "green" }
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": 41,
+        "title": "🥽 AR Presentation Mode (WebXR)",
+        "type": "row",
+        "collapsed": true,
+        "gridPos": { "x": 0, "y": 34, "w": 24, "h": 1 },
+        "panels": [
+          {
+            "id": 42,
+            "title": "AR Session Initialization Time",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "histogram_quantile(0.95, rate(p2_ar_init_duration_seconds_bucket[5m]))",
+                "legendFormat": "p95 init time"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": {
+                "unit": "s",
+                "thresholds": {
+                  "steps": [
+                    { "value": null, "color": "green" },
+                    { "value": 5, "color": "yellow" },
+                    { "value": 10, "color": "red" }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "id": 43,
+            "title": "AR Session Stability (Crash Rate)",
+            "type": "stat",
+            "targets": [
+              {
+                "expr": "(1 - (rate(p2_ar_session_crashes_total[5m]) / rate(p2_ar_sessions_total[5m]))) * 100"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": {
+                "unit": "percent",
+                "thresholds": {
+                  "steps": [
+                    { "value": 85, "color": "red" },
+                    { "value": 90, "color": "yellow" },
+                    { "value": 95, "color": "green" }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "id": 44,
+            "title": "AR Frame Rate Distribution",
+            "type": "histogram",
+            "targets": [
+              {
+                "expr": "p2_ar_frame_rate_fps"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": { "unit": "short" }
+            }
+          },
+          {
+            "id": 45,
+            "title": "WebXR Device Support",
+            "type": "piechart",
+            "targets": [
+              {
+                "expr": "sum by (device) (rate(p2_ar_sessions_total[1h]))",
+                "legendFormat": "{{device}}"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 46,
+        "title": "⛓️ Blockchain NFTs",
+        "type": "row",
+        "collapsed": true,
+        "gridPos": { "x": 0, "y": 35, "w": 24, "h": 1 },
+        "panels": [
+          {
+            "id": 47,
+            "title": "NFT Minting Latency by Network",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "histogram_quantile(0.95, rate(p2_nft_minting_duration_seconds_bucket[5m]))",
+                "legendFormat": "{{network}}"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": {
+                "unit": "s",
+                "thresholds": {
+                  "steps": [
+                    { "value": null, "color": "green" },
+                    { "value": 60, "color": "yellow" },
+                    { "value": 120, "color": "red" }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "id": 48,
+            "title": "Minting Success Rate",
+            "type": "stat",
+            "targets": [
+              {
+                "expr": "rate(p2_nft_minting_success_total[5m]) / rate(p2_nft_minting_attempts_total[5m]) * 100"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": {
+                "unit": "percent",
+                "thresholds": {
+                  "steps": [
+                    { "value": 95, "color": "red" },
+                    { "value": 98, "color": "yellow" },
+                    { "value": 99, "color": "green" }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "id": 49,
+            "title": "Gas Fees by Network",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "p2_nft_gas_fee_gwei",
+                "legendFormat": "{{network}}"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": { "unit": "gwei" }
+            }
+          },
+          {
+            "id": 50,
+            "title": "IPFS Upload Success Rate",
+            "type": "stat",
+            "targets": [
+              {
+                "expr": "rate(p2_ipfs_upload_success_total[5m]) / rate(p2_ipfs_upload_attempts_total[5m]) * 100"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": {
+                "unit": "percent",
+                "thresholds": {
+                  "steps": [
+                    { "value": 98, "color": "red" },
+                    { "value": 99, "color": "yellow" },
+                    { "value": 99.5, "color": "green" }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "id": 51,
+            "title": "Blockchain Confirmation Time",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "p2_blockchain_confirmation_time_seconds",
+                "legendFormat": "{{network}}"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": {
+                "unit": "s",
+                "thresholds": {
+                  "steps": [
+                    { "value": null, "color": "green" },
+                    { "value": 300, "color": "yellow" },
+                    { "value": 600, "color": "red" }
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": 52,
+        "title": "💰 Cost Management",
+        "type": "row",
+        "collapsed": false,
+        "gridPos": { "x": 0, "y": 36, "w": 24, "h": 1 }
+      },
+      {
+        "id": 53,
+        "title": "Daily API Costs by Feature",
+        "type": "graph",
+        "gridPos": { "x": 0, "y": 37, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "sum(increase(p2_feature_cost_usd[24h])) by (feature)",
+            "legendFormat": "{{feature}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "currencyUSD",
+            "thresholds": {
+              "steps": [
+                { "value": null, "color": "green" },
+                { "value": 50, "color": "yellow" },
+                { "value": 100, "color": "red" }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 54,
+        "title": "Cost Budget Consumption (%)",
+        "type": "bargauge",
+        "gridPos": { "x": 12, "y": 37, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "p2_daily_budget_consumed_ratio * 100",
+            "legendFormat": "{{feature}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "max": 100,
+            "thresholds": {
+              "steps": [
+                { "value": null, "color": "green" },
+                { "value": 75, "color": "yellow" },
+                { "value": 100, "color": "red" }
+              ]
+            }
+          }
+        },
+        "options": {
+          "orientation": "horizontal",
+          "displayMode": "gradient"
+        }
+      },
+      {
+        "id": 55,
+        "title": "Total P2 Monthly Cost Projection",
+        "type": "stat",
+        "gridPos": { "x": 0, "y": 45, "w": 8, "h": 4 },
+        "targets": [
+          {
+            "expr": "predict_linear(sum(p2_feature_cost_usd)[7d:], 30*24*3600)",
+            "legendFormat": "Projected monthly cost"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "currencyUSD",
+            "thresholds": {
+              "steps": [
+                { "value": null, "color": "green" },
+                { "value": 6000, "color": "yellow" },
+                { "value": 8250, "color": "red" }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 56,
+        "title": "Cost per Request (Average)",
+        "type": "table",
+        "gridPos": { "x": 8, "y": 45, "w": 16, "h": 4 },
+        "targets": [
+          {
+            "expr": "sum by (feature, provider) (rate(p2_feature_cost_usd[1h])) / sum by (feature, provider) (rate(p2_feature_requests_total[1h]))",
+            "format": "table",
+            "instant": true
+          }
+        ],
+        "fieldConfig": {
+          "defaults": { "unit": "currencyUSD" }
+        },
+        "options": {
+          "showHeader": true,
+          "sortBy": [{ "displayName": "Value", "desc": true }]
+        }
+      },
+      {
+        "id": 57,
+        "title": "📉 Error Budgets",
+        "type": "row",
+        "collapsed": false,
+        "gridPos": { "x": 0, "y": 49, "w": 24, "h": 1 }
+      },
+      {
+        "id": 58,
+        "title": "P2 Error Budget Consumption (%)",
+        "type": "bargauge",
+        "gridPos": { "x": 0, "y": 50, "w": 24, "h": 8 },
+        "targets": [
+          {
+            "expr": "p2_error_budget_consumed * 100",
+            "legendFormat": "{{feature}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "max": 100,
+            "thresholds": {
+              "steps": [
+                { "value": null, "color": "green" },
+                { "value": 50, "color": "yellow" },
+                { "value": 75, "color": "orange" },
+                { "value": 90, "color": "red" }
+              ]
+            }
+          }
+        },
+        "options": {
+          "orientation": "horizontal",
+          "displayMode": "lcd"
+        }
+      },
+      {
+        "id": 59,
+        "title": "Error Budget Burn Rate (Last 24h)",
+        "type": "graph",
+        "gridPos": { "x": 0, "y": 58, "w": 24, "h": 8 },
+        "targets": [
+          {
+            "expr": "rate(p2_error_budget_consumed[24h]) * 100",
+            "legendFormat": "{{feature}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percentunit",
+            "thresholds": {
+              "steps": [
+                { "value": null, "color": "green" },
+                { "value": 0.02, "color": "yellow" },
+                { "value": 0.05, "color": "red" }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  }
+}

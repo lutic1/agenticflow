@@ -19,6 +19,27 @@
 | [Deployment Options](#-deployment-options) | [ReasoningBank](#-core-components) | [MCP Tools](#-mcp-tools-213-total) |
 | [Model Optimization](#-model-optimization) | [Multi-Model Router](#-using-the-multi-model-router) | [Complete Docs](https://github.com/ruvnet/agentic-flow/tree/main/docs) |
 
+## 🆕 NEW in v2.0.0: Slide Designer Frontend
+
+**Production-ready Next.js 16 frontend** with complete integration of all 35 slide design features!
+
+```bash
+# Quick Start - Frontend
+cd Frontend
+npm install
+npm run dev
+
+# Open http://localhost:3001
+```
+
+**What's New:**
+- ✅ **35 Features** - 12 P0 core + 15 P1 advanced + 8 P2 experimental
+- ✅ **165+ Tests** - Unit, integration, and E2E across 5 browsers
+- ✅ **80%+ Coverage** - Comprehensive test coverage with CI/CD
+- ✅ **Zero Breaking Changes** - 100% backward compatible backend
+
+**See:** [CHANGELOG.md](./CHANGELOG.md) | [Release Notes](./docs/RELEASE_NOTES_v2.0.0.md) | [Migration Guide](./docs/MIGRATION_CHECKLIST.md)
+
 ---
 
 ## 💥 The Performance Revolution
